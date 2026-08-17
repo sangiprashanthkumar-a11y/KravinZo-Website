@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>KravinZo | Delicious Food</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0d0d0d;
+      color: white;
+    }
+
+    header {
+      background: #111;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ff6a00;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #ff6a00;
+    }
+
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.8)),
+        url("https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1600&q=80")
+        center/cover;
+    }
+
+    .hero h1 {
+      font-size: 60px;
+      color: #ff6a00;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 21px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #ff6a00;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      background: #e85d00;
+    }
+
+    section {
+      padding: 70px 7%;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 40px;
+      color: #ff6a00;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .card {
+      background: #181818;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,.4);
+    }
+
+    .card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .price {
+      color: #ff6a00;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .about {
+      text-align: center;
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    .contact {
+      text-align: center;
+      background: #151515;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #080808;
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav a {
+        margin: 0 7px;
+        font-size: 14px;
+      }
+
+      .hero h1 {
+        font-size: 42px;
+      }
+
+      .menu {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 50px 5%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">KravinZo</div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#menu">Menu</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div>
+      <h1>KravinZo</h1>
+      <p>Delicious food. Big cravings. One perfect destination.</p>
+
+      <a href="#menu" class="btn">Explore Menu</a>
+      <a href="#contact" class="btn">Order Now</a>
+    </div>
+  </section>
+
+  <section id="menu">
+    <h2 class="title">Our Menu</h2>
+
+    <div class="menu">
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80">
+        <div class="card-content">
+          <h3>Classic Burger</h3>
+          <p>Juicy burger with fresh ingredients.</p>
+          <div class="price">₹149</div>
+          <a href="#contact" class="btn">Order</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb92?auto=format&fit=crop&w=800&q=80">
+        <div class="card-content">
+          <h3>Crispy Chicken</h3>
+          <p>Crispy, spicy and delicious chicken.</p>
+          <div class="price">₹199</div>
+          <a href="#contact" class="btn">Order</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80">
+        <div class="card-content">
+          <h3>Loaded Fries</h3>
+          <p>Crispy fries loaded with tasty flavours.</p>
+          <div class="price">₹99</div>
+          <a href="#contact" class="btn">Order</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="title">About KravinZo</h2>
+
+    <div class="about">
+      <p>
+        Welcome to KravinZo — a food brand created for people who love
+        delicious, crispy and flavour-packed food. Our goal is simple:
+        serve great food that keeps you coming back for more.
+      </p>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2 class="title">Order Now</h2>
+
+    <p>Hungry? Place your order with KravinZo!</p>
+
+    <br>
+
+    <!-- Replace 91XXXXXXXXXX with your WhatsApp number -->
+    <a
+      class="btn"
+      href="https://wa.me/91XXXXXXXXXX"
+      target="_blank">
+      Order on WhatsApp
+    </a>
+
+    <p style="margin-top:20px;">
+      📍 Narsingi, Hyderabad
+    </p>
+  </section>
+
+  <footer>
+    © 2026 KravinZo. All Rights Reserved.
+  </footer>
+
+</body>
+</html>
