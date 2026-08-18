@@ -398,15 +398,17 @@
   </footer>
 
 </body>
- <script>
+<script>
 let cart = [];
 
 function addToCart(name, price) {
 
-  let item = cart.find(item => item.name === name);
+  let item = cart.find(function(item) {
+    return item.name === name;
+  });
 
   if (item) {
-    item.quantity++;
+    item.quantity = item.quantity + 1;
   } else {
     cart.push({
       name: name,
@@ -423,17 +425,17 @@ function updateCart() {
   let count = 0;
   let total = 0;
 
-  const cartItems = document.getElementById("cart-items");
+  let cartItems = document.getElementById("cart-items");
 
   cartItems.innerHTML = "";
 
-  cart.forEach((item, index) => {
+  cart.forEach(function(item, index) {
 
-    count += item.quantity;
+    count = count + item.quantity;
 
     let itemTotal = item.price * item.quantity;
 
-    total += itemTotal;
+    total = total + itemTotal;
 
     cartItems.innerHTML += `
       <div class="cart-item">
@@ -444,7 +446,9 @@ function updateCart() {
           ₹${item.price} × ${item.quantity}
         </span>
 
-        <button onclick="removeItem(${index})">
+        <button
+          class="remove-btn"
+          onclick="removeItem(${index})">
           Remove
         </button>
 
