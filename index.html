@@ -363,4 +363,35 @@
   </footer>
 
 </body>
+  <script>
+let cart = [];
+
+function addToCart(name, price) {
+
+  let item = cart.find(item => item.name === name);
+
+  if (item) {
+    item.quantity++;
+  } else {
+    cart.push({
+      name: name,
+      price: price,
+      quantity: 1
+    });
+  }
+
+  updateCartCount();
+}
+
+function updateCartCount() {
+
+  let count = 0;
+
+  cart.forEach(item => {
+    count += item.quantity;
+  });
+
+  document.getElementById("cart-count").innerText = count;
+}
+</script>
 </html>
