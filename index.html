@@ -576,20 +576,10 @@
   `;
 }
 function payOnline() {
-    let total = 0;
-
-    cart.forEach(function(item) {
-        total += item.price * item.quantity;
-    });
-
-    let upiUrl =
-        "upi://pay?pa=sangiprashanth@ybl&pn=KravinZo&am=" +
-        total +
-        "&cu=INR";
-
-    let link = document.createElement("a");
-    link.href = upiUrl;
-    link.click();
+    window.open(
+        "https://razorpay.me/@kravinzowebsite",
+        "_blank"
+    );
 }
     function cashOnDelivery() {
   alert("Cash on Delivery selected!");
