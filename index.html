@@ -378,6 +378,19 @@
   <button class="btn" onclick="placeOrder()">
     Continue to Payment
   </button>
+      <div id="order-summary" style="display:none;">
+
+  <h2 class="title">Order Summary</h2>
+
+  <div id="summary-items"></div>
+
+  <h3 id="summary-total">Total: ₹0</h3>
+
+  <button class="btn" onclick="makePayment()">
+    Proceed to Payment
+  </button>
+
+</div>
 
 </div>
 </section>
@@ -521,6 +534,48 @@ function checkout() {
   document.getElementById("checkout-form").scrollIntoView({
     behavior: "smooth"
   });
+  function placeOrder() {
+
+  let name = document.getElementById("customer-name").value.trim();
+  let phone = document.getElementById("customer-phone").value.trim();
+  let address = document.getElementById("customer-address").value.trim();
+
+  if (name === "" || phone === "" || address === "") {
+    alert("Please fill all delivery details.");
+    return;
+  }
+
+  let summaryItems = document.getElementById("summary-items");
+
+  summaryItems.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach(function(item) {
+
+    let itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+
+    summaryItems.innerHTML += `
+      <div class="cart-item">
+        <strong>${item.name}</strong>
+        <span>
+          ${item.quantity} × ₹${item.price} = ₹${itemTotal}
+        </span>
+      </div>
+    `;
+  });
+
+  document.getElementById("summary-total").innerText =
+    "Total: ₹" + total;
+
+  document.getElementById("order-summary").style.display = "block";
+
+  document.getElementById("order-summary").scrollIntoView({
+    behavior: "smooth"
+  });
+}
 }
 </script>
 
