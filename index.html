@@ -559,9 +559,22 @@
     });
   }
 
-  function makePayment() {
-    alert("Payment page coming soon!");
-  }
+ function makePayment() {
+  document.getElementById("order-summary").innerHTML += `
+    <div style="margin-top:30px; text-align:center;">
+      <h2 style="color:#ff6a00;">Payment</h2>
+      <p>Select your payment method</p>
+
+      <button class="btn" onclick="payOnline()">
+        UPI / Online Payment
+      </button>
+
+      <button class="btn" onclick="cashOnDelivery()">
+        Cash on Delivery
+      </button>
+    </div>
+  `;
+}
 </script>
 
 </body>
