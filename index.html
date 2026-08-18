@@ -398,11 +398,9 @@
   </footer>
 
   <script>
-let cart = [];
-
-function addToCart(name, price) {
-
-  let item = cart.find(function(item) {
+    let cart = [];
+   function addToCart(name, price) {
+   let item = cart.find(function(item) {
     return item.name === name;
   });
 
@@ -480,5 +478,4 @@ function checkout() {
 </script>
 
 </body>
-
 </html>
