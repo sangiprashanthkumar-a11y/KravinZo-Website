@@ -438,145 +438,130 @@
   </footer>
 
   <script>
-    let cart = [];
-   function addToCart(name, price) {
-   let item = cart.find(function(item) {
-    return item.name === name;
-  });
+  let cart = [];
+  function addToCart(name, price) {
+    let item = cart.find(function(item) {
+      return item.name === name;
+    });
 
-  if (item) {
-    item.quantity = item.quantity + 1;
-  } else {
-    cart.push({
-      name: name,
-      price: price,
-      quantity: 1
+    if (item) {
+      item.quantity++;
+    } else {
+      cart.push({
+        name: name,
+        price: price,
+        quantity: 1
+      });
+    }
+
+    updateCart();
+  }
+
+  function updateCart() {
+    let count = 0;
+    let total = 0;
+
+    let cartItems = document.getElementById("cart-items");
+    cartItems.innerHTML = "";
+
+    cart.forEach(function(item, index) {
+      count += item.quantity;
+
+      let itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      cartItems.innerHTML += `
+        <div class="cart-item">
+          <strong>${item.name}</strong>
+
+          <span>
+            ₹${item.price} × ${item.quantity}
+          </span>
+
+          <div>
+            <button onclick="decreaseQuantity(${index})">−</button>
+            <span>${item.quantity}</span>
+            <button onclick="increaseQuantity(${index})">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById("cart-count").innerText = count;
+    document.getElementById("cart-total").innerText =
+      "Total: ₹" + total;
+  }
+
+  function increaseQuantity(index) {
+    cart[index].quantity++;
+    updateCart();
+  }
+
+  function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+      cart[index].quantity--;
+    } else {
+      cart.splice(index, 1);
+    }
+
+    updateCart();
+  }
+
+  function checkout() {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    document.getElementById("checkout-form").style.display = "block";
+
+    document.getElementById("checkout-form").scrollIntoView({
+      behavior: "smooth"
     });
   }
 
-  updateCart();
-}
-
-function updateCart() {
-
-  let count = 0;
-  let total = 0;
-
-  let cartItems = document.getElementById("cart-items");
-
-  cartItems.innerHTML = "";
-
-  cart.forEach(function(item, index) {
-
-    count = count + item.quantity;
-
-    let itemTotal = item.price * item.quantity;
-
-    total = total + itemTotal;
-
-    cartItems.innerHTML += `
-      <div class="cart-item">
-
-        <strong>${item.name}</strong>
-
-        <span>
-          ₹${item.price} × ${item.quantity}
-        </span>
-
-        <div class="quantity-controls">
-        <button onclick="decreaseQuantity(${index})">−</button>
-         <span>${item.quantity}</span>
-       <button onclick="increaseQuantity(${index})">+</button>
-</div>
-
-      </div>
-    `;
-  });
-
-  document.getElementById("cart-count").innerText = count;
-
-  document.getElementById("cart-total").innerText =
-    "Total: ₹" + total;
-}
-
-function removeItem(index) {
-
-  cart.splice(index, 1);
-
-  updateCart();
-}
-    function increaseQuantity(index) {
-  cart[index].quantity++;
-  updateCart();
-}
-
-function decreaseQuantity(index) {
-
-  if (cart[index].quantity > 1) {
-    cart[index].quantity--;
-  } else {
-    cart.splice(index, 1);
-  }
-
-  updateCart();
-}
-    
-
-function checkout() {
-
-  if (cart.length === 0) {
-    alert("Your cart is empty!");
-    return;
-  }
-
-  document.getElementById("checkout-form").style.display = "block";
-
-  document.getElementById("checkout-form").scrollIntoView({
-    behavior: "smooth"
-  });
   function placeOrder() {
-    
-  let name = document.getElementById("customer-name").value.trim();
-  let phone = document.getElementById("customer-phone").value.trim();
-  let address = document.getElementById("customer-address").value.trim();
+    let name = document.getElementById("customer-name").value.trim();
+    let phone = document.getElementById("customer-phone").value.trim();
+    let address = document.getElementById("customer-address").value.trim();
 
-  if (name === "" || phone === "" || address === "") {
-    alert("Please fill all delivery details.");
-    return;
+    if (name === "" || phone === "" || address === "") {
+      alert("Please fill all delivery details.");
+      return;
+    }
+
+    let summaryItems = document.getElementById("summary-items");
+    summaryItems.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(function(item) {
+      let itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      summaryItems.innerHTML += `
+        <div class="cart-item">
+          <strong>${item.name}</strong>
+          <span>
+            ${item.quantity} × ₹${item.price} = ₹${itemTotal}
+          </span>
+        </div>
+      `;
+    });
+
+    document.getElementById("summary-total").innerText =
+      "Total: ₹" + total;
+
+    document.getElementById("order-summary").style.display = "block";
+
+    document.getElementById("order-summary").scrollIntoView({
+      behavior: "smooth"
+    });
   }
 
-  let summaryItems = document.getElementById("summary-items");
-
-  summaryItems.innerHTML = "";
-
-  let total = 0;
-
-  cart.forEach(function(item) {
-
-    let itemTotal = item.price * item.quantity;
-
-    total += itemTotal;
-
-    summaryItems.innerHTML += `
-      <div class="cart-item">
-        <strong>${item.name}</strong>
-        <span>
-          ${item.quantity} × ₹${item.price} = ₹${itemTotal}
-        </span>
-      </div>
-    `;
-  });
-
-  document.getElementById("summary-total").innerText =
-    "Total: ₹" + total;
-
-  document.getElementById("order-summary").style.display = "block";
-
-  document.getElementById("order-summary").scrollIntoView({
-    behavior: "smooth"
-  });
-}
-}
+  function makePayment() {
+    alert("Payment page coming soon!");
+  }
 </script>
 
 </body>
