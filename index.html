@@ -576,18 +576,20 @@
   `;
 }
 function payOnline() {
-  let total = 0;
+    let total = 0;
 
-  cart.forEach(function(item) {
-    total += item.price * item.quantity;
-  });
+    cart.forEach(function(item) {
+        total += item.price * item.quantity;
+    });
 
-  let upiUrl =
-    "upi://pay?pa=sangiprashanth@ybl&pn=KravinZo&am=" +
-    total +
-    "&cu=INR";
+    let upiUrl =
+        "upi://pay?pa=sangiprashanth@ybl&pn=KravinZo&am=" +
+        total +
+        "&cu=INR";
 
-  window.open(upiUrl, "_self");
+    let link = document.createElement("a");
+    link.href = upiUrl;
+    link.click();
 }
     function cashOnDelivery() {
   alert("Cash on Delivery selected!");
