@@ -443,11 +443,11 @@ function updateCart() {
           ₹${item.price} × ${item.quantity}
         </span>
 
-        <button
-          class="remove-btn"
-          onclick="removeItem(${index})">
-          Remove
-        </button>
+        <div class="quantity-controls">
+        <button onclick="decreaseQuantity(${index})">−</button>
+         <span>${item.quantity}</span>
+       <button onclick="increaseQuantity(${index})">+</button>
+</div>
 
       </div>
     `;
@@ -465,6 +465,22 @@ function removeItem(index) {
 
   updateCart();
 }
+    function increaseQuantity(index) {
+  cart[index].quantity++;
+  updateCart();
+}
+
+function decreaseQuantity(index) {
+
+  if (cart[index].quantity > 1) {
+    cart[index].quantity--;
+  } else {
+    cart.splice(index, 1);
+  }
+
+  updateCart();
+}
+    
 
 function checkout() {
 
