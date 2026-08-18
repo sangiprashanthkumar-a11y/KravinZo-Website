@@ -516,7 +516,11 @@ function checkout() {
     return;
   }
 
-  alert("Proceeding to checkout...");
+  document.getElementById("checkout-form").style.display = "block";
+
+  document.getElementById("checkout-form").scrollIntoView({
+    behavior: "smooth"
+  });
 }
 </script>
 
