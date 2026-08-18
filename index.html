@@ -141,6 +141,30 @@
       font-weight: bold;
       margin: 15px 0;
     }
+    #cart-section {
+  text-align: center;
+  background: #111;
+}
+
+.cart-item {
+  max-width: 600px;
+  margin: 10px auto;
+  padding: 15px;
+  background: #181818;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item button {
+  background: #d32f2f;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
     .about {
       text-align: center;
@@ -319,6 +343,17 @@
 
     </div>
   </section>
+  <section id="cart-section">
+  <h2 class="title">Your Cart</h2>
+
+  <div id="cart-items"></div>
+
+  <h3 id="cart-total">Total: ₹0</h3>
+
+  <button class="btn" onclick="checkout()">
+    Proceed to Checkout
+  </button>
+</section>
 
   <section id="about">
     <h2 class="title">About KravinZo</h2>
@@ -363,7 +398,7 @@
   </footer>
 
 </body>
-  <script>
+ <script>
 let cart = [];
 
 function addToCart(name, price) {
@@ -380,18 +415,64 @@ function addToCart(name, price) {
     });
   }
 
-  updateCartCount();
+  updateCart();
 }
 
-function updateCartCount() {
+function updateCart() {
 
   let count = 0;
+  let total = 0;
 
-  cart.forEach(item => {
+  const cartItems = document.getElementById("cart-items");
+
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, index) => {
+
     count += item.quantity;
+
+    let itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+
+    cartItems.innerHTML += `
+      <div class="cart-item">
+
+        <strong>${item.name}</strong>
+
+        <span>
+          ₹${item.price} × ${item.quantity}
+        </span>
+
+        <button onclick="removeItem(${index})">
+          Remove
+        </button>
+
+      </div>
+    `;
   });
 
   document.getElementById("cart-count").innerText = count;
+
+  document.getElementById("cart-total").innerText =
+    "Total: ₹" + total;
+}
+
+function removeItem(index) {
+
+  cart.splice(index, 1);
+
+  updateCart();
+}
+
+function checkout() {
+
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  alert("Proceeding to checkout...");
 }
 </script>
 </html>
