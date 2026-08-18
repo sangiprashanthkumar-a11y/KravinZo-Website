@@ -353,6 +353,33 @@
   <button class="btn" onclick="checkout()">
     Proceed to Checkout
   </button>
+    <div id="checkout-form" style="display:none;">
+
+  <h2 class="title">Delivery Details</h2>
+
+  <input
+    type="text"
+    id="customer-name"
+    placeholder="Your Name"
+  >
+
+  <input
+    type="tel"
+    id="customer-phone"
+    placeholder="Mobile Number"
+  >
+
+  <textarea
+    id="customer-address"
+    placeholder="Delivery Address"
+    rows="4">
+  </textarea>
+
+  <button class="btn" onclick="placeOrder()">
+    Continue to Payment
+  </button>
+
+</div>
 </section>
 
   <section id="about">
