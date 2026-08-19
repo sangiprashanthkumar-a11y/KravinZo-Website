@@ -641,6 +641,8 @@ async function payOnline() {
         amount: total
       })
     });
+    const order = await response.json();
+   console.log("Razorpay API response:", order);
 
     const order = await response.json();
 
