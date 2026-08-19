@@ -619,21 +619,8 @@
   `;
 }
 function payOnline() {
-  let total = 0;
-
-  cart.forEach(function(item) {
-    total += item.price * item.quantity;
-  });
-
-  if (total <= 0) {
-    alert("Your cart is empty!");
-    return;
-  }
-
-  let amount = total * 100;
-
   window.open(
-    "https://razorpay.me/@kravinzowebsite?amount=" + amount,
+    "https://razorpay.me/@kravinzowebsite",
     "_blank"
   );
 }
