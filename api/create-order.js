@@ -49,12 +49,11 @@ export default async function handler(req, res) {
 
     return res.status(200).json(order);
 
-catch (error) {
-  console.error("PAYMENT SETUP ERROR:", error);
-  alert(
-    "Payment setup failed:\n" +
-    (error?.error?.description ||
-     error?.message ||
-     JSON.stringify(error))
-  );
+  } catch (error) {
+    console.error("PAYMENT SETUP ERROR:", error);
+
+    return res.status(500).json({
+      error: error?.message || "Payment setup failed"
+    });
+  }
 }
