@@ -644,10 +644,16 @@ async function payOnline() {
     const order = await response.json();
    console.log("Razorpay API response:", order);
 
-    if (!response.ok) {
-     alert("Payment setup failed: " + (error.message || JSON.stringify(error)));
-      return;
-    }
+   if (!response.ok) {
+  alert(
+    "Payment setup failed: " +
+    (order.error?.description ||
+     order.error?.message ||
+     order.error ||
+     "Unknown error")
+  );
+  return;
+}
 
     const options = {
       key: "rzp_live_TRED8pIKtZRWGt",
