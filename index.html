@@ -679,7 +679,7 @@ async function payOnline() {
 
   } catch (error) {
     console.error(error);
-    alert("Something went wrong. Please try again.");
+   alert("Payment setup failed: " + JSON.stringify(order));
   }
 }
    
