@@ -618,11 +618,68 @@
     </div>
   `;
 }
-function payOnline() {
-  window.open(
-    "https://razorpay.me/@kravinzowebsite",
-    "_blank"
-  );
+async function payOnline() {
+  let total = 0;
+
+  cart.forEach(function(item) {
+    total += item.price * item.quantity;
+  });
+
+  if (total <= 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        amount: total
+      })
+    });
+
+    const order = await response.json();
+
+    if (!response.ok) {
+      alert("Payment setup failed: " + (order.error || "Unknown error"));
+      return;
+    }
+
+    const options = {
+      key: "rzp_live_TRED8pIKtZRWGt",
+      amount: order.amount,
+      currency: "INR",
+      name: "KravinZo",
+      description: "KravinZo Food Order",
+      order_id: order.id,
+
+      handler: function(response) {
+        alert(
+          "Payment successful!\nPayment ID: " +
+          response.razorpay_payment_id
+        );
+      },
+
+      prefill: {
+        name: document.getElementById("customer-name").value,
+        contact: document.getElementById("customer-phone").value
+      },
+
+      theme: {
+        color: "#ff6a00"
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong. Please try again.");
+  }
 }
    
     function cashOnDelivery() {
