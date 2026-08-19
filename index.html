@@ -644,8 +644,6 @@ async function payOnline() {
     const order = await response.json();
    console.log("Razorpay API response:", order);
 
-    const order = await response.json();
-
     if (!response.ok) {
       alert("Payment setup failed: " + (order.error || "Unknown error"));
       return;
@@ -681,7 +679,7 @@ async function payOnline() {
 
   } catch (error) {
     console.error(error);
-   alert("Payment setup failed: " + JSON.stringify(order));
+   alert("Payment setup failed. Please try again.");
   }
 }
    
