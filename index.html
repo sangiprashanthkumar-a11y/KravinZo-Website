@@ -645,7 +645,7 @@ async function payOnline() {
    console.log("Razorpay API response:", order);
 
     if (!response.ok) {
-      alert("Payment setup failed: " + (order.error || "Unknown error"));
+     alert("Payment setup failed: " + (error.message || JSON.stringify(error)));
       return;
     }
 
