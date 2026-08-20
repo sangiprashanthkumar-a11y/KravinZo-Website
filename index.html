@@ -781,203 +781,164 @@ async function payOnline() {
 
       handler: function (paymentResponse) {
 
-        let customerName =
-          document.getElementById("customer-name").value.trim();
+  let customerName =
+    document.getElementById("customer-name").value.trim();
 
-        let customerPhone =
-          document.getElementById("customer-phone").value.trim();
+  let customerPhone =
+    document.getElementById("customer-phone").value.trim();
 
-        let customerAddress =
-          document.getElementById("customer-address").value.trim();
-
-
-        let itemsMessage = "";
-
-        cart.forEach(function (item) {
-
-          let itemTotal =
-            item.price * item.quantity;
-
-          itemsMessage +=
-            item.name +
-            " × " +
-            item.quantity +
-            " = ₹" +
-            itemTotal +
-            "\n";
-        });
+  let customerAddress =
+    document.getElementById("customer-address").value.trim();
 
 
-        let message =
-          "🔥 *KravinZo - New Online Order* 🔥\n\n" +
+  let now = new Date();
 
-          "*Customer Details*\n" +
-          "Name: " + customerName + "\n" +
-          "Phone: " + customerPhone + "\n" +
-          "Address: " + customerAddress + "\n\n" +
-
-          "*Order Details*\n" +
-          itemsMessage + "\n" +
-
-          "*Total: ₹" + total + "*\n\n" +
-
-          "💳 Payment: UPI / Online\n" +
-
-          "Payment ID: " +
-          paymentResponse.razorpay_payment_id;
+  let orderId =
+    "KZ-" +
+    now.getFullYear() +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    String(now.getDate()).padStart(2, "0") +
+    "-" +
+    String(now.getHours()).padStart(2, "0") +
+    String(now.getMinutes()).padStart(2, "0") +
+    String(now.getSeconds()).padStart(2, "0");
 
 
-        let whatsappNumber =
-          "919533897337";
+  let orderDate =
+    now.toLocaleDateString("en-IN");
+
+  let orderTime =
+    now.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
 
 
-        let whatsappURL =
-          "https://wa.me/" +
-          whatsappNumber +
-          "?text=" +
-          encodeURIComponent(message);
+  let itemsMessage = "";
+
+  cart.forEach(function (item) {
+
+    let itemTotal =
+      item.price * item.quantity;
+
+    itemsMessage +=
+      item.name +
+      " × " +
+      item.quantity +
+      " = ₹" +
+      itemTotal +
+      "\n";
+  });
 
 
-        const successBox =
-          document.createElement("div");
+  let message =
+    "🔥 *KravinZo - New Online Order* 🔥\n\n" +
+
+    "*Order ID:* " + orderId + "\n" +
+    "*Date:* " + orderDate + "\n" +
+    "*Time:* " + orderTime + "\n\n" +
+
+    "*Customer Details*\n" +
+    "Name: " + customerName + "\n" +
+    "Phone: " + customerPhone + "\n" +
+    "Address: " + customerAddress + "\n\n" +
+
+    "*Order Details*\n" +
+    itemsMessage + "\n" +
+
+    "*Total: ₹" + total + "*\n" +
+    "*Payment: UPI / Online*\n" +
+    "*Payment ID:* " +
+    paymentResponse.razorpay_payment_id;
 
 
-        successBox.innerHTML = `
+  let whatsappNumber =
+    "919533897337";
 
-          <div style="
-            position:fixed;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            background:white;
-            padding:30px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 10px 30px rgba(0,0,0,0.3);
-            z-index:9999;
-            width:90%;
-            max-width:400px;
-          ">
-
-            <h2 style="
-              color:#ff6a00;
-              margin-bottom:10px;
-            ">
-              Payment Successful! 🎉
-            </h2>
-
-            <p style="
-              color:#333;
-              margin-bottom:10px;
-            ">
-              Your KravinZo order has been confirmed.
-            </p>
-
-            <p style="
-              color:#555;
-              font-size:14px;
-            ">
-              Payment ID:<br>
-              ${paymentResponse.razorpay_payment_id}
-            </p>
+  let whatsappURL =
+    "https://wa.me/" +
+    whatsappNumber +
+    "?text=" +
+    encodeURIComponent(message);
 
 
-            <button
-              onclick="window.open('${whatsappURL}', '_blank')"
-              style="
-                margin-top:15px;
-                padding:10px 25px;
-                border:none;
-                border-radius:8px;
-                background:#25D366;
-                color:white;
-                font-size:16px;
-                cursor:pointer;
-              "
-            >
-              📲 Send Order to WhatsApp
-            </button>
+  const successBox =
+    document.createElement("div");
 
+  successBox.innerHTML = `
 
-            <button
-              onclick="this.parentElement.parentElement.remove()"
-              style="
-                margin-top:10px;
-                padding:10px 25px;
-                border:none;
-                border-radius:8px;
-                background:#ff6a00;
-                color:white;
-                font-size:16px;
-                cursor:pointer;
-              "
-            >
-              Done
-            </button>
+    <div style="
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+      z-index:9999;
+      width:90%;
+      max-width:400px;
+    ">
 
-          </div>
+      <h2 style="
+        color:#ff6a00;
+        margin-bottom:10px;
+      ">
+        Payment Successful! 🎉
+      </h2>
 
-        `;
+      <p style="color:#333;">
+        Order ID: <strong>${orderId}</strong>
+      </p>
 
+      <p style="color:#333;">
+        ${orderDate} | ${orderTime}
+      </p>
 
-        document.body.appendChild(successBox);
-      },
+      <p style="color:#555; font-size:14px;">
+        Payment ID:<br>
+        ${paymentResponse.razorpay_payment_id}
+      </p>
 
+      <button
+        onclick="window.open('${whatsappURL}', '_blank')"
+        style="
+          margin-top:15px;
+          padding:10px 25px;
+          border:none;
+          border-radius:8px;
+          background:#25D366;
+          color:white;
+          font-size:16px;
+          cursor:pointer;
+        "
+      >
+        📲 Send Order to WhatsApp
+      </button>
 
-      prefill: {
+      <button
+        onclick="this.parentElement.parentElement.remove()"
+        style="
+          margin-top:10px;
+          padding:10px 25px;
+          border:none;
+          border-radius:8px;
+          background:#ff6a00;
+          color:white;
+          font-size:16px;
+          cursor:pointer;
+        "
+      >
+        Done
+      </button>
 
-        name:
-          document.getElementById(
-            "customer-name"
-          ).value,
+    </div>
+  `;
 
-        contact:
-          document.getElementById(
-            "customer-phone"
-          ).value
-
-      },
-
-
-      theme: {
-        color: "#ff6a00"
-      },
-
-
-      modal: {
-
-        ondismiss: function () {
-
-          console.log(
-            "Razorpay payment window closed."
-          );
-
-        }
-
-      }
-
-    };
-
-
-    const rzp =
-      new Razorpay(options);
-
-    rzp.open();
-
-
-  } catch (error) {
-
-    console.error(
-      "Payment Error:",
-      error
-    );
-
-    alert(
-      "Payment setup failed. Please try again."
-    );
-  }
-}
-
+  document.body.appendChild(successBox);
+},
 /* =========================
    CASH ON DELIVERY
 ========================= */
