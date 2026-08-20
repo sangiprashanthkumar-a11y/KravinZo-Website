@@ -856,11 +856,72 @@ async function payOnline() {
 ========================= */
 function cashOnDelivery() {
 
+  let customerName =
+    document.getElementById("customer-name").value.trim();
+
+  let customerPhone =
+    document.getElementById("customer-phone").value.trim();
+
+  let customerAddress =
+    document.getElementById("customer-address").value.trim();
+
+  if (
+    customerName === "" ||
+    customerPhone === "" ||
+    customerAddress === ""
+  ) {
+    alert("Please fill all delivery details.");
+    return;
+  }
+
+  let total = 0;
+  let itemsMessage = "";
+
+  cart.forEach(function (item) {
+
+    let itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+
+    itemsMessage +=
+      item.name +
+      " × " +
+      item.quantity +
+      " = ₹" +
+      itemTotal +
+      "\n";
+  });
+
+
+  let message =
+    "🔥 *KravinZo - New COD Order* 🔥\n\n" +
+
+    "*Customer Details*\n" +
+    "Name: " + customerName + "\n" +
+    "Phone: " + customerPhone + "\n" +
+    "Address: " + customerAddress + "\n\n" +
+
+    "*Order Details*\n" +
+    itemsMessage + "\n" +
+
+    "*Total: ₹" + total + "*\n\n" +
+
+    "💵 Payment: Cash on Delivery";
+
+
+  let whatsappNumber = "919533897337";
+
+  let whatsappURL =
+    "https://wa.me/" +
+    whatsappNumber +
+    "?text=" +
+    encodeURIComponent(message);
+
+
   const successBox =
     document.createElement("div");
 
   successBox.innerHTML = `
-
     <div style="
       position:fixed;
       top:50%;
@@ -883,16 +944,30 @@ function cashOnDelivery() {
         Order Placed Successfully! 🎉
       </h2>
 
-      <p style="
-        color:#333;
-      ">
+      <p style="color:#333;">
         Your Cash on Delivery order has been placed.
       </p>
 
       <button
-        onclick="this.parentElement.parentElement.remove()"
+        onclick="window.open('${whatsappURL}', '_blank')"
         style="
           margin-top:15px;
+          padding:10px 25px;
+          border:none;
+          border-radius:8px;
+          background:#25D366;
+          color:white;
+          font-size:16px;
+          cursor:pointer;
+        "
+      >
+        📲 Send Order to WhatsApp
+      </button>
+
+      <button
+        onclick="this.parentElement.parentElement.remove()"
+        style="
+          margin-top:10px;
           padding:10px 25px;
           border:none;
           border-radius:8px;
@@ -906,12 +981,10 @@ function cashOnDelivery() {
       </button>
 
     </div>
-
   `;
 
   document.body.appendChild(successBox);
 }
-
 
 /* =========================
    INITIAL CART
