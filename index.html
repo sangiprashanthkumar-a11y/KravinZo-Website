@@ -689,8 +689,46 @@ async function payOnline() {
   }
 }
    
-    function cashOnDelivery() {
-  alert("Cash on Delivery selected!");
+function cashOnDelivery() {
+    const successBox = document.createElement("div");
+
+    successBox.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+        ">
+            <h2 style="color: #ff6a00; margin-bottom: 10px;">
+                Order Placed Successfully! 🎉
+            </h2>
+            <p style="color: #333;">
+                Your Cash on Delivery order has been placed.
+            </p>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                margin-top: 15px;
+                padding: 10px 25px;
+                border: none;
+                border-radius: 8px;
+                background: #ff6a00;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+            ">
+                Done
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(successBox);
 }
 </script>
   
