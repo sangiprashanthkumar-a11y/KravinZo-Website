@@ -483,6 +483,62 @@
 
  <script>
 let cart = [];
+   async function saveOrderToDatabase(paymentMethod, paymentId, orderId) {
+
+  let customerName =
+    document.getElementById("customer-name").value.trim();
+
+  let customerPhone =
+    document.getElementById("customer-phone").value.trim();
+
+  let customerAddress =
+    document.getElementById("customer-address").value.trim();
+
+  let total = 0;
+
+  cart.forEach(function(item) {
+    total += item.price * item.quantity;
+  });
+
+  try {
+
+    const response = await fetch("/api/save-order", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        orderId: orderId,
+        customerName: customerName,
+        customerPhone: customerPhone,
+        customerAddress: customerAddress,
+        items: cart,
+        total: total,
+        paymentMethod: paymentMethod,
+        paymentId: paymentId
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("Order save failed:", result);
+      return false;
+    }
+
+    console.log("Order saved:", result);
+
+    return true;
+
+  } catch (error) {
+
+    console.error("Database error:", error);
+
+    return false;
+  }
+}
 
 /* =========================
    ADD TO CART
