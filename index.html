@@ -883,11 +883,7 @@ async function payOnline() {
             hour: "2-digit",
             minute: "2-digit"
           });
-        await saveOrderToDatabase(
-  "Cash on Delivery",
-  "",
-  orderId
-);
+      
   
     
         let itemsMessage = "";
@@ -925,7 +921,7 @@ async function payOnline() {
           "*Total: ₹" + total + "*\n" +
           "*Payment: UPI / Online*\n" +
           "*Payment ID:* " +
-          paymentResponse.razorpay_payment_id;
+           response.razorpay_payment_id;
 
 
         let whatsappNumber = "919533897337";
@@ -941,7 +937,7 @@ async function payOnline() {
           orderId,
           orderDate,
           orderTime,
-          paymentResponse.razorpay_payment_id,
+          response.razorpay_payment_id,
           whatsappURL
         );
       },
