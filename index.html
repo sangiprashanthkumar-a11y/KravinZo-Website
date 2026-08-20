@@ -482,147 +482,245 @@
  
 
   <script>
-  let cart = [];
-  function addToCart(name, price) {
-    let item = cart.find(function(item) {
-      return item.name === name;
-    });
+let cart = [];
 
-    if (item) {
-      item.quantity++;
-    } else {
-      cart.push({
-        name: name,
-        price: price,
-        quantity: 1
-      });
-    }
+/* =========================
+   ADD TO CART
+========================= */
+function addToCart(name, price) {
+  let item = cart.find(function (item) {
+    return item.name === name;
+  });
 
-    updateCart();
-  }
-
-  function updateCart() {
-    let count = 0;
-    let total = 0;
-
-    let cartItems = document.getElementById("cart-items");
-    cartItems.innerHTML = "";
-
-    cart.forEach(function(item, index) {
-      count += item.quantity;
-
-      let itemTotal = item.price * item.quantity;
-      total += itemTotal;
-
-      cartItems.innerHTML += `
-        <div class="cart-item">
-          <strong>${item.name}</strong>
-
-          <span>
-            ₹${item.price} × ${item.quantity}
-          </span>
-
-          <div>
-            <button onclick="decreaseQuantity(${index})">−</button>
-            <span>${item.quantity}</span>
-            <button onclick="increaseQuantity(${index})">+</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById("cart-count").innerText = count;
-    document.getElementById("cart-total").innerText =
-      "Total: ₹" + total;
-  }
-
-  function increaseQuantity(index) {
-    cart[index].quantity++;
-    updateCart();
-  }
-
-  function decreaseQuantity(index) {
-    if (cart[index].quantity > 1) {
-      cart[index].quantity--;
-    } else {
-      cart.splice(index, 1);
-    }
-
-    updateCart();
-  }
-
-  function checkout() {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-
-    document.getElementById("checkout-form").style.display = "block";
-
-    document.getElementById("checkout-form").scrollIntoView({
-      behavior: "smooth"
+  if (item) {
+    item.quantity++;
+  } else {
+    cart.push({
+      name: name,
+      price: price,
+      quantity: 1
     });
   }
 
-  function placeOrder() {
-    let name = document.getElementById("customer-name").value.trim();
-    let phone = document.getElementById("customer-phone").value.trim();
-    let address = document.getElementById("customer-address").value.trim();
-
-    if (name === "" || phone === "" || address === "") {
-      alert("Please fill all delivery details.");
-      return;
-    }
-
-    let summaryItems = document.getElementById("summary-items");
-    summaryItems.innerHTML = "";
-
-    let total = 0;
-
-    cart.forEach(function(item) {
-      let itemTotal = item.price * item.quantity;
-      total += itemTotal;
-
-      summaryItems.innerHTML += `
-        <div class="cart-item">
-          <strong>${item.name}</strong>
-          <span>
-            ${item.quantity} × ₹${item.price} = ₹${itemTotal}
-          </span>
-        </div>
-      `;
-    });
-
-    document.getElementById("summary-total").innerText =
-      "Total: ₹" + total;
-
-    document.getElementById("order-summary").style.display = "block";
-
-    document.getElementById("order-summary").scrollIntoView({
-      behavior: "smooth"
-    });
-  }
-
- function makePayment() {
-  document.getElementById("order-summary").innerHTML += `
-    <div style="margin-top:30px; text-align:center;">
-      <h2 style="color:#ff6a00;">Payment</h2>
-      <p>Select your payment method</p>
-
-      <button class="btn" onclick="payOnline()">
-        UPI / Online Payment
-      </button>
-
-      <button class="btn" onclick="cashOnDelivery()">
-        Cash on Delivery
-      </button>
-    </div>
-  `;
+  updateCart();
 }
-async function payOnline() {
+
+
+/* =========================
+   UPDATE CART
+========================= */
+function updateCart() {
+  let count = 0;
   let total = 0;
 
-  cart.forEach(function(item) {
+  let cartItems = document.getElementById("cart-items");
+  cartItems.innerHTML = "";
+
+  cart.forEach(function (item, index) {
+    count += item.quantity;
+
+    let itemTotal = item.price * item.quantity;
+    total += itemTotal;
+
+    cartItems.innerHTML += `
+      <div class="cart-item">
+
+        <strong>${item.name}</strong>
+
+        <span>
+          ₹${item.price} × ${item.quantity}
+        </span>
+
+        <div>
+          <button onclick="decreaseQuantity(${index})">−</button>
+
+          <span style="margin: 0 10px;">
+            ${item.quantity}
+          </span>
+
+          <button onclick="increaseQuantity(${index})">+</button>
+        </div>
+
+      </div>
+    `;
+  });
+
+  document.getElementById("cart-count").innerText = count;
+
+  document.getElementById("cart-total").innerText =
+    "Total: ₹" + total;
+}
+
+
+/* =========================
+   INCREASE QUANTITY
+========================= */
+function increaseQuantity(index) {
+  cart[index].quantity++;
+  updateCart();
+}
+
+
+/* =========================
+   DECREASE QUANTITY
+========================= */
+function decreaseQuantity(index) {
+  if (cart[index].quantity > 1) {
+    cart[index].quantity--;
+  } else {
+    cart.splice(index, 1);
+  }
+
+  updateCart();
+}
+
+
+/* =========================
+   CHECKOUT
+========================= */
+function checkout() {
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  document.getElementById("checkout-form").style.display = "block";
+
+  document.getElementById("checkout-form").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+/* =========================
+   PLACE ORDER
+========================= */
+function placeOrder() {
+
+  let name =
+    document.getElementById("customer-name").value.trim();
+
+  let phone =
+    document.getElementById("customer-phone").value.trim();
+
+  let address =
+    document.getElementById("customer-address").value.trim();
+
+  if (name === "" || phone === "" || address === "") {
+    alert("Please fill all delivery details.");
+    return;
+  }
+
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  let summaryItems =
+    document.getElementById("summary-items");
+
+  summaryItems.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach(function (item) {
+
+    let itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+
+    summaryItems.innerHTML += `
+      <div class="cart-item">
+
+        <strong>${item.name}</strong>
+
+        <span>
+          ${item.quantity} × ₹${item.price}
+          = ₹${itemTotal}
+        </span>
+
+      </div>
+    `;
+  });
+
+  document.getElementById("summary-total").innerText =
+    "Total: ₹" + total;
+
+  document.getElementById("order-summary").style.display =
+    "block";
+
+  document.getElementById("order-summary").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+/* =========================
+   PAYMENT OPTIONS
+========================= */
+function makePayment() {
+
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  let existingPayment =
+    document.getElementById("payment-options");
+
+  if (existingPayment) {
+    existingPayment.scrollIntoView({
+      behavior: "smooth"
+    });
+    return;
+  }
+
+  let paymentBox = document.createElement("div");
+
+  paymentBox.id = "payment-options";
+
+  paymentBox.style.marginTop = "30px";
+  paymentBox.style.textAlign = "center";
+
+  paymentBox.innerHTML = `
+    <h2 style="color:#ff6a00;">
+      Payment
+    </h2>
+
+    <p style="margin:15px 0;">
+      Select your payment method
+    </p>
+
+    <button
+      class="btn"
+      onclick="payOnline()">
+      UPI / Online Payment
+    </button>
+
+    <button
+      class="btn"
+      onclick="cashOnDelivery()">
+      Cash on Delivery
+    </button>
+  `;
+
+  document.getElementById("order-summary")
+    .appendChild(paymentBox);
+
+  paymentBox.scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+/* =========================
+   RAZORPAY ONLINE PAYMENT
+========================= */
+async function payOnline() {
+
+  let total = 0;
+
+  cart.forEach(function (item) {
     total += item.price * item.quantity;
   });
 
@@ -632,105 +730,197 @@ async function payOnline() {
   }
 
   try {
+
     const response = await fetch("/api/create-order", {
       method: "POST",
+
       headers: {
         "Content-Type": "application/json"
       },
+
       body: JSON.stringify({
         amount: total
       })
     });
-    const order = await response.json();
-   console.log("Razorpay API response:", order);
 
-   if (!response.ok) {
-  alert(
-    "Payment setup failed: " +
-    (order.error?.description ||
-     order.error?.message ||
-     order.error ||
-     "Unknown error")
-  );
-  return;
-}
+    const order = await response.json();
+
+    console.log(
+      "Razorpay API response:",
+      order
+    );
+
+
+    if (!response.ok) {
+
+      alert(
+        "Payment setup failed: " +
+        (
+          order.error?.description ||
+          order.error?.message ||
+          order.error ||
+          "Unknown error"
+        )
+      );
+
+      return;
+    }
+
 
     const options = {
+
+      /* IMPORTANT:
+         Use your Razorpay LIVE KEY ID here
+         Do NOT put Secret Key here
+      */
       key: "rzp_live_TRED8pIKtZRWGt",
+
       amount: order.amount,
+
       currency: "INR",
+
       name: "KravinZo",
+
       description: "KravinZo Food Order",
+
       order_id: order.id,
 
-      handler: function(response) {
+
+      handler: function (response) {
+
         alert(
-          "Payment successful!\nPayment ID: " +
+          "Payment successful!\n\n" +
+          "Payment ID: " +
           response.razorpay_payment_id
         );
+
       },
 
+
       prefill: {
-        name: document.getElementById("customer-name").value,
-        contact: document.getElementById("customer-phone").value
+
+        name:
+          document.getElementById(
+            "customer-name"
+          ).value,
+
+        contact:
+          document.getElementById(
+            "customer-phone"
+          ).value
+
       },
+
 
       theme: {
         color: "#ff6a00"
+      },
+
+
+      modal: {
+
+        ondismiss: function () {
+
+          console.log(
+            "Razorpay payment window closed."
+          );
+
+        }
+
       }
+
     };
 
+
     const rzp = new Razorpay(options);
+
     rzp.open();
 
+
   } catch (error) {
-    console.error(error);
-   alert("Payment setup failed. Please try again.");
+
+    console.error(
+      "Payment Error:",
+      error
+    );
+
+    alert(
+      "Payment setup failed. Please try again."
+    );
   }
 }
-   
+
+
+/* =========================
+   CASH ON DELIVERY
+========================= */
 function cashOnDelivery() {
-    const successBox = document.createElement("div");
 
-    successBox.innerHTML = `
-        <div style="
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 9999;
-            width: 90%;
-            max-width: 400px;
-        ">
-            <h2 style="color: #ff6a00; margin-bottom: 10px;">
-                Order Placed Successfully! 🎉
-            </h2>
-            <p style="color: #333;">
-                Your Cash on Delivery order has been placed.
-            </p>
-            <button onclick="this.parentElement.parentElement.remove()" style="
-                margin-top: 15px;
-                padding: 10px 25px;
-                border: none;
-                border-radius: 8px;
-                background: #ff6a00;
-                color: white;
-                font-size: 16px;
-                cursor: pointer;
-            ">
-                Done
-            </button>
-        </div>
-    `;
+  const successBox =
+    document.createElement("div");
 
-    document.body.appendChild(successBox);
+  successBox.innerHTML = `
+
+    <div style="
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+      z-index:9999;
+      width:90%;
+      max-width:400px;
+    ">
+
+      <h2 style="
+        color:#ff6a00;
+        margin-bottom:10px;
+      ">
+        Order Placed Successfully! 🎉
+      </h2>
+
+      <p style="
+        color:#333;
+      ">
+        Your Cash on Delivery order has been placed.
+      </p>
+
+      <button
+        onclick="this.parentElement.parentElement.remove()"
+        style="
+          margin-top:15px;
+          padding:10px 25px;
+          border:none;
+          border-radius:8px;
+          background:#ff6a00;
+          color:white;
+          font-size:16px;
+          cursor:pointer;
+        "
+      >
+        Done
+      </button>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(successBox);
 }
+
+
+/* =========================
+   INITIAL CART
+========================= */
+updateCart();
+
 </script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
