@@ -848,7 +848,8 @@ async function payOnline() {
 
       order_id: order.id,
 
-      handler: function (paymentResponse) {
+  handler: async function(response) {
+    
 
         let customerName =
           document.getElementById("customer-name").value.trim();
@@ -882,8 +883,12 @@ async function payOnline() {
             hour: "2-digit",
             minute: "2-digit"
           });
-
-
+    await saveOrderToDatabase(
+  "UPI / Online",
+  paymentResponse.razorpay_payment_id,
+  orderId
+);
+    
         let itemsMessage = "";
 
         cart.forEach(function (item) {
@@ -1073,7 +1078,7 @@ function showPaymentSuccess(
 /* =========================
    CASH ON DELIVERY
 ========================= */
-function cashOnDelivery() {
+function async function cashOnDelivery() {
 
   let customerName =
     document.getElementById("customer-name").value.trim();
@@ -1111,7 +1116,11 @@ function cashOnDelivery() {
     String(now.getMinutes()).padStart(2, "0") +
     String(now.getSeconds()).padStart(2, "0");
 
-
+await saveOrderToDatabase(
+  "UPI / Online",
+  paymentResponse.razorpay_payment_id,
+  orderId
+);
   let orderDate =
     now.toLocaleDateString("en-IN");
 
