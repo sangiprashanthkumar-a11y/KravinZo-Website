@@ -849,7 +849,7 @@ async function payOnline() {
       order_id: order.id,
 
   handler: async function(response) {
-    
+    console.log("Payment successful:", response.razorpay_payment_id);
 
         let customerName =
           document.getElementById("customer-name").value.trim();
@@ -883,11 +883,12 @@ async function payOnline() {
             hour: "2-digit",
             minute: "2-digit"
           });
-    await saveOrderToDatabase(
-  "UPI / Online",
-  paymentResponse.razorpay_payment_id,
+        await saveOrderToDatabase(
+  "Cash on Delivery",
+  "",
   orderId
 );
+  
     
         let itemsMessage = "";
 
@@ -1261,7 +1262,6 @@ await saveOrderToDatabase(
 updateCart();
 
 </script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
