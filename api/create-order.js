@@ -1,4 +1,4 @@
-import Razorpay from "razorpay";
+const Razorpay = require("razorpay");
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
