@@ -14,8 +14,11 @@ export default async function handler(req, res) {
       });
     }
 
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl =
+      process.env.SUPABASE_URL;
+
+    const supabaseKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       return res.status(500).json({
@@ -23,30 +26,27 @@ export default async function handler(req, res) {
       });
     }
 
-    const url =
-      `${supabaseUrl}/rest/v1/orders` +
-      `?order_id=eq.${encodeURIComponent(String(orderId).trim())}` +
-      `&select=order_id,status,total`;
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/orders?order_id=eq.${encodeURIComponent(orderId)}&select=order_id,status,total,created_at`,
+      {
+        method: "GET",
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "apikey": supabaseKey,
-        "Authorization": `Bearer ${supabaseKey}`
+        headers: {
+          "apikey": supabaseKey,
+          "Authorization": `Bearer ${supabaseKey}`
+        }
       }
-    });
+    );
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("SUPABASE ERROR:", data);
-
       return res.status(response.status).json({
-        error: "Unable to track order"
+        error: data
       });
     }
 
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!data || data.length === 0) {
       return res.status(404).json({
         error: "Order not found"
       });
@@ -58,14 +58,21 @@ export default async function handler(req, res) {
       success: true,
       orderId: order.order_id,
       status: order.status,
-      total: order.total
+      total: order.total,
+      createdAt: order.created_at
     });
 
   } catch (error) {
-    console.error("TRACK ORDER ERROR:", error);
+
+    console.error(
+      "TRACK ORDER ERROR:",
+      error
+    );
 
     return res.status(500).json({
-      error: error.message || "Failed to track order"
+      error:
+        error.message ||
+        "Failed to track order"
     });
   }
 }
