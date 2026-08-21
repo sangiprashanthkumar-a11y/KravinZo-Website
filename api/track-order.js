@@ -26,31 +26,39 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/orders?order_id=eq.${encodeURIComponent(orderId)}&select=order_id,status,total,created_at`,
-      {
-        method: "GET",
+    const cleanOrderId = String(orderId).trim();
 
-        headers: {
-          "apikey": supabaseKey,
-          "Authorization": `Bearer ${supabaseKey}`
-        }
+    const url =
+      `${supabaseUrl}/rest/v1/orders` +
+      `?order_id=eq.${encodeURIComponent(cleanOrderId)}` +
+      `&select=order_id,status,total`;
+
+    const response = await fetch(url, {
+      method: "GET",
+
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": supabaseKey,
+        "Authorization": `Bearer ${supabaseKey}`
       }
-    );
+    });
 
     const data = await response.json();
 
-  if (!response.ok) {
-  return res.status(response.status).json({
-    error:
-      data?.message ||
-      data?.error?.message ||
-      data?.error ||
-      "Unable to track order"
-  });
-}
+    if (!response.ok) {
+      console.error("SUPABASE TRACK ERROR:", data);
 
-    if (!data || data.length === 0) {
+      return res.status(response.status).json({
+        error:
+          data?.message ||
+          data?.hint ||
+          data?.details ||
+          data?.error ||
+          "Unable to track order"
+      });
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
       return res.status(404).json({
         error: "Order not found"
       });
@@ -62,20 +70,15 @@ export default async function handler(req, res) {
       success: true,
       orderId: order.order_id,
       status: order.status,
-      total: order.total,
-      createdAt: order.created_at
+      total: order.total
     });
 
   } catch (error) {
-
-    console.error(
-      "TRACK ORDER ERROR:",
-      error
-    );
+    console.error("TRACK ORDER ERROR:", error);
 
     return res.status(500).json({
       error:
-        error.message ||
+        error?.message ||
         "Failed to track order"
     });
   }
