@@ -437,6 +437,43 @@
 
 </div>
 </section>
+  <!-- ORDER TRACKING -->
+<section id="track-order">
+  <h2 class="title">Track Your Order</h2>
+
+  <div id="tracking-box" style="
+    max-width:600px;
+    margin:0 auto;
+    background:#181818;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+  ">
+
+    <input
+      type="text"
+      id="tracking-order-id"
+      placeholder="Enter Order ID (Example: KZ-20260821-123456)"
+      style="
+        width:100%;
+        padding:14px;
+        margin-bottom:15px;
+        background:#111;
+        color:white;
+        border:1px solid #444;
+        border-radius:8px;
+        font-size:16px;
+      "
+    >
+
+    <button class="btn" onclick="trackOrder()">
+      Track Order
+    </button>
+
+    <div id="tracking-result" style="margin-top:25px;"></div>
+
+  </div>
+</section>
 
   <section id="about">
     <h2 class="title">About KravinZo</h2>
@@ -1249,6 +1286,90 @@ function showPaymentSuccess(
   `;
 
   document.body.appendChild(successBox);
+}
+   /* =========================
+   TRACK ORDER
+========================= */
+
+async function trackOrder() {
+
+  const orderId =
+    document.getElementById("tracking-order-id").value.trim();
+
+  const result =
+    document.getElementById("tracking-result");
+
+  if (orderId === "") {
+    alert("Please enter your Order ID.");
+    return;
+  }
+
+  result.innerHTML = `
+    <p style="color:#ff6a00;">
+      Checking your order...
+    </p>
+  `;
+
+  try {
+
+    const response = await fetch(
+      "/api/track-order?orderId=" +
+      encodeURIComponent(orderId)
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      result.innerHTML = `
+        <p style="color:#ff4444;">
+          ${data.error || "Order not found."}
+        </p>
+      `;
+      return;
+    }
+
+    result.innerHTML = `
+      <div style="
+        background:#111;
+        padding:20px;
+        border-radius:12px;
+        text-align:left;
+      ">
+
+        <h3 style="color:#ff6a00;">
+          Order Status
+        </h3>
+
+        <p style="margin-top:15px;">
+          <strong>Order ID:</strong>
+          ${data.orderId}
+        </p>
+
+        <p style="margin-top:10px;">
+          <strong>Status:</strong>
+          <span style="color:#ff6a00;">
+            ${data.status}
+          </span>
+        </p>
+
+        <p style="margin-top:10px;">
+          <strong>Total:</strong>
+          ₹${data.total}
+        </p>
+
+      </div>
+    `;
+
+  } catch (error) {
+
+    console.error("Tracking error:", error);
+
+    result.innerHTML = `
+      <p style="color:#ff4444;">
+        Unable to track order. Please try again.
+      </p>
+    `;
+  }
 }
 
 
