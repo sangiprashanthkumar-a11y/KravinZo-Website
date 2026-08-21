@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>KravinZo | Delicious Food</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
     * {
@@ -825,6 +826,9 @@ function makePayment() {
 /* =========================
    ONLINE PAYMENT
 ========================= */
+/* =========================
+   ONLINE PAYMENT (UPDATED)
+========================= */
 async function payOnline() {
 
   let total = 0;
@@ -886,8 +890,8 @@ async function payOnline() {
 
       order_id: order.id,
 
-  handler: async function(response) {
-    console.log("Payment successful:", response.razorpay_payment_id);
+      handler: async function(response) {
+        console.log("Payment successful:", response.razorpay_payment_id);
 
         let customerName =
           document.getElementById("customer-name").value.trim();
@@ -912,6 +916,8 @@ async function payOnline() {
           String(now.getMinutes()).padStart(2, "0") +
           String(now.getSeconds()).padStart(2, "0");
 
+        // ✅ 1. Payment సక్సెస్ అయిన తర్వాత Database లో Save చేయడానికి ఈ లైన్ యాడ్ చేశాం
+        await saveOrderToDatabase("UPI / Online", response.razorpay_payment_id, orderId);
 
         let orderDate =
           now.toLocaleDateString("en-IN");
@@ -921,9 +927,7 @@ async function payOnline() {
             hour: "2-digit",
             minute: "2-digit"
           });
-      
-  
-    
+
         let itemsMessage = "";
 
         cart.forEach(function (item) {
@@ -959,7 +963,7 @@ async function payOnline() {
           "*Total: ₹" + total + "*\n" +
           "*Payment: UPI / Online*\n" +
           "*Payment ID:* " +
-           response.razorpay_payment_id;
+            response.razorpay_payment_id;
 
 
         let whatsappNumber = "919533897337";
@@ -1004,6 +1008,11 @@ async function payOnline() {
     const rzp =
       new Razorpay(options);
 
+    // ✅ 2. UPI/Online Payment Fail అయితే ప్లాట్ ఫాం ఎర్రర్ చూపించడానికి ఇది ఉపయోగపడుతుంది
+    rzp.on('payment.failed', function (response){
+        alert("Payment Failed: " + response.error.description);
+    });
+
     rzp.open();
 
   } catch (error) {
@@ -1018,8 +1027,6 @@ async function payOnline() {
     );
   }
 }
-
-
 /* =========================
    PAYMENT SUCCESS POPUP
 ========================= */
@@ -1381,7 +1388,6 @@ updateCart();
 
 </script>
   
- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
 </body>
 </html>
