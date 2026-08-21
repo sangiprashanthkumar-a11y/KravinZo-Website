@@ -40,11 +40,15 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: data
-      });
-    }
+  if (!response.ok) {
+  return res.status(response.status).json({
+    error:
+      data?.message ||
+      data?.error?.message ||
+      data?.error ||
+      "Unable to track order"
+  });
+}
 
     if (!data || data.length === 0) {
       return res.status(404).json({
