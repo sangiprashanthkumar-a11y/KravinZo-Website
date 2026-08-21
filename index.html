@@ -659,34 +659,107 @@
     document.getElementById("order-summary").scrollIntoView({ behavior: "smooth" });
   }
 
-  function makePayment() {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
+  async function payOnline() {
+  let customerName = document.getElementById("customer-name").value.trim();
+  let customerPhone = document.getElementById("customer-phone").value.trim();
+  let customerAddress = document.getElementById("customer-address").value.trim();
 
-    let existing = document.getElementById("payment-options");
-    if (existing) {
-      existing.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-
-    let paymentBox = document.createElement("div");
-    paymentBox.id = "payment-options";
-    paymentBox.style.marginTop = "30px";
-    paymentBox.style.textAlign = "center";
-
-    paymentBox.innerHTML = `
-      <h2 style="color:#ff6a00;">Payment</h2>
-      <p style="margin:15px 0;">Select your payment method</p>
-      <button class="btn" onclick="payOnline()">UPI / Online Payment</button>
-      <button class="btn" onclick="cashOnDelivery()">Cash on Delivery</button>
-    `;
-
-    document.getElementById("order-summary").appendChild(paymentBox);
-    paymentBox.scrollIntoView({ behavior: "smooth" });
+  if (!customerName || !customerPhone || !customerAddress) {
+    alert("Please fill all delivery details first.");
+    return;
   }
 
+  let total = 0;
+  cart.forEach(item => total += item.price * item.quantity);
+
+  if (total <= 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: total })
+    });
+
+    const order = await response.json();
+
+    if (!response.ok) {
+      alert("Payment setup failed: " + (order.error || "Unknown error"));
+      return;
+    }
+
+    const options = {
+      key: order.key, // బ్యాకెండ్ నుండి వచ్చే Key ID మాత్రమే వాడుతుంది
+      amount: order.amount,
+      currency: order.currency || "INR",
+      name: "KravinZo",
+      description: "KravinZo Food Order",
+      order_id: order.id,
+
+      handler: async function(response) {
+        let now = new Date();
+        let orderId = "KZ-" + now.getFullYear() +
+          String(now.getMonth() + 1).padStart(2, "0") +
+          String(now.getDate()).padStart(2, "0") + "-" +
+          String(now.getHours()).padStart(2, "0") +
+          String(now.getMinutes()).padStart(2, "0") +
+          String(now.getSeconds()).padStart(2, "0");
+
+        await saveOrderToDatabase("UPI / Online", response.razorpay_payment_id, orderId);
+
+        let orderDate = now.toLocaleDateString("en-IN");
+        let orderTime = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+
+        let itemsMessage = "";
+        cart.forEach(item => {
+          itemsMessage += item.name + " × " + item.quantity + " = ₹" + (item.price * item.quantity) + "\n";
+        });
+
+        let message = "🔥 *KravinZo - New Online Order* 🔥\n\n" +
+          "*Order ID:* " + orderId + "\n" +
+          "*Date:* " + orderDate + "\n" +
+          "*Time:* " + orderTime + "\n\n" +
+          "*Customer Details*\n" +
+          "Name: " + customerName + "\n" +
+          "Phone: " + customerPhone + "\n" +
+          "Address: " + customerAddress + "\n\n" +
+          "*Order Details*\n" + itemsMessage + "\n" +
+          "*Total: ₹" + total + "*\n" +
+          "*Payment: UPI / Online*\n" +
+          "*Payment ID:* " + response.razorpay_payment_id;
+
+        let whatsappURL = "https://wa.me/919533897337?text=" + encodeURIComponent(message);
+        showPaymentSuccess(orderId, orderDate, orderTime, response.razorpay_payment_id, whatsappURL);
+      },
+
+      prefill: {
+        name: customerName,
+        contact: customerPhone
+      },
+      theme: { color: "#ff6a00" }
+    };
+
+    if (typeof Razorpay === "undefined") {
+      alert("Razorpay SDK is loading. Please refresh the page.");
+      return;
+    }
+
+    const rzp = new Razorpay(options);
+    
+    rzp.on('payment.failed', function (response){
+        alert("Payment Failed: " + (response.error.description || "Payment cancelled"));
+    });
+
+    rzp.open();
+
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Payment setup failed. Please try again.");
+  }
+}
   // 4. ONLINE PAYMENT (RAZORPAY)
   async function payOnline() {
     let customerName = document.getElementById("customer-name").value.trim();
