@@ -14,11 +14,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const supabaseUrl =
-      process.env.SUPABASE_URL;
-
-    const supabaseKey =
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       return res.status(500).json({
@@ -26,18 +23,14 @@ export default async function handler(req, res) {
       });
     }
 
-    const cleanOrderId = String(orderId).trim();
-
     const url =
       `${supabaseUrl}/rest/v1/orders` +
-      `?order_id=eq.${encodeURIComponent(cleanOrderId)}` +
+      `?order_id=eq.${encodeURIComponent(String(orderId).trim())}` +
       `&select=order_id,status,total`;
 
     const response = await fetch(url, {
       method: "GET",
-
       headers: {
-        "Content-Type": "application/json",
         "apikey": supabaseKey,
         "Authorization": `Bearer ${supabaseKey}`
       }
@@ -46,15 +39,10 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("SUPABASE TRACK ERROR:", data);
+      console.error("SUPABASE ERROR:", data);
 
       return res.status(response.status).json({
-        error:
-          data?.message ||
-          data?.hint ||
-          data?.details ||
-          data?.error ||
-          "Unable to track order"
+        error: "Unable to track order"
       });
     }
 
@@ -77,9 +65,7 @@ export default async function handler(req, res) {
     console.error("TRACK ORDER ERROR:", error);
 
     return res.status(500).json({
-      error:
-        error?.message ||
-        "Failed to track order"
+      error: error.message || "Failed to track order"
     });
   }
 }
