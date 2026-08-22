@@ -8,6 +8,7 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
+      success: false,
       error: "Method not allowed"
     });
   }
@@ -25,41 +26,26 @@ export default async function handler(req, res) {
       status
     } = req.body;
 
-    if (
-      !order_id ||
-      !customer_name ||
-      !address ||
-      !phone_number ||
-      !item ||
-      !payment_method ||
-      !total
-    ) {
-      return res.status(400).json({
-        error: "Missing required order details"
-      });
-    }
-
     const { data, error } = await supabase
       .from("orders")
-      .insert([
-        {
-          order_id,
-          customer_name,
-          address,
-          phone_number,
-          item,
-          payment_method,
-          total: Number(total),
-          payment_id: payment_id || null,
-          status: status || "New"
-        }
-      ])
+      .insert({
+        order_id: order_id,
+        customer_name: customer_name,
+        address: address,
+        phone_number: phone_number,
+        item: item,
+        payment_method: payment_method,
+        total: Number(total),
+        payment_id: payment_id || null,
+        status: status || "New"
+      })
       .select();
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.error("SUPABASE ERROR:", error);
 
       return res.status(500).json({
+        success: false,
         error: error.message
       });
     }
@@ -67,14 +53,15 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: "Order saved successfully",
-      order: data
+      data: data
     });
 
   } catch (error) {
-    console.error("Server error:", error);
+    console.error("API ERROR:", error);
 
     return res.status(500).json({
-      error: "Internal server error"
+      success: false,
+      error: error.message || "Server error"
     });
   }
 }
