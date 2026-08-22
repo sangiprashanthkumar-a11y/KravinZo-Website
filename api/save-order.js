@@ -1,4 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
+import WebSocket from "ws";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    realtime: {
+      transport: WebSocket
+    }
+  }
+);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -9,23 +20,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      console.error("Missing Supabase environment variables");
-
-      return res.status(500).json({
-        success: false,
-        error: "Supabase environment variables are missing"
-      });
-    }
-
-    const supabase = createClient(
-      supabaseUrl,
-      serviceRoleKey
-    );
-
     const {
       order_id,
       customer_name,
@@ -37,13 +31,6 @@ export default async function handler(req, res) {
       payment_id,
       status
     } = req.body;
-
-    if (!order_id || !customer_name || !address || !phone_number) {
-      return res.status(400).json({
-        success: false,
-        error: "Required order details are missing"
-      });
-    }
 
     const { data, error } = await supabase
       .from("orders")
