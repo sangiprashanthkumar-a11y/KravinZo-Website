@@ -4,920 +4,2333 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KravinZo - Food Order</title>
+  <title>KravinZo | Delicious Food</title>
+
+  <link rel="stylesheet" href="style.css">
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      background: #f5f5f5;
-      color: #222;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    header {
-      background: #111;
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  color: #222;
+}
 
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-    }
 
-    .cart {
-      font-size: 16px;
-      background: white;
-      color: #111;
-      padding: 8px 14px;
-      border-radius: 20px;
-    }
+/* ================= HEADER ================= */
 
-    .container {
-      max-width: 600px;
-      margin: 25px auto;
-      padding: 15px;
-    }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
+  height: 70px;
 
-    h2 {
-      margin-bottom: 15px;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    .food {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-      padding: 15px 0;
-    }
+  padding: 0 7%;
 
-    .food:last-child {
-      border-bottom: none;
-    }
+  background: #111;
+  color: white;
+}
 
-    .food-name {
-      font-size: 17px;
-      font-weight: bold;
-    }
+.logo {
+  font-size: 27px;
+  font-weight: 800;
+}
 
-    .price {
-      color: #e63946;
-      margin-top: 5px;
-    }
+.nav {
+  display: flex;
+  gap: 28px;
+}
 
-    .add-btn {
-      background: #111;
-      color: white;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 7px;
-      cursor: pointer;
-    }
+.nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      font-size: 15px;
-    }
+.nav a:hover {
+  opacity: 0.7;
+}
 
-    textarea {
-      height: 80px;
-      resize: none;
-    }
+.cart-button {
+  border: none;
+  background: white;
+  color: #111;
 
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-    }
+  padding: 10px 16px;
 
-    .qty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+  border-radius: 25px;
 
-    .qty button {
-      width: 28px;
-      height: 28px;
-      border: none;
-      background: #111;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+  font-weight: bold;
 
-    .total {
-      border-top: 1px solid #ddd;
-      margin-top: 15px;
-      padding-top: 15px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 20px;
-      font-weight: bold;
-    }
+  cursor: pointer;
+}
 
-    .payment-btn {
-      width: 100%;
-      padding: 15px;
-      background: #111;
-      color: white;
-      border: none;
-      border-radius: 9px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
-    }
+#cartCount {
+  margin-left: 5px;
+}
 
-    .payment-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
 
-    .cod-btn {
-      width: 100%;
-      padding: 15px;
-      background: #eee;
-      color: #111;
-      border: none;
-      border-radius: 9px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+/* ================= HERO ================= */
 
-    #message {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
+.hero {
+  min-height: 580px;
 
-    .empty {
-      text-align: center;
-      color: #777;
-      padding: 15px;
-    }
+  display: flex;
+  align-items: center;
+
+  padding: 70px 8%;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.85),
+      rgba(0,0,0,0.35)
+    ),
+    linear-gradient(
+      135deg,
+      #171717,
+      #555
+    );
+
+  color: white;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.small-title {
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin-bottom: 15px;
+}
+
+.hero h1 {
+  font-size: 58px;
+  line-height: 1.05;
+  margin-bottom: 22px;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+
+/* ================= BUTTONS ================= */
+
+.primary-button {
+  border: none;
+
+  background: #111;
+  color: white;
+
+  padding: 14px 22px;
+
+  border-radius: 8px;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  opacity: 0.85;
+}
+
+.full-button {
+  width: 100%;
+  margin-top: 18px;
+}
+
+
+/* ================= SECTION ================= */
+
+.section {
+  padding: 80px 7%;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.section-title p {
+  font-size: 13px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.section-title h2 {
+  font-size: 36px;
+}
+
+
+/* ================= MENU ================= */
+
+.menu-grid {
+  max-width: 1100px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 25px;
+}
+
+.food-card {
+  background: white;
+
+  border-radius: 15px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 5px 20px
+    rgba(0,0,0,0.08);
+}
+
+.food-image {
+  height: 190px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 90px;
+
+  background: #eee;
+}
+
+.burger-image {
+  background: #ead7bc;
+}
+
+.fries-image {
+  background: #f2dfae;
+}
+
+.food-content {
+  padding: 20px;
+}
+
+.food-content h3 {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+.food-content p {
+  color: #666;
+
+  line-height: 1.5;
+
+  min-height: 50px;
+}
+
+.food-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 18px;
+}
+
+.food-bottom strong {
+  font-size: 21px;
+}
+
+.food-bottom button {
+  border: none;
+
+  background: #111;
+  color: white;
+
+  padding: 9px 15px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+}
+
+
+/* ================= CART ================= */
+
+.cart-section {
+  background: #eeeeee;
+}
+
+.cart-box {
+  max-width: 700px;
+
+  margin: auto;
+
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 5px 20px
+    rgba(0,0,0,0.07);
+}
+
+.cart-item {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item-info strong {
+  display: block;
+
+  margin-bottom: 5px;
+}
+
+.cart-item-info span {
+  color: #777;
+}
+
+.quantity {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.quantity button {
+  width: 30px;
+  height: 30px;
+
+  border: none;
+
+  background: #111;
+  color: white;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+}
+
+.cart-total {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 20px;
+
+  padding-top: 20px;
+
+  border-top: 2px solid #ddd;
+
+  font-size: 21px;
+}
+
+.empty-cart {
+  text-align: center;
+
+  color: #777;
+
+  padding: 25px;
+}
+
+
+/* ================= CHECKOUT ================= */
+
+.checkout-grid {
+  max-width: 1000px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 25px;
+}
+
+.checkout-card {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 5px 20px
+    rgba(0,0,0,0.07);
+}
+
+.checkout-card h3 {
+  margin-bottom: 20px;
+}
+
+.checkout-card label {
+  display: block;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  margin-bottom: 7px;
+}
+
+.checkout-card input,
+.checkout-card textarea {
+  width: 100%;
+
+  padding: 13px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  margin-bottom: 16px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.checkout-card input:focus,
+.checkout-card textarea:focus {
+  border-color: #111;
+}
+
+.checkout-card textarea {
+  height: 100px;
+
+  resize: vertical;
+}
+
+
+/* ================= SUMMARY ================= */
+
+.summary-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.summary-total {
+  display: flex;
+
+  justify-content: space-between;
+
+  font-size: 20px;
+
+  margin-top: 20px;
+
+  padding-top: 15px;
+
+  border-top: 2px solid #ddd;
+}
+
+
+/* ================= PAYMENT ================= */
+
+.payment-area {
+  margin-top: 30px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #ddd;
+}
+
+.payment-button,
+.cod-button {
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  margin-top: 10px;
+}
+
+.payment-button {
+  background: #111;
+  color: white;
+}
+
+.cod-button {
+  background: #eeeeee;
+  color: #111;
+}
+
+.payment-button:disabled {
+  opacity: 0.6;
+}
+
+#paymentMessage {
+  text-align: center;
+
+  margin-top: 15px;
+
+  font-weight: bold;
+}
+
+
+/* ================= FOOTER ================= */
+
+.footer {
+  background: #111;
+
+  color: white;
+
+  text-align: center;
+
+  padding: 45px 20px;
+}
+
+.footer-logo {
+  font-size: 28px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+.footer p {
+  color: #ccc;
+}
+
+.copyright {
+  margin-top: 20px;
+
+  font-size: 13px;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+  .header {
+    padding: 0 20px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .hero {
+    min-height: 500px;
+
+    padding: 50px 25px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .section {
+    padding: 60px 20px;
+  }
+
+  .section-title h2 {
+    font-size: 30px;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .food-image {
+    height: 170px;
+  }
+
+}
+    
   </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">KravinZo</div>
+  <!-- ================= HEADER ================= -->
 
-  <div class="cart">
-    Cart: <span id="cartCount">0</span>
-  </div>
-</header>
+  <header class="header">
 
-
-<div class="container">
-
-  <!-- FOOD MENU -->
-
-  <div class="card">
-
-    <h2>Menu</h2>
-
-    <div class="food">
-
-      <div>
-        <div class="food-name">Classic Burger</div>
-        <div class="price">₹199</div>
-      </div>
-
-      <button
-        class="add-btn"
-        onclick="addToCart('Classic Burger', 199)"
-      >
-        Add
-      </button>
-
+    <div class="logo">
+      KravinZo
     </div>
 
+    <nav class="nav">
 
-    <div class="food">
+      <a href="#home">Home</a>
+      <a href="#menu">Menu</a>
+      <a href="#cart-section">Cart</a>
+      <a href="#checkout">Checkout</a>
 
-      <div>
-        <div class="food-name">Peri Peri Fries</div>
-        <div class="price">₹149</div>
-      </div>
-
-      <button
-        class="add-btn"
-        onclick="addToCart('Peri Peri Fries', 149)"
-      >
-        Add
-      </button>
-
-    </div>
-
-
-    <div class="food">
-
-      <div>
-        <div class="food-name">French Fries</div>
-        <div class="price">₹129</div>
-      </div>
-
-      <button
-        class="add-btn"
-        onclick="addToCart('French Fries', 129)"
-      >
-        Add
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- CART -->
-
-  <div class="card">
-
-    <h2>Your Cart</h2>
-
-    <div id="cartItems">
-
-      <div class="empty">
-        Your cart is empty
-      </div>
-
-    </div>
-
-    <div class="total">
-
-      <span>Total</span>
-
-      <span>
-        ₹<span id="totalAmount">0</span>
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <!-- DELIVERY -->
-
-  <div class="card">
-
-    <h2>Delivery Details</h2>
-
-    <input
-      type="text"
-      id="customerName"
-      placeholder="Your Name"
-    >
-
-    <input
-      type="tel"
-      id="customerPhone"
-      placeholder="Phone Number"
-    >
-
-    <textarea
-      id="customerAddress"
-      placeholder="Delivery Address"
-    ></textarea>
-
-  </div>
-
-
-  <!-- PAYMENT -->
-
-  <div class="card">
-
-    <h2>Payment</h2>
+    </nav>
 
     <button
-      id="payButton"
-      class="payment-btn"
-      onclick="payOnline()"
+      class="cart-button"
+      onclick="scrollToCart()"
     >
-      Pay Online
+      🛒 Cart
+      <span id="cartCount">0</span>
     </button>
 
-    <button
-      class="cod-btn"
-      onclick="cashOnDelivery()"
-    >
-      Cash on Delivery
-    </button>
+  </header>
 
-    <div id="message"></div>
 
-  </div>
+  <!-- ================= HERO ================= -->
 
-</div>
+  <section
+    class="hero"
+    id="home"
+  >
 
+    <div class="hero-content">
 
-<script>
+      <p class="small-title">
+        WELCOME TO KRAVINZO
+      </p>
 
-  // =====================================
-  // RAZORPAY KEY ID
-  // =====================================
+      <h1>
+        Delicious Food,
+        <br>
+        Delivered Fresh.
+      </h1>
 
-  const RAZORPAY_KEY_ID =
-    "YOUR_RAZORPAY_KEY_ID";
+      <p>
+        Freshly prepared burgers, fries and
+        delicious food delivered to your doorstep.
+      </p>
 
+      <button
+        class="primary-button"
+        onclick="goToMenu()"
+      >
+        Order Now
+      </button>
 
-  // =====================================
-  // CART
-  // =====================================
+    </div>
 
-  let cart = [];
+  </section>
 
 
-  // =====================================
-  // ADD TO CART
-  // =====================================
+  <!-- ================= MENU ================= -->
 
-  function addToCart(name, price) {
+  <section
+    class="section"
+    id="menu"
+  >
 
-    const existingItem =
-      cart.find(item => item.name === name);
+    <div class="section-title">
 
+      <p>OUR MENU</p>
 
-    if (existingItem) {
+      <h2>
+        Choose Your Favourite
+      </h2>
 
-      existingItem.quantity++;
+    </div>
 
-    } else {
 
-      cart.push({
+    <div class="menu-grid">
 
-        name: name,
 
-        price: price,
+      <!-- BURGER -->
 
-        quantity: 1
+      <div class="food-card">
 
-      });
+        <div class="food-image burger-image">
+          🍔
+        </div>
 
-    }
+        <div class="food-content">
 
+          <h3>
+            Classic Burger
+          </h3>
 
-    updateCart();
+          <p>
+            Juicy burger with fresh
+            vegetables and special sauce.
+          </p>
 
-  }
+          <div class="food-bottom">
 
+            <strong>
+              ₹199
+            </strong>
 
-  // =====================================
-  // INCREASE
-  // =====================================
+            <button
+              onclick="addToCart(
+                'Classic Burger',
+                199
+              )"
+            >
+              Add +
+            </button>
 
-  function increaseQuantity(index) {
-
-    cart[index].quantity++;
-
-    updateCart();
-
-  }
-
-
-  // =====================================
-  // DECREASE
-  // =====================================
-
-  function decreaseQuantity(index) {
-
-    cart[index].quantity--;
-
-
-    if (cart[index].quantity <= 0) {
-
-      cart.splice(index, 1);
-
-    }
-
-
-    updateCart();
-
-  }
-
-
-  // =====================================
-  // UPDATE CART
-  // =====================================
-
-  function updateCart() {
-
-    const cartItems =
-      document.getElementById("cartItems");
-
-    const cartCount =
-      document.getElementById("cartCount");
-
-    const totalAmount =
-      document.getElementById("totalAmount");
-
-
-    cartItems.innerHTML = "";
-
-
-    if (cart.length === 0) {
-
-      cartItems.innerHTML =
-        '<div class="empty">Your cart is empty</div>';
-
-      cartCount.innerText = "0";
-
-      totalAmount.innerText = "0";
-
-      return;
-
-    }
-
-
-    let total = 0;
-
-    let count = 0;
-
-
-    cart.forEach((item, index) => {
-
-      total +=
-        item.price * item.quantity;
-
-      count += item.quantity;
-
-
-      const div =
-        document.createElement("div");
-
-      div.className = "cart-item";
-
-
-      div.innerHTML = `
-
-        <div>
-
-          <strong>${item.name}</strong>
-
-          <br>
-
-          ₹${item.price} × ${item.quantity}
+          </div>
 
         </div>
 
+      </div>
 
-        <div class="qty">
 
-          <button
-            onclick="decreaseQuantity(${index})"
-          >
-            -
-          </button>
+      <!-- PERI PERI -->
+
+      <div class="food-card">
+
+        <div class="food-image fries-image">
+          🍟
+        </div>
+
+        <div class="food-content">
+
+          <h3>
+            Peri Peri Fries
+          </h3>
+
+          <p>
+            Crispy fries coated with
+            spicy peri peri seasoning.
+          </p>
+
+          <div class="food-bottom">
+
+            <strong>
+              ₹149
+            </strong>
+
+            <button
+              onclick="addToCart(
+                'Peri Peri Fries',
+                149
+              )"
+            >
+              Add +
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- FRENCH FRIES -->
+
+      <div class="food-card">
+
+        <div class="food-image fries-image">
+          🍟
+        </div>
+
+        <div class="food-content">
+
+          <h3>
+            French Fries
+          </h3>
+
+          <p>
+            Golden crispy fries served
+            fresh and hot.
+          </p>
+
+          <div class="food-bottom">
+
+            <strong>
+              ₹129
+            </strong>
+
+            <button
+              onclick="addToCart(
+                'French Fries',
+                129
+              )"
+            >
+              Add +
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= CART ================= -->
+
+  <section
+    class="section cart-section"
+    id="cart-section"
+  >
+
+    <div class="section-title">
+
+      <p>YOUR ORDER</p>
+
+      <h2>
+        Shopping Cart
+      </h2>
+
+    </div>
+
+
+    <div class="cart-box">
+
+      <div id="cartItems">
+
+        <div class="empty-cart">
+          Your cart is empty.
+        </div>
+
+      </div>
+
+
+      <div class="cart-total">
+
+        <span>
+          Total
+        </span>
+
+        <strong>
+          ₹<span id="cartTotal">0</span>
+        </strong>
+
+      </div>
+
+
+      <button
+        class="primary-button full-button"
+        onclick="continueToCheckout()"
+      >
+        Continue to Checkout
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= CHECKOUT ================= -->
+
+  <section
+    class="section checkout-section"
+    id="checkout"
+  >
+
+    <div class="section-title">
+
+      <p>CHECKOUT</p>
+
+      <h2>
+        Delivery Details
+      </h2>
+
+    </div>
+
+
+    <div class="checkout-grid">
+
+
+      <!-- DELIVERY FORM -->
+
+      <div class="checkout-card">
+
+        <h3>
+          Delivery Information
+        </h3>
+
+        <label>
+          Full Name
+        </label>
+
+        <input
+          type="text"
+          id="customerName"
+          placeholder="Enter your name"
+        >
+
+
+        <label>
+          Phone Number
+        </label>
+
+        <input
+          type="tel"
+          id="customerPhone"
+          placeholder="Enter phone number"
+        >
+
+
+        <label>
+          Delivery Address
+        </label>
+
+        <textarea
+          id="customerAddress"
+          placeholder="Enter complete delivery address"
+        ></textarea>
+
+
+        <button
+          class="primary-button full-button"
+          onclick="showOrderSummary()"
+        >
+          Continue to Payment
+        </button>
+
+      </div>
+
+
+      <!-- ORDER SUMMARY -->
+
+      <div
+        class="checkout-card"
+        id="orderSummary"
+      >
+
+        <h3>
+          Order Summary
+        </h3>
+
+        <div id="summaryItems">
+        </div>
+
+
+        <div class="summary-total">
 
           <span>
-            ${item.quantity}
+            Total
           </span>
 
-          <button
-            onclick="increaseQuantity(${index})"
-          >
-            +
-          </button>
+          <strong>
+            ₹<span id="summaryTotal">0</span>
+          </strong>
 
         </div>
 
-      `;
+
+        <div
+          class="payment-area"
+          id="paymentArea"
+        >
+
+          <h3>
+            Select Payment
+          </h3>
 
 
-      cartItems.appendChild(div);
+          <button
+            class="payment-button"
+            id="payButton"
+            onclick="payOnline()"
+          >
+            💳 Pay Online
+          </button>
+
+
+          <button
+            class="cod-button"
+            onclick="cashOnDelivery()"
+          >
+            💵 Cash on Delivery
+          </button>
+
+
+          <p id="paymentMessage"></p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer class="footer">
+
+    <div class="footer-logo">
+      KravinZo
+    </div>
+
+    <p>
+      Fresh food. Great taste. Happy moments.
+    </p>
+
+    <p class="copyright">
+      © 2026 KravinZo. All rights reserved.
+    </p>
+
+  </footer>
+  <script>
+  // =====================================================
+// KRAVINZO - COMPLETE JAVASCRIPT
+// =====================================================
+
+
+// =====================================================
+// RAZORPAY KEY ID
+// =====================================================
+
+const RAZORPAY_KEY_ID = "YOUR_RAZORPAY_KEY_ID";
+
+
+// =====================================================
+// CART
+// =====================================================
+
+let cart = [];
+
+
+// =====================================================
+// PAGE LOAD
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  updateCart();
+
+});
+
+
+// =====================================================
+// ADD TO CART
+// =====================================================
+
+function addToCart(name, price) {
+
+  const existingItem = cart.find(function (item) {
+
+    return item.name === name;
+
+  });
+
+
+  if (existingItem) {
+
+    existingItem.quantity =
+      existingItem.quantity + 1;
+
+  } else {
+
+    cart.push({
+
+      name: name,
+
+      price: Number(price),
+
+      quantity: 1
 
     });
 
+  }
 
-    cartCount.innerText = count;
 
-    totalAmount.innerText = total;
+  updateCart();
+
+  showCartMessage(
+    name + " added to cart"
+  );
+
+}
+
+
+// =====================================================
+// UPDATE CART
+// =====================================================
+
+function updateCart() {
+
+  const cartItems =
+    document.getElementById("cartItems");
+
+  const cartCount =
+    document.getElementById("cartCount");
+
+  const cartTotal =
+    document.getElementById("cartTotal");
+
+
+  if (!cartItems) {
+    return;
+  }
+
+
+  if (cart.length === 0) {
+
+    cartItems.innerHTML = `
+      <div class="empty-cart">
+        Your cart is empty.
+      </div>
+    `;
+
+
+    if (cartCount) {
+      cartCount.innerText = "0";
+    }
+
+
+    if (cartTotal) {
+      cartTotal.innerText = "0";
+    }
+
+
+    return;
 
   }
 
 
-  // =====================================
-  // GET TOTAL
-  // =====================================
+  let total = 0;
 
-  function getTotal() {
+  let count = 0;
 
-    return cart.reduce(
 
-      (total, item) => {
+  cartItems.innerHTML = "";
 
-        return total +
-          item.price * item.quantity;
 
-      },
+  cart.forEach(function (item, index) {
 
-      0
+    const itemTotal =
+      item.price * item.quantity;
 
+
+    total += itemTotal;
+
+    count += item.quantity;
+
+
+    const div =
+      document.createElement("div");
+
+
+    div.className = "cart-item";
+
+
+    div.innerHTML = `
+
+      <div class="cart-item-info">
+
+        <strong>
+          ${escapeHTML(item.name)}
+        </strong>
+
+        <span>
+          ₹${item.price} × ${item.quantity}
+        </span>
+
+      </div>
+
+
+      <div class="quantity">
+
+        <button
+          type="button"
+          onclick="decreaseQuantity(${index})"
+        >
+          -
+        </button>
+
+
+        <span>
+          ${item.quantity}
+        </span>
+
+
+        <button
+          type="button"
+          onclick="increaseQuantity(${index})"
+        >
+          +
+        </button>
+
+      </div>
+
+    `;
+
+
+    cartItems.appendChild(div);
+
+  });
+
+
+  if (cartCount) {
+
+    cartCount.innerText =
+      count;
+
+  }
+
+
+  if (cartTotal) {
+
+    cartTotal.innerText =
+      total;
+
+  }
+
+}
+
+
+// =====================================================
+// INCREASE QUANTITY
+// =====================================================
+
+function increaseQuantity(index) {
+
+  if (!cart[index]) {
+    return;
+  }
+
+
+  cart[index].quantity += 1;
+
+
+  updateCart();
+
+}
+
+
+// =====================================================
+// DECREASE QUANTITY
+// =====================================================
+
+function decreaseQuantity(index) {
+
+  if (!cart[index]) {
+    return;
+  }
+
+
+  cart[index].quantity -= 1;
+
+
+  if (cart[index].quantity <= 0) {
+
+    cart.splice(index, 1);
+
+  }
+
+
+  updateCart();
+
+}
+
+
+// =====================================================
+// REMOVE ITEM
+// =====================================================
+
+function removeItem(index) {
+
+  if (!cart[index]) {
+    return;
+  }
+
+
+  cart.splice(index, 1);
+
+
+  updateCart();
+
+}
+
+
+// =====================================================
+// GET CART TOTAL
+// =====================================================
+
+function getTotal() {
+
+  let total = 0;
+
+
+  cart.forEach(function (item) {
+
+    total +=
+      Number(item.price) *
+      Number(item.quantity);
+
+  });
+
+
+  return total;
+
+}
+
+
+// =====================================================
+// GET CART COUNT
+// =====================================================
+
+function getCartCount() {
+
+  let count = 0;
+
+
+  cart.forEach(function (item) {
+
+    count +=
+      Number(item.quantity);
+
+  });
+
+
+  return count;
+
+}
+
+
+// =====================================================
+// GO TO MENU
+// =====================================================
+
+function goToMenu() {
+
+  const menu =
+    document.getElementById("menu");
+
+
+  if (!menu) {
+    return;
+  }
+
+
+  menu.scrollIntoView({
+
+    behavior: "smooth",
+
+    block: "start"
+
+  });
+
+}
+
+
+// =====================================================
+// SCROLL TO CART
+// =====================================================
+
+function scrollToCart() {
+
+  const cartSection =
+    document.getElementById(
+      "cart-section"
     );
 
+
+  if (!cartSection) {
+    return;
   }
 
 
-  // =====================================
-  // ONLINE PAYMENT
-  // =====================================
+  cartSection.scrollIntoView({
 
-  async function payOnline() {
+    behavior: "smooth",
 
-    const name =
-      document
-        .getElementById("customerName")
-        .value
-        .trim();
+    block: "start"
+
+  });
+
+}
 
 
-    const phone =
-      document
-        .getElementById("customerPhone")
-        .value
-        .trim();
+// =====================================================
+// CONTINUE TO CHECKOUT
+// =====================================================
+
+function continueToCheckout() {
+
+  if (cart.length === 0) {
+
+    alert(
+      "Please add at least one item to your cart."
+    );
+
+    return;
+
+  }
 
 
-    const address =
-      document
-        .getElementById("customerAddress")
-        .value
-        .trim();
+  const checkout =
+    document.getElementById(
+      "checkout"
+    );
 
 
-    const message =
-      document.getElementById("message");
+  if (!checkout) {
+    return;
+  }
 
 
-    const payButton =
-      document.getElementById("payButton");
+  checkout.scrollIntoView({
+
+    behavior: "smooth",
+
+    block: "start"
+
+  });
+
+}
 
 
-    // CHECK CART
+// =====================================================
+// VALIDATE CUSTOMER DETAILS
+// =====================================================
 
-    if (cart.length === 0) {
+function validateCustomerDetails() {
 
-      alert("Please add items to cart.");
-
-      return;
-
-    }
-
-
-    // CHECK NAME
-
-    if (!name) {
-
-      alert("Please enter your name.");
-
-      return;
-
-    }
+  const nameInput =
+    document.getElementById(
+      "customerName"
+    );
 
 
-    // CHECK PHONE
-
-    if (!phone) {
-
-      alert("Please enter your phone number.");
-
-      return;
-
-    }
+  const phoneInput =
+    document.getElementById(
+      "customerPhone"
+    );
 
 
-    // CHECK ADDRESS
-
-    if (!address) {
-
-      alert("Please enter your delivery address.");
-
-      return;
-
-    }
+  const addressInput =
+    document.getElementById(
+      "customerAddress"
+    );
 
 
-    const total = getTotal();
+  if (!nameInput) {
+
+    alert(
+      "Name field not found."
+    );
+
+    return false;
+
+  }
 
 
-    if (total <= 0) {
+  if (!phoneInput) {
 
-      alert("Invalid order amount.");
+    alert(
+      "Phone field not found."
+    );
 
-      return;
+    return false;
 
-    }
-
-
-    payButton.disabled = true;
-
-    payButton.innerText =
-      "Creating Payment...";
+  }
 
 
-    message.innerText = "";
+  if (!addressInput) {
+
+    alert(
+      "Address field not found."
+    );
+
+    return false;
+
+  }
+
+
+  const name =
+    nameInput.value.trim();
+
+
+  const phone =
+    phoneInput.value.trim();
+
+
+  const address =
+    addressInput.value.trim();
+
+
+  if (name.length < 2) {
+
+    alert(
+      "Please enter your full name."
+    );
+
+    nameInput.focus();
+
+    return false;
+
+  }
+
+
+  if (!/^[0-9]{10}$/.test(phone)) {
+
+    alert(
+      "Please enter a valid 10-digit phone number."
+    );
+
+    phoneInput.focus();
+
+    return false;
+
+  }
+
+
+  if (address.length < 5) {
+
+    alert(
+      "Please enter your complete delivery address."
+    );
+
+    addressInput.focus();
+
+    return false;
+
+  }
+
+
+  return true;
+
+}
+
+
+// =====================================================
+// SHOW ORDER SUMMARY
+// =====================================================
+
+function showOrderSummary() {
+
+  if (cart.length === 0) {
+
+    alert(
+      "Your cart is empty."
+    );
+
+    return;
+
+  }
+
+
+  if (!validateCustomerDetails()) {
+
+    return;
+
+  }
+
+
+  const summaryItems =
+    document.getElementById(
+      "summaryItems"
+    );
+
+
+  const summaryTotal =
+    document.getElementById(
+      "summaryTotal"
+    );
+
+
+  const paymentArea =
+    document.getElementById(
+      "paymentArea"
+    );
+
+
+  if (!summaryItems) {
+
+    alert(
+      "Order summary section not found."
+    );
+
+    return;
+
+  }
+
+
+  summaryItems.innerHTML = "";
+
+
+  cart.forEach(function (item) {
+
+    const itemTotal =
+      item.price * item.quantity;
+
+
+    const div =
+      document.createElement("div");
+
+
+    div.className =
+      "summary-item";
+
+
+    div.innerHTML = `
+
+      <span>
+        ${escapeHTML(item.name)}
+        × ${item.quantity}
+      </span>
+
+      <strong>
+        ₹${itemTotal}
+      </strong>
+
+    `;
+
+
+    summaryItems.appendChild(div);
+
+  });
+
+
+  if (summaryTotal) {
+
+    summaryTotal.innerText =
+      getTotal();
+
+  }
+
+
+  if (paymentArea) {
+
+    paymentArea.style.display =
+      "block";
+
+  }
+
+
+  if (paymentArea) {
+
+    paymentArea.scrollIntoView({
+
+      behavior: "smooth",
+
+      block: "center"
+
+    });
+
+  }
+
+}
+
+
+// =====================================================
+// ONLINE PAYMENT
+// =====================================================
+
+async function payOnline() {
+
+  // -------------------------------
+  // CART CHECK
+  // -------------------------------
+
+  if (cart.length === 0) {
+
+    alert(
+      "Please add items to your cart."
+    );
+
+    return;
+
+  }
+
+
+  // -------------------------------
+  // CUSTOMER CHECK
+  // -------------------------------
+
+  if (!validateCustomerDetails()) {
+
+    return;
+
+  }
+
+
+  // -------------------------------
+  // TOTAL
+  // -------------------------------
+
+  const total =
+    getTotal();
+
+
+  if (!total || total <= 0) {
+
+    alert(
+      "Invalid order amount."
+    );
+
+    return;
+
+  }
+
+
+  // -------------------------------
+  // BUTTON
+  // -------------------------------
+
+  const payButton =
+    document.getElementById(
+      "payButton"
+    );
+
+
+  const paymentMessage =
+    document.getElementById(
+      "paymentMessage"
+    );
+
+
+  if (!payButton) {
+
+    alert(
+      "Payment button not found."
+    );
+
+    return;
+
+  }
+
+
+  const name =
+    document
+      .getElementById(
+        "customerName"
+      )
+      .value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById(
+        "customerPhone"
+      )
+      .value
+      .trim();
+
+
+  const address =
+    document
+      .getElementById(
+        "customerAddress"
+      )
+      .value
+      .trim();
+
+
+  payButton.disabled = true;
+
+  payButton.innerText =
+    "Creating Payment...";
+
+
+  if (paymentMessage) {
+
+    paymentMessage.innerText = "";
+
+  }
+
+
+  try {
+
+    // =================================================
+    // CREATE RAZORPAY ORDER
+    // =================================================
+
+    const response =
+      await fetch(
+        "/api/create-order",
+        {
+
+          method: "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body: JSON.stringify({
+
+            amount: total
+
+          })
+
+        }
+      );
+
+
+    // -----------------------------------------------
+    // RESPONSE JSON
+    // -----------------------------------------------
+
+    let data;
 
 
     try {
 
-      // =================================
-      // CREATE RAZORPAY ORDER
-      // =================================
-
-      const response =
-        await fetch(
-          "/api/create-order",
-          {
-
-            method: "POST",
-
-            headers: {
-
-              "Content-Type":
-                "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-              amount: total
-
-            })
-
-          }
-        );
-
-
-      const data =
+      data =
         await response.json();
 
+    } catch (jsonError) {
 
-      if (!response.ok) {
+      throw new Error(
+        "Server returned an invalid response."
+      );
 
-        throw new Error(
-          data.error ||
-          "Payment order creation failed"
-        );
-
-      }
+    }
 
 
-      // =================================
-      // RAZORPAY OPTIONS
-      // =================================
+    // -----------------------------------------------
+    // API ERROR
+    // -----------------------------------------------
 
-      const options = {
+    if (!response.ok) {
 
-        key:
-          RAZORPAY_KEY_ID,
+      throw new Error(
 
-        amount:
-          data.amount,
+        data.error ||
+        "Unable to create Razorpay order."
 
-        currency:
-          "INR",
+      );
+
+    }
+
+
+    if (!data.id) {
+
+      throw new Error(
+        "Razorpay order ID was not received."
+      );
+
+    }
+
+
+    // =================================================
+    // CHECK RAZORPAY
+    // =================================================
+
+    if (
+      typeof Razorpay ===
+      "undefined"
+    ) {
+
+      throw new Error(
+        "Razorpay Checkout is not loaded."
+      );
+
+    }
+
+
+    // =================================================
+    // RAZORPAY OPTIONS
+    // =================================================
+
+    const options = {
+
+      key:
+        RAZORPAY_KEY_ID,
+
+
+      amount:
+        data.amount,
+
+
+      currency:
+        "INR",
+
+
+      name:
+        "KravinZo",
+
+
+      description:
+        "KravinZo Food Order",
+
+
+      order_id:
+        data.id,
+
+
+      prefill: {
 
         name:
-          "KravinZo",
+          name,
 
-        description:
-          "KravinZo Food Order",
+        contact:
+          phone
 
-        order_id:
-          data.id,
-
-
-        prefill: {
-
-          name:
-            name,
-
-          contact:
-            phone
-
-        },
+      },
 
 
-        notes: {
+      notes: {
 
-          address:
-            address
+        address:
+          address
 
-        },
-
-
-        theme: {
-
-          color:
-            "#111111"
-
-        },
+      },
 
 
-        handler:
-          function(response) {
+      theme: {
 
-            message.innerText =
-              "Payment successful!";
+        color:
+          "#111111"
 
-            alert(
-              "Payment successful!\n\n" +
-              "Payment ID: " +
-              response.razorpay_payment_id
-            );
-
-          },
+      },
 
 
-        modal: {
+      // =================================================
+      // PAYMENT SUCCESS
+      // =================================================
 
-          ondismiss:
-            function() {
-
-              payButton.disabled =
-                false;
-
-              payButton.innerText =
-                "Pay Online";
-
-              message.innerText =
-                "Payment cancelled.";
-
-            }
-
-        }
-
-      };
-
-
-      // =================================
-      // OPEN RAZORPAY
-      // =================================
-
-      const razorpay =
-        new Razorpay(options);
-
-
-      razorpay.on(
-        "payment.failed",
-        function(response) {
+      handler:
+        function (response) {
 
           console.log(
-            response.error
+            "Payment successful:",
+            response
+          );
+
+
+          if (paymentMessage) {
+
+            paymentMessage.innerText =
+              "Payment successful!";
+
+          }
+
+
+          alert(
+
+            "Payment successful!\n\n" +
+
+            "Payment ID: " +
+
+            response
+              .razorpay_payment_id
+
           );
 
 
           payButton.disabled =
             false;
 
+
           payButton.innerText =
-            "Pay Online";
+            "💳 Pay Online";
+
+        },
 
 
-          message.innerText =
+      // =================================================
+      // PAYMENT MODAL CLOSE
+      // =================================================
+
+      modal: {
+
+        ondismiss:
+          function () {
+
+            payButton.disabled =
+              false;
+
+
+            payButton.innerText =
+              "💳 Pay Online";
+
+
+            if (paymentMessage) {
+
+              paymentMessage.innerText =
+                "Payment cancelled.";
+
+            }
+
+          }
+
+      }
+
+    };
+
+
+    // =================================================
+    // CREATE RAZORPAY INSTANCE
+    // =================================================
+
+    const razorpay =
+      new Razorpay(options);
+
+
+    // =================================================
+    // PAYMENT FAILED
+    // =================================================
+
+    razorpay.on(
+
+      "payment.failed",
+
+      function (response) {
+
+        console.error(
+          "Payment failed:",
+          response
+        );
+
+
+        payButton.disabled =
+          false;
+
+
+        payButton.innerText =
+          "💳 Pay Online";
+
+
+        if (paymentMessage) {
+
+          paymentMessage.innerText =
             "Payment failed. Please try again.";
 
         }
-      );
 
 
-      razorpay.open();
+        alert(
+          "Payment failed. Please try again."
+        );
+
+      }
+
+    );
 
 
-    } catch (error) {
+    // =================================================
+    // OPEN RAZORPAY
+    // =================================================
 
-      console.error(error);
-
-
-      alert(
-        error.message ||
-        "Something went wrong."
-      );
+    razorpay.open();
 
 
-      payButton.disabled =
-        false;
+  } catch (error) {
 
-
-      payButton.innerText =
-        "Pay Online";
-
-    }
-
-  }
-
-
-  // =====================================
-  // CASH ON DELIVERY
-  // =====================================
-
-  function cashOnDelivery() {
-
-    const name =
-      document
-        .getElementById("customerName")
-        .value
-        .trim();
-
-
-    const phone =
-      document
-        .getElementById("customerPhone")
-        .value
-        .trim();
-
-
-    const address =
-      document
-        .getElementById("customerAddress")
-        .value
-        .trim();
-
-
-    if (cart.length === 0) {
-
-      alert(
-        "Please add items to cart."
-      );
-
-      return;
-
-    }
-
-
-    if (!name) {
-
-      alert(
-        "Please enter your name."
-      );
-
-      return;
-
-    }
-
-
-    if (!phone) {
-
-      alert(
-        "Please enter your phone number."
-      );
-
-      return;
-
-    }
-
-
-    if (!address) {
-
-      alert(
-        "Please enter your delivery address."
-      );
-
-      return;
-
-    }
+    console.error(
+      "Payment Error:",
+      error
+    );
 
 
     alert(
-      "Order placed successfully!\n\n" +
-      "Payment: Cash on Delivery"
+
+      error.message ||
+      "Something went wrong while starting payment."
+
     );
+
+
+    payButton.disabled =
+      false;
+
+
+    payButton.innerText =
+      "💳 Pay Online";
+
+
+    if (paymentMessage) {
+
+      paymentMessage.innerText =
+        "";
+
+    }
+
+  }
+
+}
+
+
+// =====================================================
+// CASH ON DELIVERY
+// =====================================================
+
+function cashOnDelivery() {
+
+  // -------------------------------
+  // CART
+  // -------------------------------
+
+  if (cart.length === 0) {
+
+    alert(
+      "Please add items to your cart."
+    );
+
+    return;
 
   }
 
 
-  // =====================================
-  // INITIAL CART
-  // =====================================
+  // -------------------------------
+  // CUSTOMER
+  // -------------------------------
+
+  if (!validateCustomerDetails()) {
+
+    return;
+
+  }
+
+
+  const name =
+    document
+      .getElementById(
+        "customerName"
+      )
+      .value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById(
+        "customerPhone"
+      )
+      .value
+      .trim();
+
+
+  const address =
+    document
+      .getElementById(
+        "customerAddress"
+      )
+      .value
+      .trim();
+
+
+  const total =
+    getTotal();
+
+
+  // -------------------------------
+  // COD CONFIRMATION
+  // -------------------------------
+
+  const confirmed =
+    confirm(
+
+      "Confirm your order?\n\n" +
+
+      "Name: " +
+      name +
+
+      "\nPhone: " +
+      phone +
+
+      "\nTotal: ₹" +
+      total +
+
+      "\n\nPayment: Cash on Delivery"
+
+    );
+
+
+  if (!confirmed) {
+
+    return;
+
+  }
+
+
+  alert(
+
+    "Order placed successfully! 🎉\n\n" +
+
+    "Customer: " +
+    name +
+
+    "\nTotal: ₹" +
+    total +
+
+    "\nPayment: Cash on Delivery"
+
+  );
+
+}
+
+
+// =====================================================
+// SIMPLE CART MESSAGE
+// =====================================================
+
+function showCartMessage(message) {
+
+  console.log(message);
+
+}
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHTML(value) {
+
+  return String(value)
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+// =====================================================
+// CLEAR CART
+// =====================================================
+
+function clearCart() {
+
+  cart = [];
 
   updateCart();
 
+}
+
+
+// =====================================================
+// GET CURRENT ORDER
+// =====================================================
+
+function getCurrentOrder() {
+
+  const name =
+    document
+      .getElementById(
+        "customerName"
+      )
+      ?.value
+      .trim() || "";
+
+
+  const phone =
+    document
+      .getElementById(
+        "customerPhone"
+      )
+      ?.value
+      .trim() || "";
+
+
+  const address =
+    document
+      .getElementById(
+        "customerAddress"
+      )
+      ?.value
+      .trim() || "";
+
+
+  return {
+
+    customer: {
+
+      name:
+        name,
+
+      phone:
+        phone,
+
+      address:
+        address
+
+    },
+
+    items:
+      cart,
+
+    total:
+      getTotal()
+
+  };
+
+}
+
+
+// =====================================================
+// DEBUG
+// =====================================================
+
+console.log(
+  "KravinZo JavaScript loaded successfully."
+);
 </script>
 
 </body>
