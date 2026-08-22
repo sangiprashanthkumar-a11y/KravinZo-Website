@@ -747,13 +747,25 @@
       return;
     }
 
-    const rzp = new Razorpay(options);
-    
-    rzp.on('payment.failed', function (response){
-        alert("Payment Failed: " + (response.error.description || "Payment cancelled"));
-    });
+   const rzp = new Razorpay(options);
 
-    rzp.open();
+rzp.on('payment.failed', function (response) {
+
+    console.log("RAZORPAY PAYMENT FAILED:", response);
+
+    const error = response.error || {};
+
+    alert(
+        "Payment Failed\n\n" +
+        "Code: " + (error.code || "N/A") + "\n" +
+        "Description: " + (error.description || "N/A") + "\n" +
+        "Source: " + (error.source || "N/A") + "\n" +
+        "Step: " + (error.step || "N/A") + "\n" +
+        "Reason: " + (error.reason || "N/A")
+    );
+});
+
+rzp.open();
 
   } catch (error) {
     console.error("Payment Error:", error);
