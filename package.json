@@ -1,8 +1,35 @@
-{
-  "name": "kravinzo-website",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "razorpay": "^2.9.2"
-  }
+const response = await fetch("/api/save-order", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    order_id: orderId,
+    customer_name: customer.name,
+    address: finalAddress,
+    phone_number: customer.phone,
+    item: JSON.stringify(items),
+    payment_method: "CASH ON DELIVERY",
+    total: total,
+    payment_id: null,
+    status: "New"
+  })
+});
+
+const responseText = await response.text();
+
+let data;
+
+try {
+  data = JSON.parse(responseText);
+} catch (error) {
+  throw new Error(
+    "Backend error: " + responseText
+  );
+}
+
+if (!response.ok) {
+  throw new Error(
+    data.error || "Order save failed"
+  );
 }
