@@ -1563,13 +1563,30 @@ function sendWhatsApp(paymentInfo = "ORDER") {
   if (!validateDetails()) return;
 
   const whatsappNumber =
-    "919533897337"; // CHANGE TO YOUR NUMBER
+    "919533897337";
 
   const customer =
     getCustomerDetails();
 
+  const orderDateTime = new Date();
+
+  const orderDate =
+    orderDateTime.toLocaleDateString("en-IN");
+
+  const orderTime =
+    orderDateTime.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
   let message =
     "🍔 *KravinZo New Order*\n\n";
+
+  message +=
+    "📅 Date: " + orderDate + "\n";
+
+  message +=
+    "⏰ Time: " + orderTime + "\n\n";
 
   message +=
     "Name: " +
