@@ -1,10 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -14,6 +9,23 @@ export default async function handler(req, res) {
   }
 
   try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("Missing Supabase environment variables");
+
+      return res.status(500).json({
+        success: false,
+        error: "Supabase environment variables are missing"
+      });
+    }
+
+    const supabase = createClient(
+      supabaseUrl,
+      serviceRoleKey
+    );
+
     const {
       order_id,
       customer_name,
@@ -26,15 +38,22 @@ export default async function handler(req, res) {
       status
     } = req.body;
 
+    if (!order_id || !customer_name || !address || !phone_number) {
+      return res.status(400).json({
+        success: false,
+        error: "Required order details are missing"
+      });
+    }
+
     const { data, error } = await supabase
       .from("orders")
       .insert({
-        order_id: order_id,
-        customer_name: customer_name,
-        address: address,
-        phone_number: phone_number,
-        item: item,
-        payment_method: payment_method,
+        order_id,
+        customer_name,
+        address,
+        phone_number,
+        item,
+        payment_method,
         total: Number(total),
         payment_id: payment_id || null,
         status: status || "New"
@@ -53,7 +72,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: "Order saved successfully",
-      data: data
+      data
     });
 
   } catch (error) {
