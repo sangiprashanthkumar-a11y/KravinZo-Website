@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { amount } = req.body;
+    const { amount } = req.body || {};
 
     if (!amount || Number(amount) <= 0) {
       return res.status(400).json({
@@ -16,9 +16,20 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      console.error("Razorpay keys are missing in Vercel Environment Variables");
+
+      return res.status(500).json({
+        error: "Razorpay configuration is missing"
+      });
+    }
+
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET
+      key_id: keyId,
+      key_secret: keySecret
     });
 
     const options = {
@@ -29,7 +40,10 @@ module.exports = async function handler(req, res) {
 
     const order = await razorpay.orders.create(options);
 
-    return res.status(200).json(order);
+    return res.status(200).json({
+      ...order,
+      key: keyId
+    });
 
   } catch (error) {
     console.error("Razorpay Create Order Error:", error);
