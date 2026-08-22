@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KravinZo | Delicious Food</title>
+  <title>KravinZo | Fresh Food Delivered</title>
 
   <link rel="stylesheet" href="style.css">
 
@@ -22,12 +22,9 @@ html {
 
 body {
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  color: #222;
+  background: #fff;
+  color: #171717;
 }
-
-
-/* ================= HEADER ================= */
 
 .header {
   position: sticky;
@@ -43,34 +40,34 @@ body {
   padding: 0 7%;
 
   background: #111;
-  color: white;
+  color: #fff;
 }
 
 .logo {
-  font-size: 27px;
+  color: #ff6b00;
+  font-size: 28px;
   font-weight: 800;
-  color:orange;
 }
 
-.nav {
+nav {
   display: flex;
   gap: 28px;
 }
 
-.nav a {
-  color: white;
+nav a {
+  color: #fff;
   text-decoration: none;
-  font-size: 15px;
+  font-weight: 600;
 }
 
-.nav a:hover {
-  opacity: 0.7;
+nav a:hover {
+  color: #ff6b00;
 }
 
-.cart-button {
-  border: none;
-  background: white;
-  color: #111;
+.header-cart {
+  border: 0;
+  background: #ff6b00;
+  color: #fff;
 
   padding: 10px 16px;
 
@@ -81,113 +78,118 @@ body {
   cursor: pointer;
 }
 
-#cartCount {
-  margin-left: 5px;
-}
-
-
-/* ================= HERO ================= */
-
 .hero {
-  min-height: 580px;
+  min-height: 590px;
 
   display: flex;
   align-items: center;
 
   padding: 70px 8%;
 
+  color: #fff;
+
   background:
     linear-gradient(
       90deg,
-      rgba(0,0,0,0.85),
-      rgba(0,0,0,0.35)
+      rgba(0,0,0,.9),
+      rgba(0,0,0,.4)
     ),
     linear-gradient(
       135deg,
-      #171717,
-      #555
+      #ff6b00,
+      #111
     );
-
-  color: white;
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 620px;
 }
 
-.small-title {
-  font-size: 14px;
-  letter-spacing: 3px;
-  margin-bottom: 15px;
+.tag {
+  color: #ff6b00;
+  background: #fff;
+
+  padding: 8px 14px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  letter-spacing: 2px;
 }
 
 .hero h1 {
-  font-size: 58px;
-  line-height: 1.05;
-  margin-bottom: 22px;
+  margin-top: 25px;
+
+  font-size: 65px;
+
+  line-height: 1.02;
 }
 
 .hero p {
+  margin-top: 22px;
+
   font-size: 18px;
+
   line-height: 1.6;
-  margin-bottom: 28px;
+
+  max-width: 500px;
 }
 
+.main-btn {
+  border: 0;
 
-/* ================= BUTTONS ================= */
+  background: #ff6b00;
+  color: #fff;
 
-.primary-button {
-  border: none;
-
-  background: orange;
-  color: white;
-
-  padding: 14px 22px;
+  padding: 14px 24px;
 
   border-radius: 8px;
 
   font-size: 16px;
+
   font-weight: bold;
 
   cursor: pointer;
 }
 
-.primary-button:hover {
-  opacity: 0.85;
+.hero .main-btn {
+  margin-top: 28px;
 }
 
-.full-button {
-  width: 100%;
-  margin-top: 18px;
+.main-btn:hover {
+  background: #e85f00;
 }
-
-
-/* ================= SECTION ================= */
 
 .section {
   padding: 80px 7%;
 }
 
-.section-title {
+.title {
   text-align: center;
+
   margin-bottom: 45px;
 }
 
-.section-title p {
+.title span {
+  color: #ff6b00;
+
   font-size: 13px;
-  letter-spacing: 3px;
+
   font-weight: bold;
-  margin-bottom: 8px;
+
+  letter-spacing: 3px;
 }
 
-.section-title h2 {
-  font-size: 36px;
+.title h2 {
+  margin-top: 8px;
+
+  font-size: 38px;
 }
 
-
-/* ================= MENU ================= */
-
-.menu-grid {
+.products {
   max-width: 1100px;
 
   margin: auto;
@@ -200,87 +202,79 @@ body {
   gap: 25px;
 }
 
-.food-card {
-  background: white;
+.product {
+  background: #fff;
 
   border-radius: 15px;
 
   overflow: hidden;
 
   box-shadow:
-    0 5px 20px
-    rgba(0,0,0,0.08);
+    0 5px 25px
+    rgba(0,0,0,.08);
 }
 
-.food-image {
-  height: 190px;
+.product-img {
+  height: 200px;
 
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
   font-size: 90px;
 
-  background: #eee;
+  background: #fff0e6;
 }
 
-.burger-image {
-  background: #ead7bc;
+.product-info {
+  padding: 22px;
 }
 
-.fries-image {
-  background: #f2dfae;
-}
-
-.food-content {
-  padding: 20px;
-}
-
-.food-content h3 {
+.product-info h3 {
   font-size: 21px;
-  margin-bottom: 8px;
 }
 
-.food-content p {
+.product-info p {
   color: #666;
 
   line-height: 1.5;
 
+  margin-top: 8px;
+
   min-height: 50px;
 }
 
-.food-bottom {
+.product-bottom {
+  margin-top: 20px;
+
   display: flex;
 
   justify-content: space-between;
 
   align-items: center;
-
-  margin-top: 18px;
 }
 
-.food-bottom strong {
-  font-size: 21px;
+.product-bottom strong {
+  color: #ff6b00;
+
+  font-size: 22px;
 }
 
-.food-bottom button {
-  border: none;
+.product-bottom button {
+  border: 0;
 
   background: #111;
-  color: white;
+  color: #fff;
 
-  padding: 9px 15px;
+  padding: 9px 16px;
 
   border-radius: 7px;
 
   cursor: pointer;
 }
 
-
-/* ================= CART ================= */
-
 .cart-section {
-  background: #eeeeee;
+  background: #f7f7f7;
 }
 
 .cart-box {
@@ -288,7 +282,7 @@ body {
 
   margin: auto;
 
-  background: white;
+  background: #fff;
 
   padding: 25px;
 
@@ -296,14 +290,15 @@ body {
 
   box-shadow:
     0 5px 20px
-    rgba(0,0,0,0.07);
+    rgba(0,0,0,.07);
 }
 
 .cart-item {
   display: flex;
 
-  align-items: center;
   justify-content: space-between;
+
+  align-items: center;
 
   padding: 15px 0;
 
@@ -312,12 +307,12 @@ body {
 
 .cart-item-info strong {
   display: block;
-
-  margin-bottom: 5px;
 }
 
 .cart-item-info span {
   color: #777;
+
+  font-size: 14px;
 }
 
 .quantity {
@@ -329,43 +324,56 @@ body {
 }
 
 .quantity button {
-  width: 30px;
-  height: 30px;
-
-  border: none;
+  border: 0;
 
   background: #111;
-  color: white;
+  color: #fff;
+
+  width: 30px;
+  height: 30px;
 
   border-radius: 5px;
 
   cursor: pointer;
 }
 
-.cart-total {
+.cart-total,
+.summary-total {
   display: flex;
 
   justify-content: space-between;
 
-  margin-top: 20px;
-
   padding-top: 20px;
+
+  margin-top: 15px;
 
   border-top: 2px solid #ddd;
 
-  font-size: 21px;
+  font-size: 20px;
 }
 
-.empty-cart {
+.cart-total strong,
+.summary-total strong {
+  color: #ff6b00;
+}
+
+.full {
+  width: 100%;
+
+  margin-top: 20px;
+}
+
+.empty {
   text-align: center;
 
-  color: #777;
-
   padding: 25px;
+
+  color: #777;
 }
 
-
-/* ================= CHECKOUT ================= */
+.checkout {
+  background: #fff;
+}
 
 .checkout-grid {
   max-width: 1000px;
@@ -374,22 +382,21 @@ body {
 
   display: grid;
 
-  grid-template-columns:
-    1fr 1fr;
+  grid-template-columns: 1fr 1fr;
 
   gap: 25px;
 }
 
 .checkout-card {
-  background: white;
+  background: #fff;
 
   padding: 25px;
 
   border-radius: 15px;
 
   box-shadow:
-    0 5px 20px
-    rgba(0,0,0,0.07);
+    0 5px 25px
+    rgba(0,0,0,.08);
 }
 
 .checkout-card h3 {
@@ -399,11 +406,11 @@ body {
 .checkout-card label {
   display: block;
 
+  margin-bottom: 7px;
+
   font-size: 14px;
 
   font-weight: bold;
-
-  margin-bottom: 7px;
 }
 
 .checkout-card input,
@@ -412,97 +419,115 @@ body {
 
   padding: 13px;
 
+  margin-bottom: 15px;
+
   border: 1px solid #ddd;
 
   border-radius: 8px;
 
-  margin-bottom: 16px;
+  outline: none;
 
   font-size: 15px;
-
-  outline: none;
 }
 
 .checkout-card input:focus,
 .checkout-card textarea:focus {
-  border-color: #111;
+  border-color: #ff6b00;
 }
 
 .checkout-card textarea {
   height: 100px;
 
-  resize: vertical;
+  resize: none;
 }
 
+.location-btn {
+  width: 100%;
 
-/* ================= SUMMARY ================= */
+  border: 2px solid #ff6b00;
+
+  background: #fff;
+
+  color: #ff6b00;
+
+  padding: 13px;
+
+  border-radius: 8px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.location-status {
+  margin-top: 10px;
+
+  font-size: 13px;
+
+  color: #555;
+
+  word-break: break-word;
+}
 
 .summary-item {
   display: flex;
 
   justify-content: space-between;
 
-  padding: 10px 0;
+  padding: 11px 0;
 
   border-bottom: 1px solid #eee;
 }
 
-.summary-total {
-  display: flex;
-
-  justify-content: space-between;
-
-  font-size: 20px;
-
-  margin-top: 20px;
-
-  padding-top: 15px;
-
-  border-top: 2px solid #ddd;
-}
-
-
-/* ================= PAYMENT ================= */
-
-.payment-area {
+.payment-title {
   margin-top: 30px;
-
   padding-top: 20px;
 
   border-top: 1px solid #ddd;
 }
 
-.payment-button,
-.cod-button {
+.payment-btn,
+.cod-btn,
+.whatsapp-btn {
   width: 100%;
+
+  border: 0;
 
   padding: 15px;
 
-  border: none;
-
   border-radius: 8px;
+
+  margin-top: 10px;
 
   font-size: 16px;
 
   font-weight: bold;
 
   cursor: pointer;
-
-  margin-top: 10px;
 }
 
-.payment-button {
+.payment-btn {
+  background: #ff6b00;
+  color: #fff;
+}
+
+.payment-btn:hover {
+  background: #e85f00;
+}
+
+.cod-btn {
   background: #111;
-  color: white;
+  color: #fff;
 }
 
-.cod-button {
-  background: #eeeeee;
-  color: #111;
+.whatsapp-btn {
+  background: #25d366;
+  color: #fff;
 }
 
-.payment-button:disabled {
-  opacity: 0.6;
+.payment-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
 }
 
 #paymentMessage {
@@ -513,73 +538,107 @@ body {
   font-weight: bold;
 }
 
+.tracking {
+  padding: 70px 7%;
 
-/* ================= FOOTER ================= */
-
-.footer {
   background: #111;
 
-  color: white;
+  color: #fff;
+
+  text-align: center;
+}
+
+.tracking-box {
+  max-width: 650px;
+
+  margin: auto;
+}
+
+.tracking-box > span {
+  color: #ff6b00;
+
+  font-size: 13px;
+
+  letter-spacing: 3px;
+
+  font-weight: bold;
+}
+
+.tracking-box h2 {
+  margin-top: 12px;
+
+  font-size: 35px;
+}
+
+.tracking-box p {
+  margin-top: 15px;
+
+  color: #ccc;
+
+  line-height: 1.6;
+}
+
+.tracking-box .whatsapp-btn {
+  max-width: 300px;
+
+  margin-top: 25px;
+}
+
+footer {
+  background: #080808;
+
+  color: #fff;
 
   text-align: center;
 
   padding: 45px 20px;
 }
 
-.footer-logo {
+footer h2 {
+  color: #ff6b00;
+
   font-size: 28px;
-
-  font-weight: bold;
-
-  margin-bottom: 10px;
 }
 
-.footer p {
-  color: #ccc;
+footer p {
+  margin-top: 8px;
+
+  color: #aaa;
 }
 
-.copyright {
+footer small {
+  display: block;
+
   margin-top: 20px;
 
-  font-size: 13px;
+  color: #777;
 }
-
-
-/* ================= MOBILE ================= */
 
 @media (max-width: 768px) {
 
   .header {
-    padding: 0 20px;
+    padding: 0 15px;
   }
 
-  .nav {
+  nav {
     display: none;
   }
 
   .hero {
-    min-height: 500px;
+    min-height: 520px;
 
     padding: 50px 25px;
   }
 
   .hero h1 {
-    font-size: 42px;
-  }
-
-  .hero p {
-    font-size: 16px;
+    font-size: 45px;
   }
 
   .section {
     padding: 60px 20px;
   }
 
-  .section-title h2 {
-    font-size: 30px;
-  }
-
-  .menu-grid {
+  .products {
     grid-template-columns: 1fr;
   }
 
@@ -587,1751 +646,441 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .food-image {
-    height: 170px;
+  .title h2 {
+    font-size: 30px;
   }
 
 }
-    
   </style>
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
+<header class="header">
 
-  <header class="header">
+  <div class="logo">KravinZo</div>
 
-    <div class="logo">
-      KravinZo
-    </div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#menu">Menu</a>
+    <a href="#cart">Cart</a>
+    <a href="#checkout">Checkout</a>
+  </nav>
 
-    <nav class="nav">
+  <button class="header-cart" onclick="goTo('cart')">
+    🛒 Cart
+    <span id="cartCount">0</span>
+  </button>
 
-      <a href="#home">Home</a>
-      <a href="#menu">Menu</a>
-      <a href="#cart-section">Cart</a>
-      <a href="#checkout">Checkout</a>
+</header>
 
-    </nav>
 
-    <button
-      class="cart-button"
-      onclick="scrollToCart()"
-    >
-      🛒 Cart
-      <span id="cartCount">0</span>
-    </button>
+<section class="hero" id="home">
 
-  </header>
+  <div class="hero-content">
 
+    <span class="tag">FRESH • HOT • DELICIOUS</span>
 
-  <!-- ================= HERO ================= -->
-
-  <section
-    class="hero"
-    id="home"
-  >
-
-    <div class="hero-content">
-
-      <p class="small-title">
-        WELCOME TO KRAVINZO
-      </p>
-
-      <h1>
-        Delicious Food,
-        <br>
-        Delivered Fresh.
-      </h1>
-
-      <p>
-        Freshly prepared burgers, fries and
-        delicious food delivered to your doorstep.
-      </p>
-
-      <button
-        class="primary-button"
-        onclick="goToMenu()"
-      >
-        Order Now
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- ================= MENU ================= -->
-
-  <section
-    class="section"
-    id="menu"
-  >
-
-    <div class="section-title">
-
-      <p>OUR MENU</p>
-
-      <h2>
-        Choose Your Favourite
-      </h2>
-
-    </div>
-
-
-    <div class="menu-grid">
-
-
-      <!-- BURGER -->
-
-      <div class="food-card">
-
-        <div class="food-image burger-image">
-          🍔
-        </div>
-
-        <div class="food-content">
-
-          <h3>
-            Classic Burger
-          </h3>
-
-          <p>
-            Juicy burger with fresh
-            vegetables and special sauce.
-          </p>
-
-          <div class="food-bottom">
-
-            <strong>
-              ₹199
-            </strong>
-
-            <button
-              onclick="addToCart(
-                'Classic Burger',
-                199
-              )"
-            >
-              Add +
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- PERI PERI -->
-
-      <div class="food-card">
-
-        <div class="food-image fries-image">
-          🍟
-        </div>
-
-        <div class="food-content">
-
-          <h3>
-            Peri Peri Fries
-          </h3>
-
-          <p>
-            Crispy fries coated with
-            spicy peri peri seasoning.
-          </p>
-
-          <div class="food-bottom">
-
-            <strong>
-              ₹149
-            </strong>
-
-            <button
-              onclick="addToCart(
-                'Peri Peri Fries',
-                149
-              )"
-            >
-              Add +
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- FRENCH FRIES -->
-
-      <div class="food-card">
-
-        <div class="food-image fries-image">
-          🍟
-        </div>
-
-        <div class="food-content">
-
-          <h3>
-            French Fries
-          </h3>
-
-          <p>
-            Golden crispy fries served
-            fresh and hot.
-          </p>
-
-          <div class="food-bottom">
-
-            <strong>
-              ₹129
-            </strong>
-
-            <button
-              onclick="addToCart(
-                'French Fries',
-                129
-              )"
-            >
-              Add +
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-    </div>
-
-  </section>
-
-
-  <!-- ================= CART ================= -->
-
-  <section
-    class="section cart-section"
-    id="cart-section"
-  >
-
-    <div class="section-title">
-
-      <p>YOUR ORDER</p>
-
-      <h2>
-        Shopping Cart
-      </h2>
-
-    </div>
-
-
-    <div class="cart-box">
-
-      <div id="cartItems">
-
-        <div class="empty-cart">
-          Your cart is empty.
-        </div>
-
-      </div>
-
-
-      <div class="cart-total">
-
-        <span>
-          Total
-        </span>
-
-        <strong>
-          ₹<span id="cartTotal">0</span>
-        </strong>
-
-      </div>
-
-
-      <button
-        class="primary-button full-button"
-        onclick="continueToCheckout()"
-      >
-        Continue to Checkout
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- ================= CHECKOUT ================= -->
-
-  <section
-    class="section checkout-section"
-    id="checkout"
-  >
-
-    <div class="section-title">
-
-      <p>CHECKOUT</p>
-
-      <h2>
-        Delivery Details
-      </h2>
-
-    </div>
-
-
-    <div class="checkout-grid">
-
-
-      <!-- DELIVERY FORM -->
-
-      <div class="checkout-card">
-
-        <h3>
-          Delivery Information
-        </h3>
-
-        <label>
-          Full Name
-        </label>
-
-        <input
-          type="text"
-          id="customerName"
-          placeholder="Enter your name"
-        >
-
-
-        <label>
-          Phone Number
-        </label>
-
-        <input
-          type="tel"
-          id="customerPhone"
-          placeholder="Enter phone number"
-        >
-
-
-        <label>
-          Delivery Address
-        </label>
-
-        <textarea
-          id="customerAddress"
-          placeholder="Enter complete delivery address"
-        ></textarea>
-
-
-        <button
-          class="primary-button full-button"
-          onclick="showOrderSummary()"
-        >
-          Continue to Payment
-        </button>
-
-      </div>
-
-
-      <!-- ORDER SUMMARY -->
-
-      <div
-        class="checkout-card"
-        id="orderSummary"
-      >
-
-        <h3>
-          Order Summary
-        </h3>
-
-        <div id="summaryItems">
-        </div>
-
-
-        <div class="summary-total">
-
-          <span>
-            Total
-          </span>
-
-          <strong>
-            ₹<span id="summaryTotal">0</span>
-          </strong>
-
-        </div>
-
-
-        <div
-          class="payment-area"
-          id="paymentArea"
-        >
-
-          <h3>
-            Select Payment
-          </h3>
-
-
-          <button
-            class="payment-button"
-            id="payButton"
-            onclick="payOnline()"
-          >
-            💳 Pay Online
-          </button>
-
-
-          <button
-            class="cod-button"
-            onclick="cashOnDelivery()"
-          >
-            💵 Cash on Delivery
-          </button>
-
-
-          <p id="paymentMessage"></p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ================= FOOTER ================= -->
-
-  <footer class="footer">
-
-    <div class="footer-logo">
-      KravinZo
-    </div>
+    <h1>
+      Good Food.<br>
+      Good Mood.
+    </h1>
 
     <p>
-      Fresh food. Great taste. Happy moments.
+      Delicious food prepared fresh and
+      delivered straight to your doorstep.
     </p>
 
-    <p class="copyright">
-      © 2026 KravinZo. All rights reserved.
-    </p>
+    <button class="main-btn" onclick="goTo('menu')">
+      Order Now
+    </button>
 
-  </footer>
-  <script>
-  // =====================================================
-// KRAVINZO - COMPLETE JAVASCRIPT
-// =====================================================
+  </div>
+
+</section>
 
 
-// =====================================================
-// RAZORPAY KEY ID
-// =====================================================
+<section class="section" id="menu">
 
-const RAZORPAY_KEY_ID = "YOUR_RAZORPAY_KEY_ID";
+  <div class="title">
 
+    <span>OUR MENU</span>
 
-// =====================================================
-// CART
-// =====================================================
+    <h2>Choose Your Favourite</h2>
 
-let cart = [];
+  </div>
 
 
-// =====================================================
-// PAGE LOAD
-// =====================================================
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  updateCart();
-
-});
+  <div class="products">
 
 
-// =====================================================
-// ADD TO CART
-// =====================================================
+    <div class="product">
 
-function addToCart(name, price) {
+      <div class="product-img">
+        🍔
+      </div>
 
-  const existingItem = cart.find(function (item) {
+      <div class="product-info">
 
-    return item.name === name;
+        <h3>Classic Burger</h3>
 
-  });
+        <p>
+          Juicy burger with fresh vegetables
+          and special KravinZo sauce.
+        </p>
 
+        <div class="product-bottom">
 
-  if (existingItem) {
+          <strong>₹199</strong>
 
-    existingItem.quantity =
-      existingItem.quantity + 1;
+          <button
+            onclick="addToCart('Classic Burger',199)"
+          >
+            Add +
+          </button>
 
-  } else {
+        </div>
 
-    cart.push({
+      </div>
 
-      name: name,
-
-      price: Number(price),
-
-      quantity: 1
-
-    });
-
-  }
-
-
-  updateCart();
-
-  showCartMessage(
-    name + " added to cart"
-  );
-
-}
+    </div>
 
 
-// =====================================================
-// UPDATE CART
-// =====================================================
+    <div class="product">
 
-function updateCart() {
+      <div class="product-img">
+        🍟
+      </div>
 
-  const cartItems =
-    document.getElementById("cartItems");
+      <div class="product-info">
 
-  const cartCount =
-    document.getElementById("cartCount");
+        <h3>Peri Peri Fries</h3>
 
-  const cartTotal =
-    document.getElementById("cartTotal");
+        <p>
+          Crispy fries with spicy
+          peri peri seasoning.
+        </p>
+
+        <div class="product-bottom">
+
+          <strong>₹149</strong>
+
+          <button
+            onclick="addToCart('Peri Peri Fries',149)"
+          >
+            Add +
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
 
 
-  if (!cartItems) {
-    return;
-  }
+    <div class="product">
+
+      <div class="product-img">
+        🍟
+      </div>
+
+      <div class="product-info">
+
+        <h3>French Fries</h3>
+
+        <p>
+          Golden crispy fries served
+          fresh and hot.
+        </p>
+
+        <div class="product-bottom">
+
+          <strong>₹129</strong>
+
+          <button
+            onclick="addToCart('French Fries',129)"
+          >
+            Add +
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
 
 
-  if (cart.length === 0) {
+  </div>
 
-    cartItems.innerHTML = `
-      <div class="empty-cart">
+</section>
+
+
+<section class="section cart-section" id="cart">
+
+  <div class="title">
+
+    <span>YOUR ORDER</span>
+
+    <h2>Your Cart</h2>
+
+  </div>
+
+
+  <div class="cart-box">
+
+    <div id="cartItems">
+
+      <div class="empty">
         Your cart is empty.
       </div>
-    `;
 
+    </div>
 
-    if (cartCount) {
-      cartCount.innerText = "0";
-    }
 
+    <div class="cart-total">
 
-    if (cartTotal) {
-      cartTotal.innerText = "0";
-    }
-
-
-    return;
-
-  }
-
-
-  let total = 0;
-
-  let count = 0;
-
-
-  cartItems.innerHTML = "";
-
-
-  cart.forEach(function (item, index) {
-
-    const itemTotal =
-      item.price * item.quantity;
-
-
-    total += itemTotal;
-
-    count += item.quantity;
-
-
-    const div =
-      document.createElement("div");
-
-
-    div.className = "cart-item";
-
-
-    div.innerHTML = `
-
-      <div class="cart-item-info">
-
-        <strong>
-          ${escapeHTML(item.name)}
-        </strong>
-
-        <span>
-          ₹${item.price} × ${item.quantity}
-        </span>
-
-      </div>
-
-
-      <div class="quantity">
-
-        <button
-          type="button"
-          onclick="decreaseQuantity(${index})"
-        >
-          -
-        </button>
-
-
-        <span>
-          ${item.quantity}
-        </span>
-
-
-        <button
-          type="button"
-          onclick="increaseQuantity(${index})"
-        >
-          +
-        </button>
-
-      </div>
-
-    `;
-
-
-    cartItems.appendChild(div);
-
-  });
-
-
-  if (cartCount) {
-
-    cartCount.innerText =
-      count;
-
-  }
-
-
-  if (cartTotal) {
-
-    cartTotal.innerText =
-      total;
-
-  }
-
-}
-
-
-// =====================================================
-// INCREASE QUANTITY
-// =====================================================
-
-function increaseQuantity(index) {
-
-  if (!cart[index]) {
-    return;
-  }
-
-
-  cart[index].quantity += 1;
-
-
-  updateCart();
-
-}
-
-
-// =====================================================
-// DECREASE QUANTITY
-// =====================================================
-
-function decreaseQuantity(index) {
-
-  if (!cart[index]) {
-    return;
-  }
-
-
-  cart[index].quantity -= 1;
-
-
-  if (cart[index].quantity <= 0) {
-
-    cart.splice(index, 1);
-
-  }
-
-
-  updateCart();
-
-}
-
-
-// =====================================================
-// REMOVE ITEM
-// =====================================================
-
-function removeItem(index) {
-
-  if (!cart[index]) {
-    return;
-  }
-
-
-  cart.splice(index, 1);
-
-
-  updateCart();
-
-}
-
-
-// =====================================================
-// GET CART TOTAL
-// =====================================================
-
-function getTotal() {
-
-  let total = 0;
-
-
-  cart.forEach(function (item) {
-
-    total +=
-      Number(item.price) *
-      Number(item.quantity);
-
-  });
-
-
-  return total;
-
-}
-
-
-// =====================================================
-// GET CART COUNT
-// =====================================================
-
-function getCartCount() {
-
-  let count = 0;
-
-
-  cart.forEach(function (item) {
-
-    count +=
-      Number(item.quantity);
-
-  });
-
-
-  return count;
-
-}
-
-
-// =====================================================
-// GO TO MENU
-// =====================================================
-
-function goToMenu() {
-
-  const menu =
-    document.getElementById("menu");
-
-
-  if (!menu) {
-    return;
-  }
-
-
-  menu.scrollIntoView({
-
-    behavior: "smooth",
-
-    block: "start"
-
-  });
-
-}
-
-
-// =====================================================
-// SCROLL TO CART
-// =====================================================
-
-function scrollToCart() {
-
-  const cartSection =
-    document.getElementById(
-      "cart-section"
-    );
-
-
-  if (!cartSection) {
-    return;
-  }
-
-
-  cartSection.scrollIntoView({
-
-    behavior: "smooth",
-
-    block: "start"
-
-  });
-
-}
-
-
-// =====================================================
-// CONTINUE TO CHECKOUT
-// =====================================================
-
-function continueToCheckout() {
-
-  if (cart.length === 0) {
-
-    alert(
-      "Please add at least one item to your cart."
-    );
-
-    return;
-
-  }
-
-
-  const checkout =
-    document.getElementById(
-      "checkout"
-    );
-
-
-  if (!checkout) {
-    return;
-  }
-
-
-  checkout.scrollIntoView({
-
-    behavior: "smooth",
-
-    block: "start"
-
-  });
-
-}
-
-
-// =====================================================
-// VALIDATE CUSTOMER DETAILS
-// =====================================================
-
-function validateCustomerDetails() {
-
-  const nameInput =
-    document.getElementById(
-      "customerName"
-    );
-
-
-  const phoneInput =
-    document.getElementById(
-      "customerPhone"
-    );
-
-
-  const addressInput =
-    document.getElementById(
-      "customerAddress"
-    );
-
-
-  if (!nameInput) {
-
-    alert(
-      "Name field not found."
-    );
-
-    return false;
-
-  }
-
-
-  if (!phoneInput) {
-
-    alert(
-      "Phone field not found."
-    );
-
-    return false;
-
-  }
-
-
-  if (!addressInput) {
-
-    alert(
-      "Address field not found."
-    );
-
-    return false;
-
-  }
-
-
-  const name =
-    nameInput.value.trim();
-
-
-  const phone =
-    phoneInput.value.trim();
-
-
-  const address =
-    addressInput.value.trim();
-
-
-  if (name.length < 2) {
-
-    alert(
-      "Please enter your full name."
-    );
-
-    nameInput.focus();
-
-    return false;
-
-  }
-
-
-  if (!/^[0-9]{10}$/.test(phone)) {
-
-    alert(
-      "Please enter a valid 10-digit phone number."
-    );
-
-    phoneInput.focus();
-
-    return false;
-
-  }
-
-
-  if (address.length < 5) {
-
-    alert(
-      "Please enter your complete delivery address."
-    );
-
-    addressInput.focus();
-
-    return false;
-
-  }
-
-
-  return true;
-
-}
-
-
-// =====================================================
-// SHOW ORDER SUMMARY
-// =====================================================
-
-function showOrderSummary() {
-
-  if (cart.length === 0) {
-
-    alert(
-      "Your cart is empty."
-    );
-
-    return;
-
-  }
-
-
-  if (!validateCustomerDetails()) {
-
-    return;
-
-  }
-
-
-  const summaryItems =
-    document.getElementById(
-      "summaryItems"
-    );
-
-
-  const summaryTotal =
-    document.getElementById(
-      "summaryTotal"
-    );
-
-
-  const paymentArea =
-    document.getElementById(
-      "paymentArea"
-    );
-
-
-  if (!summaryItems) {
-
-    alert(
-      "Order summary section not found."
-    );
-
-    return;
-
-  }
-
-
-  summaryItems.innerHTML = "";
-
-
-  cart.forEach(function (item) {
-
-    const itemTotal =
-      item.price * item.quantity;
-
-
-    const div =
-      document.createElement("div");
-
-
-    div.className =
-      "summary-item";
-
-
-    div.innerHTML = `
-
-      <span>
-        ${escapeHTML(item.name)}
-        × ${item.quantity}
-      </span>
+      <span>Total</span>
 
       <strong>
-        ₹${itemTotal}
+        ₹<span id="cartTotal">0</span>
       </strong>
 
-    `;
+    </div>
 
 
-    summaryItems.appendChild(div);
+    <button
+      class="main-btn full"
+      onclick="continueCheckout()"
+    >
+      Continue to Checkout
+    </button>
 
-  });
+  </div>
 
-
-  if (summaryTotal) {
-
-    summaryTotal.innerText =
-      getTotal();
-
-  }
-
-
-  if (paymentArea) {
-
-    paymentArea.style.display =
-      "block";
-
-  }
+</section>
 
 
-  if (paymentArea) {
+<section class="section checkout" id="checkout">
 
-    paymentArea.scrollIntoView({
+  <div class="title">
 
-      behavior: "smooth",
+    <span>CHECKOUT</span>
 
-      block: "center"
+    <h2>Delivery Details</h2>
 
+  </div>
+
+
+  <div class="checkout-grid">
+
+
+    <div class="checkout-card">
+
+      <h3>Customer Details</h3>
+
+
+      <label>Name</label>
+
+      <input
+        id="customerName"
+        type="text"
+        placeholder="Enter your name"
+      >
+
+
+      <label>Phone Number</label>
+
+      <input
+        id="customerPhone"
+        type="tel"
+        maxlength="10"
+        placeholder="10 digit mobile number"
+      >
+
+
+      <label>Delivery Address</label>
+
+      <textarea
+        id="customerAddress"
+        placeholder="Enter complete delivery address"
+      ></textarea>
+
+
+      <button
+        class="location-btn"
+        onclick="getLocation()"
+      >
+        📍 Share Delivery Location
+      </button>
+
+
+      <div
+        id="locationStatus"
+        class="location-status"
+      >
+      </div>
+
+
+      <button
+        class="main-btn full"
+        onclick="showSummary()"
+      >
+        Continue to Payment
+      </button>
+
+    </div>
+
+
+    <div class="checkout-card">
+
+      <h3>Order Summary</h3>
+
+      <div id="summaryItems">
+        <p class="empty">
+          Complete delivery details first.
+        </p>
+      </div>
+
+
+      <div class="summary-total">
+
+        <span>Total</span>
+
+        <strong>
+          ₹<span id="summaryTotal">0</span>
+        </strong>
+
+      </div>
+
+
+      <div id="paymentArea">
+
+        <h3 class="payment-title">
+          Payment Method
+        </h3>
+
+
+        <button
+          id="payButton"
+          class="payment-btn"
+          onclick="payOnline()"
+        >
+          💳 Pay Online
+        </button>
+
+
+        <button
+          class="cod-btn"
+          onclick="placeCOD()"
+        >
+          💵 Cash on Delivery
+        </button>
+
+
+        <button
+          class="whatsapp-btn"
+          onclick="sendWhatsApp()"
+        >
+          💬 Order on WhatsApp
+        </button>
+
+
+        <p id="paymentMessage"></p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="tracking">
+
+  <div class="tracking-box">
+
+    <span>ORDER TRACKING</span>
+
+    <h2>Track Your KravinZo Order</h2>
+
+    <p>
+      After placing your order, our team will
+      contact you on WhatsApp for delivery updates.
+    </p>
+
+    <button
+      class="whatsapp-btn"
+      onclick="sendWhatsApp()"
+    >
+      💬 Contact on WhatsApp
+    </button>
+
+  </div>
+
+</section>
+
+
+<footer>
+
+  <h2>KravinZo</h2>
+
+  <p>
+    Fresh food. Great taste. Happy moments.
+  </p>
+
+  <small>
+    © 2026 KravinZo. All rights reserved.
+  </small>
+
+</footer>
+
+
+<script>
+  import Razorpay from "razorpay";
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
     });
-
   }
-
-}
-
-
-// =====================================================
-// ONLINE PAYMENT
-// =====================================================
-
-async function payOnline() {
-
-  // -------------------------------
-  // CART CHECK
-  // -------------------------------
-
-  if (cart.length === 0) {
-
-    alert(
-      "Please add items to your cart."
-    );
-
-    return;
-
-  }
-
-
-  // -------------------------------
-  // CUSTOMER CHECK
-  // -------------------------------
-
-  if (!validateCustomerDetails()) {
-
-    return;
-
-  }
-
-
-  // -------------------------------
-  // TOTAL
-  // -------------------------------
-
-  const total =
-    getTotal();
-
-
-  if (!total || total <= 0) {
-
-    alert(
-      "Invalid order amount."
-    );
-
-    return;
-
-  }
-
-
-  // -------------------------------
-  // BUTTON
-  // -------------------------------
-
-  const payButton =
-    document.getElementById(
-      "payButton"
-    );
-
-
-  const paymentMessage =
-    document.getElementById(
-      "paymentMessage"
-    );
-
-
-  if (!payButton) {
-
-    alert(
-      "Payment button not found."
-    );
-
-    return;
-
-  }
-
-
-  const name =
-    document
-      .getElementById(
-        "customerName"
-      )
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById(
-        "customerPhone"
-      )
-      .value
-      .trim();
-
-
-  const address =
-    document
-      .getElementById(
-        "customerAddress"
-      )
-      .value
-      .trim();
-
-
-  payButton.disabled = true;
-
-  payButton.innerText =
-    "Creating Payment...";
-
-
-  if (paymentMessage) {
-
-    paymentMessage.innerText = "";
-
-  }
-
 
   try {
+    const { amount } = req.body;
 
-    // =================================================
-    // CREATE RAZORPAY ORDER
-    // =================================================
-
-    const response =
-      await fetch(
-        "/api/create-order",
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json"
-
-          },
-
-          body: JSON.stringify({
-
-            amount: total
-
-          })
-
-        }
-      );
-
-
-    // -----------------------------------------------
-    // RESPONSE JSON
-    // -----------------------------------------------
-
-    let data;
-
-
-    try {
-
-      data =
-        await response.json();
-
-    } catch (jsonError) {
-
-      throw new Error(
-        "Server returned an invalid response."
-      );
-
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({
+        error: "Invalid amount"
+      });
     }
 
-
-    // -----------------------------------------------
-    // API ERROR
-    // -----------------------------------------------
-
-    if (!response.ok) {
-
-      throw new Error(
-
-        data.error ||
-        "Unable to create Razorpay order."
-
-      );
-
-    }
-
-
-    if (!data.id) {
-
-      throw new Error(
-        "Razorpay order ID was not received."
-      );
-
-    }
-
-
-    // =================================================
-    // CHECK RAZORPAY
-    // =================================================
-
-    if (
-      typeof Razorpay ===
-      "undefined"
-    ) {
-
-      throw new Error(
-        "Razorpay Checkout is not loaded."
-      );
-
-    }
-
-
-    // =================================================
-    // RAZORPAY OPTIONS
-    // =================================================
-
-    const options = {
-
-      key:
-        RAZORPAY_KEY_ID,
-
-
-      amount:
-        data.amount,
-
-
-      currency:
-        "INR",
-
-
-      name:
-        "KravinZo",
-
-
-      description:
-        "KravinZo Food Order",
-
-
-      order_id:
-        data.id,
-
-
-      prefill: {
-
-        name:
-          name,
-
-        contact:
-          phone
-
-      },
-
-
-      notes: {
-
-        address:
-          address
-
-      },
-
-
-      theme: {
-
-        color:
-          "#111111"
-
-      },
-
-
-      // =================================================
-      // PAYMENT SUCCESS
-      // =================================================
-
-      handler:
-        function (response) {
-
-          console.log(
-            "Payment successful:",
-            response
-          );
-
-
-          if (paymentMessage) {
-
-            paymentMessage.innerText =
-              "Payment successful!";
-
-          }
-
-
-          alert(
-
-            "Payment successful!\n\n" +
-
-            "Payment ID: " +
-
-            response
-              .razorpay_payment_id
-
-          );
-
-
-          payButton.disabled =
-            false;
-
-
-          payButton.innerText =
-            "💳 Pay Online";
-
-        },
-
-
-      // =================================================
-      // PAYMENT MODAL CLOSE
-      // =================================================
-
-      modal: {
-
-        ondismiss:
-          function () {
-
-            payButton.disabled =
-              false;
-
-
-            payButton.innerText =
-              "💳 Pay Online";
-
-
-            if (paymentMessage) {
-
-              paymentMessage.innerText =
-                "Payment cancelled.";
-
-            }
-
-          }
-
-      }
-
-    };
-
-
-    // =================================================
-    // CREATE RAZORPAY INSTANCE
-    // =================================================
-
-    const razorpay =
-      new Razorpay(options);
-
-
-    // =================================================
-    // PAYMENT FAILED
-    // =================================================
-
-    razorpay.on(
-
-      "payment.failed",
-
-      function (response) {
-
-        console.error(
-          "Payment failed:",
-          response
-        );
-
-
-        payButton.disabled =
-          false;
-
-
-        payButton.innerText =
-          "💳 Pay Online";
-
-
-        if (paymentMessage) {
-
-          paymentMessage.innerText =
-            "Payment failed. Please try again.";
-
-        }
-
-
-        alert(
-          "Payment failed. Please try again."
-        );
-
-      }
-
-    );
-
-
-    // =================================================
-    // OPEN RAZORPAY
-    // =================================================
-
-    razorpay.open();
-
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+
+    const order = await razorpay.orders.create({
+      amount: Math.round(Number(amount) * 100),
+      currency: "INR",
+      receipt: "KZ_" + Date.now()
+    });
+
+    return res.status(200).json({
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key: process.env.RAZORPAY_KEY_ID
+    });
 
   } catch (error) {
+    console.error(error);
 
-    console.error(
-      "Payment Error:",
-      error
-    );
-
-
-    alert(
-
-      error.message ||
-      "Something went wrong while starting payment."
-
-    );
-
-
-    payButton.disabled =
-      false;
-
-
-    payButton.innerText =
-      "💳 Pay Online";
-
-
-    if (paymentMessage) {
-
-      paymentMessage.innerText =
-        "";
-
-    }
-
+    return res.status(500).json({
+      error: error.message || "Unable to create order"
+    });
   }
-
 }
-
-
-// =====================================================
-// CASH ON DELIVERY
-// =====================================================
-
-function cashOnDelivery() {
-
-  // -------------------------------
-  // CART
-  // -------------------------------
-
-  if (cart.length === 0) {
-
-    alert(
-      "Please add items to your cart."
-    );
-
-    return;
-
-  }
-
-
-  // -------------------------------
-  // CUSTOMER
-  // -------------------------------
-
-  if (!validateCustomerDetails()) {
-
-    return;
-
-  }
-
-
-  const name =
-    document
-      .getElementById(
-        "customerName"
-      )
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById(
-        "customerPhone"
-      )
-      .value
-      .trim();
-
-
-  const address =
-    document
-      .getElementById(
-        "customerAddress"
-      )
-      .value
-      .trim();
-
-
-  const total =
-    getTotal();
-
-
-  // -------------------------------
-  // COD CONFIRMATION
-  // -------------------------------
-
-  const confirmed =
-    confirm(
-
-      "Confirm your order?\n\n" +
-
-      "Name: " +
-      name +
-
-      "\nPhone: " +
-      phone +
-
-      "\nTotal: ₹" +
-      total +
-
-      "\n\nPayment: Cash on Delivery"
-
-    );
-
-
-  if (!confirmed) {
-
-    return;
-
-  }
-
-
-  alert(
-
-    "Order placed successfully! 🎉\n\n" +
-
-    "Customer: " +
-    name +
-
-    "\nTotal: ₹" +
-    total +
-
-    "\nPayment: Cash on Delivery"
-
-  );
-
-}
-
-
-// =====================================================
-// SIMPLE CART MESSAGE
-// =====================================================
-
-function showCartMessage(message) {
-
-  console.log(message);
-
-}
-
-
-// =====================================================
-// ESCAPE HTML
-// =====================================================
-
-function escapeHTML(value) {
-
-  return String(value)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-// =====================================================
-// CLEAR CART
-// =====================================================
-
-function clearCart() {
-
-  cart = [];
-
-  updateCart();
-
-}
-
-
-// =====================================================
-// GET CURRENT ORDER
-// =====================================================
-
-function getCurrentOrder() {
-
-  const name =
-    document
-      .getElementById(
-        "customerName"
-      )
-      ?.value
-      .trim() || "";
-
-
-  const phone =
-    document
-      .getElementById(
-        "customerPhone"
-      )
-      ?.value
-      .trim() || "";
-
-
-  const address =
-    document
-      .getElementById(
-        "customerAddress"
-      )
-      ?.value
-      .trim() || "";
-
-
-  return {
-
-    customer: {
-
-      name:
-        name,
-
-      phone:
-        phone,
-
-      address:
-        address
-
-    },
-
-    items:
-      cart,
-
-    total:
-      getTotal()
-
-  };
-
-}
-
-
-// =====================================================
-// DEBUG
-// =====================================================
-
-console.log(
-  "KravinZo JavaScript loaded successfully."
-);
 </script>
 
 </body>
