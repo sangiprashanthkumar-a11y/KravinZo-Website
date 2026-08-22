@@ -1,997 +1,924 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KravinZo | Delicious Food</title>
+  <title>KravinZo - Food Order</title>
+
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
     * {
-      margin: 0; 
+      margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: Arial, sans-serif;
     }
 
     body {
-      background: #0d0d0d;
-      color: white;
+      background: #f5f5f5;
+      color: #222;
     }
 
     header {
       background: #111;
-      padding: 18px 7%;
+      color: white;
+      padding: 18px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
-  .logo {
-  width: 200px;
-  height: 80px;
-  padding: 5px 5px;
-  display: flex;
-  background:Transparent;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 25px;
+    .logo {
+      font-size: 25px;
       font-weight: bold;
     }
 
-    nav a:hover {
-      color: #ff6a00;
+    .cart {
+      font-size: 16px;
+      background: white;
+      color: #111;
+      padding: 8px 14px;
+      border-radius: 20px;
     }
 
-    .hero {
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 20px;
-      background:
-        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.8)),
-        url("https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1600&q=80")
-        center/cover;
-    }
-
-    .hero h1 {
-      font-size: 60px;
-      color: #ff6a00;
-      margin-bottom: 15px;
-    }
-
-    .hero p {
-      font-size: 21px;
-      margin-bottom: 30px;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #ff6a00;
-      color: white;
-      padding: 14px 28px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: bold;
-      margin: 5px;
-    }
-
-    .btn:hover {
-      background: #e85d00;
-    }
-
-    section {
-      padding: 70px 7%;
-    }
-
-    .title {
-      text-align: center;
-      font-size: 36px;
-      margin-bottom: 40px;
-      color: #ff6a00;
-    }
-
-    .menu {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
+    .container {
+      max-width: 600px;
+      margin: 25px auto;
+      padding: 15px;
     }
 
     .card {
-      background: #181818;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,.4);
-    }
-
-    .card img {
-      width: 100%;
-      height: 210px;
-      object-fit: cover;
-    }
-
-    .card-content {
+      background: white;
       padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-    .card h3 {
-      margin-bottom: 10px;
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    .food {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+
+    .food:last-child {
+      border-bottom: none;
+    }
+
+    .food-name {
+      font-size: 17px;
+      font-weight: bold;
     }
 
     .price {
-      color: #ff6a00;
+      color: #e63946;
+      margin-top: 5px;
+    }
+
+    .add-btn {
+      background: #111;
+      color: white;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: none;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty button {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #111;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .total {
+      border-top: 1px solid #ddd;
+      margin-top: 15px;
+      padding-top: 15px;
+      display: flex;
+      justify-content: space-between;
       font-size: 20px;
       font-weight: bold;
-      margin: 15px 0;
     }
-    #cart-section {
-  text-align: center;
-  background: #111;
-}
 
-.cart-item {
-  max-width: 600px;
-  margin: 10px auto;
-  padding: 15px;
-  background: #181818;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .payment-btn {
+      width: 100%;
+      padding: 15px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
 
-.cart-item button {
-  background: #d32f2f;
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    .payment-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-    .about {
+    .cod-btn {
+      width: 100%;
+      padding: 15px;
+      background: #eee;
+      color: #111;
+      border: none;
+      border-radius: 9px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #message {
       text-align: center;
-      max-width: 800px;
-      margin: auto;
-      line-height: 1.8;
-      font-size: 18px;
+      margin-top: 15px;
+      font-weight: bold;
     }
 
-    .contact {
+    .empty {
       text-align: center;
-      background: #151515;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      background: #080808;
-      color: #aaa;
-    }
-    /* Delivery Details Box */
-#checkout-form {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 30px;
-  background: #181818;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,.5);
-}
-
-#checkout-form .title {
-  margin-bottom: 30px;
-}
-
-#checkout-form input,
-#checkout-form textarea {
-  width: 100%;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  background: #111;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-}
-
-#checkout-form input:focus,
-#checkout-form textarea:focus {
-  border-color: #ff6a00;
-}
-
-#checkout-form textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-#checkout-form .btn {
-  width: 100%;
-  margin: 5px 0 0;
-  border: none;
-  cursor: pointer;
-}
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      nav a {
-        margin: 0 7px;
-        font-size: 14px;
-      }
-
-      .hero h1 {
-        font-size: 42px;
-      }
-
-      .menu {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding: 50px 5%;
-      }
+      color: #777;
+      padding: 15px;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-  <div class="logo">
-  <img src="logo.jpeg" alt="KravinZo Logo">
+<header>
+  <div class="logo">KravinZo</div>
+
+  <div class="cart">
+    Cart: <span id="cartCount">0</span>
   </div>
+</header>
 
-   <nav>
-  <a href="#home">Home</a>
-  <a href="#menu">Menu</a>
-  <a href="#about">About</a>
-  <a href="#contact">Contact</a>
-  <a href="#cart-section" class="cart-link">
-    🛒 Cart <span id="cart-count">0</span>
-  </a>
-     <a href="#track-order">Track Order</a>
-</nav>
-  </header>
 
-  <section class="hero" id="home">
-    <div>
-      <h1>KravinZo</h1>
-      <p>Delicious food. Big cravings. One perfect destination.</p>
+<div class="container">
 
-      <a href="#menu" class="btn">Explore Menu</a>
-      <a href="#contact" class="btn">Order Now</a>
-    </div>
-  </section>
+  <!-- FOOD MENU -->
 
-  <section id="menu">
-    <h2 class="title">Our Menu</h2>
+  <div class="card">
 
-    <div class="menu">
+    <h2>Menu</h2>
 
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80">
-        <div class="card-content">
-          <h3>Classic Burger</h3>
-          <p>Juicy burger with fresh ingredients.</p>
-          <div class="price">₹149</div>
-         <button class="btn" onclick="addToCart('Classic Burger', 149)">
-             Add to Cart
-         </button>
-        </div>
+    <div class="food">
+
+      <div>
+        <div class="food-name">Classic Burger</div>
+        <div class="price">₹199</div>
       </div>
 
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb92?auto=format&fit=crop&w=800&q=80">
-        <div class="card-content">
-          <h3>Crispy Chicken</h3>
-          <p>Crispy, spicy and delicious chicken.</p>
-          <div class="price">₹199</div>
-          <button class="btn" onclick="addToCart('Crispy Chicken', 199)">
-             Add to Cart
-         </button>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80">
-        <div class="card-content">
-          <h3>Loaded Fries</h3>
-          <p>Crispy fries loaded with tasty flavours.</p>
-          <div class="price">₹99</div>
-           <button class="btn" onclick="addToCart('Loaded Fries', 99)">
-             Add to Cart
-         </button>
-        </div>
-      </div>
-
-      <div class="card">
-  <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80">
-  <div class="card-content">
-    <h3>Masala Maggi</h3>
-    <p>Hot, spicy and delicious Masala Maggi.</p>
-    <div class="price">₹69</div>
-     <button class="btn" onclick="addToCart('Masala Maggi', 69)">
-             Add to Cart
+      <button
+        class="add-btn"
+        onclick="addToCart('Classic Burger', 199)"
+      >
+        Add
       </button>
-  </div>
-</div>
-
-      <div class="card">
-  <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80">
-  <div class="card-content">
-    <h3>Egg Maggi</h3>
-    <p>Hot and tasty Egg Maggi.</p>
-    <div class="price">₹89</div>
-     <button class="btn" onclick="addToCart('Egg Maggi', 89)">
-             Add to Cart
-      </button>
-  </div>
-</div>
-
-<div class="card">
-  <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80">
-  <div class="card-content">
-    <h3>Chicken Maggi</h3>
-    <p>Spicy and delicious Chicken Maggi.</p>
-    <div class="price">₹119</div>
-     <button class="btn" onclick="addToCart('Chicken Maggi', 119)">
-             Add to Cart
-      </button>
-  </div>
-</div>
-
-<div class="card">
-  <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80">
-  <div class="card-content">
-    <h3>Peri Peri Maggi</h3>
-    <p>Spicy Peri Peri flavour with delicious Maggi.</p>
-    <div class="price">₹99</div>
-    <button class="btn" onclick="addToCart('Peri Peri Maggi', 99)">
-             Add to Cart
-      </button>
-  </div>
-</div>
-      <div class="card">
-  <img src="WhatsApp Image 2026-08-17 at 10.19.32.jpeg">
-  <div class="card-content">
-    <h3>Chicken Biryani</h3>
-    <p>Fragrant basmati rice with delicious spicy chicken.</p>
-    <div class="price">₹199</div>
-  <button class="btn" onclick="addToCart('Chicken Biryani', 199)">
-             Add to Cart
-      </button>
-  </div>
-</div>
-      
 
     </div>
-  </section>
-  <section id="cart-section">
-  <h2 class="title">Your Cart</h2>
 
-  <div id="cart-items"></div>
 
-  <h3 id="cart-total">Total: ₹0</h3>
+    <div class="food">
 
-  <button class="btn" onclick="checkout()">
-    Proceed to Checkout
-  </button>
-    <div id="checkout-form" style="display:none;">
+      <div>
+        <div class="food-name">Peri Peri Fries</div>
+        <div class="price">₹149</div>
+      </div>
 
-  <h2 class="title">Delivery Details</h2>
+      <button
+        class="add-btn"
+        onclick="addToCart('Peri Peri Fries', 149)"
+      >
+        Add
+      </button>
 
-  <input
-    type="text"
-    id="customer-name"
-    placeholder="Your Name"
-  >
+    </div>
 
-  <input
-    type="tel"
-    id="customer-phone"
-    placeholder="Mobile Number"
-  >
 
-  <textarea
-    id="customer-address"
-    placeholder="Delivery Address"
-    rows="4">
-  </textarea>
+    <div class="food">
 
-  <button class="btn" onclick="placeOrder()">
-    Continue to Payment
-  </button>
-      <div id="order-summary" style="display:none;">
+      <div>
+        <div class="food-name">French Fries</div>
+        <div class="price">₹129</div>
+      </div>
 
-  <h2 class="title">Order Summary</h2>
+      <button
+        class="add-btn"
+        onclick="addToCart('French Fries', 129)"
+      >
+        Add
+      </button>
 
-  <div id="summary-items"></div>
+    </div>
 
-  <h3 id="summary-total">Total: ₹0</h3>
+  </div>
 
-  <button class="btn" onclick="payOnline()">
-  Proceed to Payment
-  </button>
 
-</div>
+  <!-- CART -->
 
-</div>
-</section>
-  <!-- ORDER TRACKING -->
-<section id="track-order">
-  <h2 class="title">Track Your Order</h2>
+  <div class="card">
 
-  <div id="tracking-box" style="
-    max-width:600px;
-    margin:0 auto;
-    background:#181818;
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-  ">
+    <h2>Your Cart</h2>
+
+    <div id="cartItems">
+
+      <div class="empty">
+        Your cart is empty
+      </div>
+
+    </div>
+
+    <div class="total">
+
+      <span>Total</span>
+
+      <span>
+        ₹<span id="totalAmount">0</span>
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- DELIVERY -->
+
+  <div class="card">
+
+    <h2>Delivery Details</h2>
 
     <input
       type="text"
-      id="tracking-order-id"
-      placeholder="Enter Order ID (Example: KZ-20260821-123456)"
-      style="
-        width:100%;
-        padding:14px;
-        margin-bottom:15px;
-        background:#111;
-        color:white;
-        border:1px solid #444;
-        border-radius:8px;
-        font-size:16px;
-      "
+      id="customerName"
+      placeholder="Your Name"
     >
 
-    <button class="btn" onclick="trackOrder()">
-      Track Order
-    </button>
+    <input
+      type="tel"
+      id="customerPhone"
+      placeholder="Phone Number"
+    >
 
-    <div id="tracking-result" style="margin-top:25px;"></div>
+    <textarea
+      id="customerAddress"
+      placeholder="Delivery Address"
+    ></textarea>
 
   </div>
-</section>
 
-  <section id="about">
-    <h2 class="title">About KravinZo</h2>
 
-    <div class="about">
-      <p>
-        Welcome to KravinZo — a food brand created for people who love
-        delicious, crispy and flavour-packed food. Our goal is simple:
-        serve great food that keeps you coming back for more.
-      </p>
-    </div>
-  </section>
+  <!-- PAYMENT -->
 
-  <section class="contact" id="contact">
-    <h2 class="title">Order Now</h2>
+  <div class="card">
 
-    <p>Hungry? Place your order with KravinZo!</p>
+    <h2>Payment</h2>
 
-    <br>
+    <button
+      id="payButton"
+      class="payment-btn"
+      onclick="payOnline()"
+    >
+      Pay Online
+    </button>
 
-    <!-- Replace 91XXXXXXXXXX with your WhatsApp number -->
-    <a
-      class="btn"
-      href="https://wa.me/919533897337"
-      target="_blank">
-      Order on WhatsApp
-    </a>
+    <button
+      class="cod-btn"
+      onclick="cashOnDelivery()"
+    >
+      Cash on Delivery
+    </button>
 
-    <p style="margin-top:20px;">
-      📍 Narsingi, 2-84-7/A,4th Floor, Near TrendSetter GYM, Hyderabad
-    </p>
-    <a
-  href="https://maps.app.goo.gl/6S9HaLNv81DNbcQ58"
-  target="_blank"
-  class="btn">
-  📍 Get Directions
-</a>
-  </section>
+    <div id="message"></div>
 
-  <footer>
-    © 2026 KravinZo. All Rights Reserved.
-  </footer>
- 
+  </div>
+
+</div>
+
 
 <script>
+
+  // =====================================
+  // RAZORPAY KEY ID
+  // =====================================
+
+  const RAZORPAY_KEY_ID =
+    "YOUR_RAZORPAY_KEY_ID";
+
+
+  // =====================================
+  // CART
+  // =====================================
+
   let cart = [];
 
-  // 1. DATABASE SAVE FUNCTION
-  async function saveOrderToDatabase(paymentMethod, paymentId, orderId) {
-    let customerName = document.getElementById("customer-name").value.trim();
-    let customerPhone = document.getElementById("customer-phone").value.trim();
-    let customerAddress = document.getElementById("customer-address").value.trim();
-    let total = 0;
 
-    cart.forEach(item => total += item.price * item.quantity);
+  // =====================================
+  // ADD TO CART
+  // =====================================
 
-    try {
-      const response = await fetch("/api/save-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId: orderId,
-          customerName: customerName,
-          customerPhone: customerPhone,
-          customerAddress: customerAddress,
-          items: cart,
-          total: total,
-          paymentMethod: paymentMethod,
-          paymentId: paymentId
-        })
+  function addToCart(name, price) {
+
+    const existingItem =
+      cart.find(item => item.name === name);
+
+
+    if (existingItem) {
+
+      existingItem.quantity++;
+
+    } else {
+
+      cart.push({
+
+        name: name,
+
+        price: price,
+
+        quantity: 1
+
       });
 
-      return response.ok;
-    } catch (error) {
-      console.error("Database error:", error);
-      return false;
     }
-  }
 
-  // 2. CART FUNCTIONS
-  function addToCart(name, price) {
-    let item = cart.find(item => item.name === name);
-    if (item) {
-      item.quantity++;
-    } else {
-      cart.push({ name: name, price: price, quantity: 1 });
-    }
+
     updateCart();
+
   }
 
-  function updateCart() {
-    let count = 0;
-    let total = 0;
-    let cartItems = document.getElementById("cart-items");
 
-    if (!cartItems) return;
-    cartItems.innerHTML = "";
-
-    cart.forEach((item, index) => {
-      count += item.quantity;
-      let itemTotal = item.price * item.quantity;
-      total += itemTotal;
-
-      cartItems.innerHTML += `
-        <div class="cart-item">
-          <strong>${item.name}</strong>
-          <span>₹${item.price} × ${item.quantity}</span>
-          <div>
-            <button onclick="decreaseQuantity(${index})">−</button>
-            <span style="margin:0 10px;">${item.quantity}</span>
-            <button onclick="increaseQuantity(${index})">+</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById("cart-count").innerText = count;
-    document.getElementById("cart-total").innerText = "Total: ₹" + total;
-  }
+  // =====================================
+  // INCREASE
+  // =====================================
 
   function increaseQuantity(index) {
-    if (cart[index]) {
-      cart[index].quantity++;
-      updateCart();
-    }
+
+    cart[index].quantity++;
+
+    updateCart();
+
   }
+
+
+  // =====================================
+  // DECREASE
+  // =====================================
 
   function decreaseQuantity(index) {
-    if (!cart[index]) return;
-    if (cart[index].quantity > 1) {
-      cart[index].quantity--;
-    } else {
+
+    cart[index].quantity--;
+
+
+    if (cart[index].quantity <= 0) {
+
       cart.splice(index, 1);
+
     }
+
+
     updateCart();
+
   }
 
-  // 3. CHECKOUT & ORDER SUMMARY
-  function checkout() {
+
+  // =====================================
+  // UPDATE CART
+  // =====================================
+
+  function updateCart() {
+
+    const cartItems =
+      document.getElementById("cartItems");
+
+    const cartCount =
+      document.getElementById("cartCount");
+
+    const totalAmount =
+      document.getElementById("totalAmount");
+
+
+    cartItems.innerHTML = "";
+
+
     if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-    let checkoutForm = document.getElementById("checkout-form");
-    checkoutForm.style.display = "block";
-    checkoutForm.scrollIntoView({ behavior: "smooth" });
-  }
 
-  function placeOrder() {
-    let name = document.getElementById("customer-name").value.trim();
-    let phone = document.getElementById("customer-phone").value.trim();
-    let address = document.getElementById("customer-address").value.trim();
+      cartItems.innerHTML =
+        '<div class="empty">Your cart is empty</div>';
 
-    if (name === "" || phone === "" || address === "") {
-      alert("Please fill all delivery details.");
+      cartCount.innerText = "0";
+
+      totalAmount.innerText = "0";
+
       return;
+
     }
 
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
 
-    let summaryItems = document.getElementById("summary-items");
-    summaryItems.innerHTML = "";
     let total = 0;
 
-    cart.forEach(item => {
-      let itemTotal = item.price * item.quantity;
-      total += itemTotal;
-      summaryItems.innerHTML += `
-        <div class="cart-item">
+    let count = 0;
+
+
+    cart.forEach((item, index) => {
+
+      total +=
+        item.price * item.quantity;
+
+      count += item.quantity;
+
+
+      const div =
+        document.createElement("div");
+
+      div.className = "cart-item";
+
+
+      div.innerHTML = `
+
+        <div>
+
           <strong>${item.name}</strong>
-          <span>${item.quantity} × ₹${item.price} = ₹${itemTotal}</span>
+
+          <br>
+
+          ₹${item.price} × ${item.quantity}
+
         </div>
+
+
+        <div class="qty">
+
+          <button
+            onclick="decreaseQuantity(${index})"
+          >
+            -
+          </button>
+
+          <span>
+            ${item.quantity}
+          </span>
+
+          <button
+            onclick="increaseQuantity(${index})"
+          >
+            +
+          </button>
+
+        </div>
+
       `;
+
+
+      cartItems.appendChild(div);
+
     });
 
-    document.getElementById("summary-total").innerText = "Total: ₹" + total;
-    document.getElementById("order-summary").style.display = "block";
-    document.getElementById("order-summary").scrollIntoView({ behavior: "smooth" });
+
+    cartCount.innerText = count;
+
+    totalAmount.innerText = total;
+
   }
 
-  async function payOnline() {
-  let customerName = document.getElementById("customer-name").value.trim();
-  let customerPhone = document.getElementById("customer-phone").value.trim();
-  let customerAddress = document.getElementById("customer-address").value.trim();
 
-  if (!customerName || !customerPhone || !customerAddress) {
-    alert("Please fill all delivery details first.");
-    return;
-  }
+  // =====================================
+  // GET TOTAL
+  // =====================================
 
-  let total = 0;
-  cart.forEach(item => total += item.price * item.quantity);
+  function getTotal() {
 
-  if (total <= 0) {
-    alert("Your cart is empty!");
-    return;
-  }
+    return cart.reduce(
 
-  try {
-    const response = await fetch("/api/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: total })
-    });
+      (total, item) => {
 
-    const order = await response.json();
+        return total +
+          item.price * item.quantity;
 
-    if (!response.ok) {
-      alert("Payment setup failed: " + (order.error || "Unknown error"));
-      return;
-    }
-
-    const options = {
-      key: order.key, // బ్యాకెండ్ నుండి వచ్చే Key ID మాత్రమే వాడుతుంది
-      amount: order.amount,
-      currency: order.currency || "INR",
-      name: "KravinZo",
-      description: "KravinZo Food Order",
-      order_id: order.id,
-
-      handler: async function(response) {
-        let now = new Date();
-        let orderId = "KZ-" + now.getFullYear() +
-          String(now.getMonth() + 1).padStart(2, "0") +
-          String(now.getDate()).padStart(2, "0") + "-" +
-          String(now.getHours()).padStart(2, "0") +
-          String(now.getMinutes()).padStart(2, "0") +
-          String(now.getSeconds()).padStart(2, "0");
-
-        await saveOrderToDatabase("UPI / Online", response.razorpay_payment_id, orderId);
-
-        let orderDate = now.toLocaleDateString("en-IN");
-        let orderTime = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-
-        let itemsMessage = "";
-        cart.forEach(item => {
-          itemsMessage += item.name + " × " + item.quantity + " = ₹" + (item.price * item.quantity) + "\n";
-        });
-
-        let message = "🔥 *KravinZo - New Online Order* 🔥\n\n" +
-          "*Order ID:* " + orderId + "\n" +
-          "*Date:* " + orderDate + "\n" +
-          "*Time:* " + orderTime + "\n\n" +
-          "*Customer Details*\n" +
-          "Name: " + customerName + "\n" +
-          "Phone: " + customerPhone + "\n" +
-          "Address: " + customerAddress + "\n\n" +
-          "*Order Details*\n" + itemsMessage + "\n" +
-          "*Total: ₹" + total + "*\n" +
-          "*Payment: UPI / Online*\n" +
-          "*Payment ID:* " + response.razorpay_payment_id;
-
-        let whatsappURL = "https://wa.me/919533897337?text=" + encodeURIComponent(message);
-        showPaymentSuccess(orderId, orderDate, orderTime, response.razorpay_payment_id, whatsappURL);
       },
 
-      prefill: {
-        name: customerName,
-        contact: customerPhone
-      },
-      theme: { color: "#ff6a00" }
-    };
+      0
 
-    if (typeof Razorpay === "undefined") {
-      alert("Razorpay SDK is loading. Please refresh the page.");
-      return;
-    }
-
-   const rzp = new Razorpay(options);
-
-rzp.on('payment.failed', function (response) {
-
-    console.log("RAZORPAY PAYMENT FAILED:", response);
-
-    const error = response.error || {};
-
-    alert(
-        "Payment Failed\n\n" +
-        "Code: " + (error.code || "N/A") + "\n" +
-        "Description: " + (error.description || "N/A") + "\n" +
-        "Source: " + (error.source || "N/A") + "\n" +
-        "Step: " + (error.step || "N/A") + "\n" +
-        "Reason: " + (error.reason || "N/A")
     );
-});
 
-rzp.open();
-
-  } catch (error) {
-    console.error("Payment Error:", error);
-    alert("Payment setup failed. Please try again.");
   }
-}
-  // 4. ONLINE PAYMENT (RAZORPAY)
-  async function payOnline() {
-    let customerName = document.getElementById("customer-name").value.trim();
-    let customerPhone = document.getElementById("customer-phone").value.trim();
-    let customerAddress = document.getElementById("customer-address").value.trim();
 
-    if (!customerName || !customerPhone || !customerAddress) {
-      alert("Please fill all delivery details first.");
+
+  // =====================================
+  // ONLINE PAYMENT
+  // =====================================
+
+  async function payOnline() {
+
+    const name =
+      document
+        .getElementById("customerName")
+        .value
+        .trim();
+
+
+    const phone =
+      document
+        .getElementById("customerPhone")
+        .value
+        .trim();
+
+
+    const address =
+      document
+        .getElementById("customerAddress")
+        .value
+        .trim();
+
+
+    const message =
+      document.getElementById("message");
+
+
+    const payButton =
+      document.getElementById("payButton");
+
+
+    // CHECK CART
+
+    if (cart.length === 0) {
+
+      alert("Please add items to cart.");
+
       return;
+
     }
 
-    let total = 0;
-    cart.forEach(item => total += item.price * item.quantity);
+
+    // CHECK NAME
+
+    if (!name) {
+
+      alert("Please enter your name.");
+
+      return;
+
+    }
+
+
+    // CHECK PHONE
+
+    if (!phone) {
+
+      alert("Please enter your phone number.");
+
+      return;
+
+    }
+
+
+    // CHECK ADDRESS
+
+    if (!address) {
+
+      alert("Please enter your delivery address.");
+
+      return;
+
+    }
+
+
+    const total = getTotal();
+
 
     if (total <= 0) {
-      alert("Your cart is empty!");
+
+      alert("Invalid order amount.");
+
       return;
+
     }
 
-    try {
-      const response = await fetch("/api/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: total })
-      });
 
-      const order = await response.json();
+    payButton.disabled = true;
+
+    payButton.innerText =
+      "Creating Payment...";
+
+
+    message.innerText = "";
+
+
+    try {
+
+      // =================================
+      // CREATE RAZORPAY ORDER
+      // =================================
+
+      const response =
+        await fetch(
+          "/api/create-order",
+          {
+
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/json"
+
+            },
+
+            body: JSON.stringify({
+
+              amount: total
+
+            })
+
+          }
+        );
+
+
+      const data =
+        await response.json();
+
 
       if (!response.ok) {
-        alert("Payment setup failed: " + (order.error || "Unknown error"));
-        return;
+
+        throw new Error(
+          data.error ||
+          "Payment order creation failed"
+        );
+
       }
+
+
+      // =================================
+      // RAZORPAY OPTIONS
+      // =================================
 
       const options = {
-        key: "rzp_live_TRED8pIKtZRWGt",
-        amount: order.amount,
-        currency: "INR",
-        name: "KravinZo",
-        description: "KravinZo Food Order",
-        order_id: order.id,
 
-        handler: async function(response) {
-          let now = new Date();
-          let orderId = "KZ-" + now.getFullYear() +
-            String(now.getMonth() + 1).padStart(2, "0") +
-            String(now.getDate()).padStart(2, "0") + "-" +
-            String(now.getHours()).padStart(2, "0") +
-            String(now.getMinutes()).padStart(2, "0") +
-            String(now.getSeconds()).padStart(2, "0");
+        key:
+          RAZORPAY_KEY_ID,
 
-          await saveOrderToDatabase("UPI / Online", response.razorpay_payment_id, orderId);
+        amount:
+          data.amount,
 
-          let orderDate = now.toLocaleDateString("en-IN");
-          let orderTime = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+        currency:
+          "INR",
 
-          let itemsMessage = "";
-          cart.forEach(item => {
-            itemsMessage += item.name + " × " + item.quantity + " = ₹" + (item.price * item.quantity) + "\n";
-          });
+        name:
+          "KravinZo",
 
-          let message = "🔥 *KravinZo - New Online Order* 🔥\n\n" +
-            "*Order ID:* " + orderId + "\n" +
-            "*Date:* " + orderDate + "\n" +
-            "*Time:* " + orderTime + "\n\n" +
-            "*Customer Details*\n" +
-            "Name: " + customerName + "\n" +
-            "Phone: " + customerPhone + "\n" +
-            "Address: " + customerAddress + "\n\n" +
-            "*Order Details*\n" + itemsMessage + "\n" +
-            "*Total: ₹" + total + "*\n" +
-            "*Payment: UPI / Online*\n" +
-            "*Payment ID:* " + response.razorpay_payment_id;
+        description:
+          "KravinZo Food Order",
 
-          let whatsappURL = "https://wa.me/919533897337?text=" + encodeURIComponent(message);
-          showPaymentSuccess(orderId, orderDate, orderTime, response.razorpay_payment_id, whatsappURL);
-        },
+        order_id:
+          data.id,
+
 
         prefill: {
-          name: customerName,
-          contact: customerPhone
+
+          name:
+            name,
+
+          contact:
+            phone
+
         },
-        theme: { color: "#ff6a00" }
+
+
+        notes: {
+
+          address:
+            address
+
+        },
+
+
+        theme: {
+
+          color:
+            "#111111"
+
+        },
+
+
+        handler:
+          function(response) {
+
+            message.innerText =
+              "Payment successful!";
+
+            alert(
+              "Payment successful!\n\n" +
+              "Payment ID: " +
+              response.razorpay_payment_id
+            );
+
+          },
+
+
+        modal: {
+
+          ondismiss:
+            function() {
+
+              payButton.disabled =
+                false;
+
+              payButton.innerText =
+                "Pay Online";
+
+              message.innerText =
+                "Payment cancelled.";
+
+            }
+
+        }
+
       };
 
-      if (typeof Razorpay === "undefined") {
-        alert("Razorpay SDK is loading. Please refresh the page.");
-        return;
-      }
 
-      const rzp = new Razorpay(options);
-      
-      rzp.on('payment.failed', function (response){
-          alert("Payment Failed: " + (response.error.description || "Payment cancelled"));
-      });
+      // =================================
+      // OPEN RAZORPAY
+      // =================================
 
-      rzp.open();
+      const razorpay =
+        new Razorpay(options);
+
+
+      razorpay.on(
+        "payment.failed",
+        function(response) {
+
+          console.log(
+            response.error
+          );
+
+
+          payButton.disabled =
+            false;
+
+          payButton.innerText =
+            "Pay Online";
+
+
+          message.innerText =
+            "Payment failed. Please try again.";
+
+        }
+      );
+
+
+      razorpay.open();
+
 
     } catch (error) {
-      console.error("Payment Error:", error);
-      alert("Payment setup failed. Please try again.");
+
+      console.error(error);
+
+
+      alert(
+        error.message ||
+        "Something went wrong."
+      );
+
+
+      payButton.disabled =
+        false;
+
+
+      payButton.innerText =
+        "Pay Online";
+
     }
+
   }
 
-  function showPaymentSuccess(orderId, orderDate, orderTime, paymentId, whatsappURL) {
-    const successBox = document.createElement("div");
-    successBox.innerHTML = `
-      <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; width:90%; max-width:400px;">
-        <h2 style="color:#ff6a00; margin-bottom:10px;">Payment Successful! 🎉</h2>
-        <p style="color:#333;">Order ID: <strong>${orderId}</strong></p>
-        <p style="color:#333;">${orderDate} | ${orderTime}</p>
-        <p style="color:#555; font-size:14px;">Payment ID:<br>${paymentId}</p>
-        <button onclick="window.open('${whatsappURL}', '_blank')" style="margin-top:15px; padding:10px 25px; border:none; border-radius:8px; background:#25D366; color:white; font-size:16px; cursor:pointer;">📲 Send Order to WhatsApp</button>
-        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:10px; padding:10px 25px; border:none; border-radius:8px; background:#ff6a00; color:white; font-size:16px; cursor:pointer;">Done</button>
-      </div>
-    `;
-    document.body.appendChild(successBox);
-  }
 
-  // 5. CASH ON DELIVERY
-  async function cashOnDelivery() {
-    let customerName = document.getElementById("customer-name").value.trim();
-    let customerPhone = document.getElementById("customer-phone").value.trim();
-    let customerAddress = document.getElementById("customer-address").value.trim();
+  // =====================================
+  // CASH ON DELIVERY
+  // =====================================
 
-    if (!customerName || !customerPhone || !customerAddress) {
-      alert("Please fill all delivery details.");
-      return;
-    }
+  function cashOnDelivery() {
+
+    const name =
+      document
+        .getElementById("customerName")
+        .value
+        .trim();
+
+
+    const phone =
+      document
+        .getElementById("customerPhone")
+        .value
+        .trim();
+
+
+    const address =
+      document
+        .getElementById("customerAddress")
+        .value
+        .trim();
+
 
     if (cart.length === 0) {
-      alert("Your cart is empty!");
+
+      alert(
+        "Please add items to cart."
+      );
+
       return;
+
     }
 
-    let now = new Date();
-    let orderId = "KZ-" + now.getFullYear() +
-      String(now.getMonth() + 1).padStart(2, "0") +
-      String(now.getDate()).padStart(2, "0") + "-" +
-      String(now.getHours()).padStart(2, "0") +
-      String(now.getMinutes()).padStart(2, "0") +
-      String(now.getSeconds()).padStart(2, "0");
 
-    await saveOrderToDatabase("Cash on Delivery", null, orderId);
+    if (!name) {
 
-    let orderDate = now.toLocaleDateString("en-IN");
-    let orderTime = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-    let total = 0;
-    let itemsMessage = "";
+      alert(
+        "Please enter your name."
+      );
 
-    cart.forEach(item => {
-      let itemTotal = item.price * item.quantity;
-      total += itemTotal;
-      itemsMessage += item.name + " × " + item.quantity + " = ₹" + itemTotal + "\n";
-    });
+      return;
 
-    let message = "🔥 *KravinZo - New COD Order* 🔥\n\n" +
-      "*Order ID:* " + orderId + "\n" +
-      "*Date:* " + orderDate + "\n" +
-      "*Time:* " + orderTime + "\n\n" +
-      "*Customer Details*\n" +
-      "Name: " + customerName + "\n" +
-      "Phone: " + customerPhone + "\n" +
-      "Address: " + customerAddress + "\n\n" +
-      "*Order Details*\n" + itemsMessage + "\n" +
-      "*Total: ₹" + total + "*\n" +
-      "*Payment: Cash on Delivery*";
+    }
 
-    let whatsappURL = "https://wa.me/919533897337?text=" + encodeURIComponent(message);
-    
-    const successBox = document.createElement("div");
-    successBox.innerHTML = `
-      <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; width:90%; max-width:400px;">
-        <h2 style="color:#ff6a00; margin-bottom:10px;">Order Placed Successfully! 🎉</h2>
-        <p style="color:#333;">Order ID: <strong>${orderId}</strong></p>
-        <p style="color:#333;">${orderDate} | ${orderTime}</p>
-        <button onclick="window.open('${whatsappURL}', '_blank')" style="margin-top:15px; padding:10px 25px; border:none; border-radius:8px; background:#25D366; color:white; font-size:16px; cursor:pointer;">📲 Send Order to WhatsApp</button>
-        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:10px; padding:10px 25px; border:none; border-radius:8px; background:#ff6a00; color:white; font-size:16px; cursor:pointer;">Done</button>
-      </div>
-    `;
-    document.body.appendChild(successBox);
+
+    if (!phone) {
+
+      alert(
+        "Please enter your phone number."
+      );
+
+      return;
+
+    }
+
+
+    if (!address) {
+
+      alert(
+        "Please enter your delivery address."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "Order placed successfully!\n\n" +
+      "Payment: Cash on Delivery"
+    );
+
   }
 
-  // 6. ORDER TRACKING FUNCTION
-  async function trackOrder() {
-    const orderId = document.getElementById("tracking-order-id").value.trim();
-    const result = document.getElementById("tracking-result");
 
-    if (orderId === "") {
-      alert("Please enter your Order ID.");
-      return;
-    }
-
-    result.innerHTML = `<p style="color:#ff6a00;">Checking your order...</p>`;
-
-    try {
-      const response = await fetch("/api/track-order?orderId=" + encodeURIComponent(orderId));
-      const data = await response.json();
-
-      if (!response.ok) {
-        result.innerHTML = `<p style="color:#ff4444;">${data.error || "Order not found."}</p>`;
-        return;
-      }
-
-      result.innerHTML = `
-        <div style="background:#111; padding:20px; border-radius:12px; text-align:left;">
-          <h3 style="color:#ff6a00;">Order Status</h3>
-          <p style="margin-top:15px;"><strong>Order ID:</strong> ${data.orderId}</p>
-          <p style="margin-top:10px;"><strong>Status:</strong> <span style="color:#ff6a00;">${data.status}</span></p>
-          <p style="margin-top:10px;"><strong>Total:</strong> ₹${data.total}</p>
-        </div>
-      `;
-    } catch (error) {
-      console.error("Tracking error:", error);
-      result.innerHTML = `<p style="color:#ff4444;">Unable to track order. Please try again.</p>`;
-    }
-  }
+  // =====================================
+  // INITIAL CART
+  // =====================================
 
   updateCart();
+
 </script>
-  
-  
+
 </body>
 </html>
