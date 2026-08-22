@@ -1530,11 +1530,12 @@ async function payOnline() {
 // COD
 // ===============================
 
-function placeCOD() {
+async function placeCOD() {
 
   if (!validateDetails()) return;
 
   const total = getTotal();
+  const customer = getCustomerDetails();
 
   if (
     !confirm(
@@ -1544,13 +1545,74 @@ function placeCOD() {
     return;
   }
 
-  alert(
-    "Order placed successfully! 🎉"
-  );
+  const orderId =
+    "KZ-" +
+    Date.now();
 
-  sendWhatsApp(
-    "CASH ON DELIVERY"
-  );
+  const items = cart.map(item => ({
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    itemTotal: item.price * item.quantity
+  }));
+
+  let finalAddress = customer.address;
+
+  if (deliveryLocation) {
+    finalAddress +=
+      `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+  }
+
+  try {
+
+    const response = await fetch(
+      "/api/save-order",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          order_id: orderId,
+          customer_name: customer.name,
+          address: finalAddress,
+          phone_number: customer.phone,
+          item: JSON.stringify(items),
+          payment_method: "CASH ON DELIVERY",
+          total: total,
+          payment_id: null,
+          status: "New"
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Order save failed"
+      );
+    }
+
+    alert(
+      `Order placed successfully! 🎉\n\nOrder ID: ${orderId}`
+    );
+
+    sendWhatsApp(
+      "CASH ON DELIVERY\nOrder ID: " + orderId
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Order save failed: " +
+      error.message
+    );
+  }
 }
 
 
