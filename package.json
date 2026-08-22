@@ -1,35 +1,7 @@
-const response = await fetch("/api/save-order", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    order_id: orderId,
-    customer_name: customer.name,
-    address: finalAddress,
-    phone_number: customer.phone,
-    item: JSON.stringify(items),
-    payment_method: "CASH ON DELIVERY",
-    total: total,
-    payment_id: null,
-    status: "New"
-  })
-});
-
-const responseText = await response.text();
-
-let data;
-
-try {
-  data = JSON.parse(responseText);
-} catch (error) {
-  throw new Error(
-    "Backend error: " + responseText
-  );
-}
-
-if (!response.ok) {
-  throw new Error(
-    data.error || "Order save failed"
-  );
+{
+  "name": "...",
+  "version": "...",
+  "dependencies": {
+    ...
+  }
 }
