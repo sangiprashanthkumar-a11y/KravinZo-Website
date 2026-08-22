@@ -1,33 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+);
+
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed"
+    });
+  }
+
   try {
-    console.log("SAVE ORDER FUNCTION STARTED");
-
-    if (req.method !== "POST") {
-      return res.status(405).json({
-        success: false,
-        error: "Method not allowed"
-      });
-    }
-
-    if (!process.env.SUPABASE_URL) {
-      throw new Error("SUPABASE_URL is missing");
-    }
-
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing");
-    }
-
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
-    const body = req.body || {};
-
-    console.log("Request body:", body);
-
     const {
       order_id,
       customer_name,
@@ -38,7 +30,7 @@ export default async function handler(req, res) {
       total,
       payment_id,
       status
-    } = body;
+    } = req.body;
 
     const { data, error } = await supabase
       .from("orders")
@@ -58,18 +50,13 @@ export default async function handler(req, res) {
       .select();
 
     if (error) {
-      console.error("SUPABASE ERROR:", error);
+      console.error("Supabase Error:", error);
 
       return res.status(500).json({
         success: false,
-        error: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
+        error: error.message
       });
     }
-
-    console.log("ORDER SAVED:", data);
 
     return res.status(200).json({
       success: true,
@@ -77,11 +64,11 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("FUNCTION ERROR:", error);
+    console.error("Server Error:", error);
 
     return res.status(500).json({
       success: false,
-      error: error?.message || "Unknown server error"
+      error: error.message
     });
   }
 }
