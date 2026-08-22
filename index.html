@@ -1588,33 +1588,62 @@ async function placeCOD() {
       }
     );
 
-    const data = await response.json();
+    // IMPORTANT: First read as text
+    const responseText = await response.text();
+
+    let data;
+
+    try {
+      data = JSON.parse(responseText);
+    } catch (jsonError) {
+      console.error("NON-JSON SERVER RESPONSE:", responseText);
+
+      alert(
+        "Order save failed.\n\nServer response:\n" +
+        responseText
+      );
+
+      return;
+    }
 
     if (!response.ok) {
-      throw new Error(
-        data.error || "Order save failed"
+      console.error("SAVE ORDER ERROR:", data);
+
+      alert(
+        "Order save failed:\n" +
+        (data.error || "Server error")
       );
+
+      return;
+    }
+
+    if (!data.success) {
+      alert(
+        "Order save failed:\n" +
+        (data.error || "Unknown error")
+      );
+
+      return;
     }
 
     alert(
-      `Order placed successfully! 🎉\n\nOrder ID: ${orderId}`
+      "Order placed successfully! 🎉\n\n" +
+      "Order ID: " +
+      orderId
     );
 
-    sendWhatsApp(
-      "CASH ON DELIVERY\nOrder ID: " + orderId
-    );
+    console.log("ORDER SAVED:", data);
 
   } catch (error) {
 
-    console.error(error);
+    console.error("PLACE COD ERROR:", error);
 
     alert(
-      "Order save failed: " +
+      "Order save failed:\n" +
       error.message
     );
   }
 }
-
 
 // ===============================
 // WHATSAPP
