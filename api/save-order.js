@@ -23,11 +23,11 @@ export default async function handler(req, res) {
     const {
       order_id,
       customer_name,
-      address,
-      phone_number,
-      item,
-      payment_method,
+      customer_phone,
+      customer_address,
+      items,
       total,
+      paymentmethod,
       payment_id,
       status
     } = req.body;
@@ -36,15 +36,15 @@ export default async function handler(req, res) {
       .from("orders")
       .insert([
         {
-          order_id,
-          customer_name,
-          address,
-          phone_number,
-          item,
-          payment_method,
-          total,
-          payment_id,
-          status
+          order_id: order_id,
+          customer_name: customer_name,
+          customer_phone: customer_phone,
+          customer_address: customer_address,
+          items: items,
+          total: total,
+          paymentmethod: paymentmethod,
+          payment_id: payment_id || null,
+          status: status || "New"
         }
       ])
       .select();
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      data
+      data: data
     });
 
   } catch (error) {
