@@ -1,12 +1,4 @@
-{
-  "name": "kravinzo-website",
-  "version": "1.0.0",
-  "engines": {
-    "node": "20.x"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.0.0",
-    "razorpay": "^2.9.6",
-    "ws": "^8.18.0"
-  }
+"dependencies": {
+  "@supabase/supabase-js": "^2.0.0",
+  "ws": "^8.18.0"
 }
