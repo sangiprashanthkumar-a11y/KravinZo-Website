@@ -1,3 +1,10 @@
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -19,14 +26,15 @@ export default async function handler(req, res) {
       status
     } = req.body;
 
+    // Required fields
     if (
       !order_id ||
       !customer_name ||
       !customer_phone ||
       !customer_address ||
       !items ||
-      !payment_method ||
-      total === undefined
+      total === undefined ||
+      !payment_method
     ) {
       return res.status(400).json({
         success: false,
@@ -34,63 +42,45 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await fetch(
-      `${process.env.SUPABASE_URL}/rest/v1/orders`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": process.env.SUPABASE_SERVICE_ROLE_KEY,
-          "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-          "Prefer": "return=representation"
-        },
-
-        body: JSON.stringify({
-          order_id,
-          customer_name,
-          customer_phone,
-          customer_address,
-          items,
+    const { data, error } = await supabase
+      .from("orders")
+      .insert([
+        {
+          order_id: order_id,
+          customer_name: customer_name,
+          customer_phone: customer_phone,
+          customer_address: customer_address,
+          items: items,
           total: Number(total),
-          payment_method,
+          payment_method: payment_method,
           payment_id: payment_id || null,
-          status: status || "New"
-        })
-      }
-    );
+          status: status || "pending"
+        }
+      ])
+      .select()
+      .single();
 
-    const text = await response.text();
+    if (error) {
+      console.error("Supabase insert error:", error);
 
-    if (!response.ok) {
-      console.error("SUPABASE ERROR:", text);
-
-      return res.status(response.status).json({
+      return res.status(500).json({
         success: false,
-        error: text
+        error: error.message
       });
-    }
-
-    let data;
-
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = text;
     }
 
     return res.status(200).json({
       success: true,
       message: "Order saved successfully",
-      data
+      order: data
     });
 
   } catch (error) {
-    console.error("SAVE ORDER ERROR:", error);
+    console.error("Server error:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || "Server error"
     });
   }
 }
