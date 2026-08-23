@@ -1455,9 +1455,23 @@ footer small {
 </footer>
 
 
-
 let cart = [];
 let deliveryLocation = null;
+
+// ===============================
+// GO TO SECTION
+// ===============================
+
+function goTo(sectionId) {
+  const section = document.getElementById(sectionId);
+
+  if (section) {
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}
 
 
 // ===============================
@@ -1471,20 +1485,19 @@ function addToCart(name, price) {
   );
 
   if (existing) {
-
     existing.quantity++;
-
   } else {
-
     cart.push({
       name: name,
       price: Number(price),
       quantity: 1
     });
-
   }
 
   updateCart();
+
+  // Small confirmation
+  console.log(name + " added to cart");
 }
 
 
@@ -1518,11 +1531,13 @@ function updateCart() {
       </div>
     `;
 
-    if (cartCount)
+    if (cartCount) {
       cartCount.innerText = "0";
+    }
 
-    if (cartTotal)
+    if (cartTotal) {
       cartTotal.innerText = "0";
+    }
 
     return;
   }
@@ -1553,7 +1568,6 @@ function updateCart() {
 
       </div>
 
-
       <div class="quantity">
 
         <button
@@ -1582,12 +1596,13 @@ function updateCart() {
   });
 
 
-  if (cartCount)
+  if (cartCount) {
     cartCount.innerText = count;
+  }
 
-  if (cartTotal)
+  if (cartTotal) {
     cartTotal.innerText = total;
-
+  }
 }
 
 
@@ -1602,7 +1617,6 @@ function increase(index) {
   cart[index].quantity++;
 
   updateCart();
-
 }
 
 
@@ -1617,38 +1631,39 @@ function decrease(index) {
   cart[index].quantity--;
 
   if (cart[index].quantity <= 0) {
-
     cart.splice(index, 1);
-
   }
 
   updateCart();
-
 }
 
 
 // ===============================
-// TOTAL
+// GET TOTAL
 // ===============================
 
 function getTotal() {
 
   return cart.reduce(
-    (total, item) =>
-      total +
-      item.price * item.quantity,
+    (total, item) => {
+      return total +
+        item.price * item.quantity;
+    },
     0
   );
-
 }
 
+
 // ===============================
-// CONTINUE CHECKOUT
+// CONTINUE TO CHECKOUT
 // ===============================
 
 function continueCheckout() {
+
   if (cart.length === 0) {
+
     alert("Please add items to your cart.");
+
     return;
   }
 
@@ -1661,45 +1676,77 @@ function continueCheckout() {
 // ===============================
 
 function getCustomerDetails() {
+
+  const nameInput =
+    document.getElementById("customerName");
+
+  const phoneInput =
+    document.getElementById("customerPhone");
+
+  const addressInput =
+    document.getElementById("customerAddress");
+
   return {
-    name:
-      document.getElementById("customerName").value.trim(),
 
-    phone:
-      document.getElementById("customerPhone").value.trim(),
+    name: nameInput
+      ? nameInput.value.trim()
+      : "",
 
-    address:
-      document.getElementById("customerAddress").value.trim()
+    phone: phoneInput
+      ? phoneInput.value.trim()
+      : "",
+
+    address: addressInput
+      ? addressInput.value.trim()
+      : ""
   };
 }
 
 
 // ===============================
-// VALIDATE
+// VALIDATE DETAILS
 // ===============================
 
 function validateDetails() {
+
   if (cart.length === 0) {
+
     alert("Your cart is empty.");
+
     return false;
   }
 
-  const customer = getCustomerDetails();
+  const customer =
+    getCustomerDetails();
+
 
   if (customer.name.length < 2) {
+
     alert("Please enter your name.");
+
     return false;
   }
+
 
   if (!/^[0-9]{10}$/.test(customer.phone)) {
-    alert("Please enter a valid 10-digit phone number.");
+
+    alert(
+      "Please enter a valid 10-digit phone number."
+    );
+
     return false;
   }
 
+
   if (customer.address.length < 5) {
-    alert("Please enter complete delivery address.");
+
+    alert(
+      "Please enter complete delivery address."
+    );
+
     return false;
   }
+
 
   return true;
 }
@@ -1710,19 +1757,28 @@ function validateDetails() {
 // ===============================
 
 function getLocation() {
+
   const status =
     document.getElementById("locationStatus");
 
+  if (!status) return;
+
+
   if (!navigator.geolocation) {
+
     status.innerText =
       "Location is not supported.";
+
     return;
   }
+
 
   status.innerText =
     "📍 Getting location...";
 
+
   navigator.geolocation.getCurrentPosition(
+
     function(position) {
 
       const lat =
@@ -1731,33 +1787,46 @@ function getLocation() {
       const lng =
         position.coords.longitude;
 
+
       deliveryLocation = {
+
         latitude: lat,
         longitude: lng
+
       };
+
 
       const mapUrl =
         `https://www.google.com/maps?q=${lat},${lng}`;
 
+
       status.innerHTML = `
         📍 Location captured successfully.
         <br>
-        <a href="${mapUrl}" target="_blank">
+        <a
+          href="${mapUrl}"
+          target="_blank"
+        >
           View Location
         </a>
       `;
     },
 
+
     function() {
+
       status.innerText =
         "Location permission denied.";
+
     },
+
 
     {
       enableHighAccuracy: true,
       timeout: 15000,
       maximumAge: 0
     }
+
   );
 }
 
@@ -1767,7 +1836,9 @@ function getLocation() {
 // ===============================
 
 function showSummary() {
+
   if (!validateDetails()) return;
+
 
   const summary =
     document.getElementById("summaryItems");
@@ -1775,14 +1846,20 @@ function showSummary() {
   const total =
     document.getElementById("summaryTotal");
 
+
+  if (!summary || !total) return;
+
+
   summary.innerHTML = "";
 
-  cart.forEach(item => {
+
+  cart.forEach(function(item) {
 
     const div =
       document.createElement("div");
 
     div.className = "summary-item";
+
 
     div.innerHTML = `
       <span>
@@ -1794,17 +1871,31 @@ function showSummary() {
       </strong>
     `;
 
+
     summary.appendChild(div);
+
   });
 
-  total.innerText = getTotal();
 
-  document
-    .getElementById("paymentArea")
-    .scrollIntoView({
+  total.innerText =
+    getTotal();
+
+
+  const paymentArea =
+    document.getElementById("paymentArea");
+
+
+  if (paymentArea) {
+
+    paymentArea.scrollIntoView({
+
       behavior: "smooth",
+
       block: "center"
+
     });
+
+  }
 }
 
 
@@ -1816,94 +1907,174 @@ async function payOnline() {
 
   if (!validateDetails()) return;
 
-  const total = getTotal();
+
+  const total =
+    getTotal();
+
 
   if (!total || total <= 0) {
+
     alert("Your cart is empty!");
+
     return;
   }
 
+
+  const button =
+    document.getElementById("payButton");
+
+  const message =
+    document.getElementById("paymentMessage");
+
+
+  if (button) {
+
+    button.disabled = true;
+
+    button.innerText =
+      "Processing...";
+  }
+
+
   try {
 
-    const response = await fetch("/api/create-order", {
-      method: "POST",
+    const response =
+      await fetch(
+        "/api/create-order",
+        {
+          method: "POST",
 
-      headers: {
-        "Content-Type": "application/json"
-      },
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-      body: JSON.stringify({
-        amount: total
-      })
-    });
+          body: JSON.stringify({
+            amount: total
+          })
+        }
+      );
 
-    // IMPORTANT:
-    // First read response as TEXT
-    const responseText = await response.text();
+
+    const responseText =
+      await response.text();
+
 
     let order;
 
+
     try {
-      order = JSON.parse(responseText);
-    } catch (jsonError) {
+
+      order =
+        JSON.parse(responseText);
+
+    } catch (error) {
 
       console.error(
         "NON-JSON SERVER RESPONSE:",
         responseText
       );
 
+
       alert(
         "Payment server error:\n\n" +
         responseText
       );
 
+
+      if (button) {
+
+        button.disabled = false;
+
+        button.innerText =
+          "💳 Pay Online";
+      }
+
+
       return;
     }
 
+
     console.log(
-      "Razorpay Create Order Response:",
+      "Razorpay Order:",
       order
     );
+
 
     if (!response.ok) {
 
       alert(
         "Payment setup failed:\n\n" +
-        (order.error || "Unknown server error")
+        (
+          order.error ||
+          "Unknown server error"
+        )
       );
+
+
+      if (button) {
+
+        button.disabled = false;
+
+        button.innerText =
+          "💳 Pay Online";
+      }
+
 
       return;
     }
 
-    if (!order.id || !order.amount || !order.key) {
+
+    if (
+      !order.id ||
+      !order.amount ||
+      !order.key
+    ) {
 
       alert(
         "Razorpay order details are missing."
       );
 
+
+      if (button) {
+
+        button.disabled = false;
+
+        button.innerText =
+          "💳 Pay Online";
+      }
+
+
       return;
     }
 
-    if (typeof Razorpay === "undefined") {
+
+    if (
+      typeof Razorpay ===
+      "undefined"
+    ) {
 
       alert(
-        "Razorpay SDK is not loaded. Please refresh the page."
+        "Razorpay SDK is not loaded. Please refresh."
       );
+
+
+      if (button) {
+
+        button.disabled = false;
+
+        button.innerText =
+          "💳 Pay Online";
+      }
+
 
       return;
     }
 
-    const customerName =
-      document
-        .getElementById("customer-name")
-        .value
-        .trim();
 
-    const customerPhone =
-      document
-        .getElementById("customer-phone")
-        .value
-        .trim();
+    const customer =
+      getCustomerDetails();
+
 
     const options = {
 
@@ -1915,61 +2086,109 @@ async function payOnline() {
 
       name: "KravinZo",
 
-      description: "KravinZo Food Order",
+      description:
+        "KravinZo Food Order",
 
       order_id: order.id,
 
+
       prefill: {
-        name: customerName,
-        contact: customerPhone
+
+        name:
+          customer.name,
+
+        contact:
+          customer.phone
+
       },
+
 
       theme: {
+
         color: "#ff6a00"
-      },
-
-      handler: function (paymentResponse) {
-
-        console.log(
-          "Payment Successful:",
-          paymentResponse
-        );
-
-        alert(
-          "Payment successful! 🎉\n\nPayment ID: " +
-          paymentResponse.razorpay_payment_id
-        );
 
       },
+
+
+      handler:
+        function(paymentResponse) {
+
+          console.log(
+            "Payment Successful:",
+            paymentResponse
+          );
+
+
+          if (message) {
+
+            message.innerText =
+              "Payment successful! 🎉";
+          }
+
+
+          alert(
+            "Payment successful! 🎉\n\n" +
+            "Payment ID: " +
+            paymentResponse
+              .razorpay_payment_id
+          );
+
+
+          if (button) {
+
+            button.disabled = false;
+
+            button.innerText =
+              "💳 Pay Online";
+          }
+
+
+          sendWhatsApp(
+            "ONLINE PAYMENT\nPayment ID: " +
+            paymentResponse
+              .razorpay_payment_id
+          );
+
+        },
+
 
       modal: {
 
-        ondismiss: function () {
+        ondismiss:
+          function() {
 
-          console.log(
-            "Razorpay payment window closed"
-          );
+            if (button) {
 
-        }
+              button.disabled = false;
+
+              button.innerText =
+                "💳 Pay Online";
+            }
+
+          }
 
       }
 
     };
 
-    const rzp =
+
+    const razorpay =
       new Razorpay(options);
 
-    rzp.on(
+
+    razorpay.on(
       "payment.failed",
-      function (response) {
+      function(response) {
 
         console.error(
           "Razorpay Payment Failed:",
           response
         );
 
+
         const error =
           response.error || {};
+
 
         alert(
           "Payment Failed\n\n" +
@@ -1981,10 +2200,21 @@ async function payOnline() {
           (error.reason || "N/A")
         );
 
+
+        if (button) {
+
+          button.disabled = false;
+
+          button.innerText =
+            "💳 Pay Online";
+        }
+
       }
     );
 
-    rzp.open();
+
+    razorpay.open();
+
 
   } catch (error) {
 
@@ -1993,114 +2223,199 @@ async function payOnline() {
       error
     );
 
+
     alert(
       "Payment setup failed:\n\n" +
       error.message
     );
+
+
+    if (button) {
+
+      button.disabled = false;
+
+      button.innerText =
+        "💳 Pay Online";
+    }
+
   }
 }
-   
 
 
 // ===============================
-// COD
+// CASH ON DELIVERY
 // ===============================
 
 async function placeCOD() {
 
   if (!validateDetails()) return;
 
-  const total = getTotal();
-  const customer = getCustomerDetails();
+
+  const total =
+    getTotal();
+
+  const customer =
+    getCustomerDetails();
+
 
   if (
     !confirm(
       `Confirm COD order?\n\nTotal: ₹${total}`
     )
   ) {
+
     return;
   }
 
+
   const orderId =
-    "KZ-" +
-    Date.now();
+    "KZ-" + Date.now();
 
-  const items = cart.map(item => ({
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    itemTotal: item.price * item.quantity
-  }));
 
-  let finalAddress = customer.address;
+  const items =
+    cart.map(function(item) {
+
+      return {
+
+        name: item.name,
+
+        quantity:
+          item.quantity,
+
+        price:
+          item.price,
+
+        itemTotal:
+          item.price *
+          item.quantity
+
+      };
+
+    });
+
+
+  let finalAddress =
+    customer.address;
+
 
   if (deliveryLocation) {
+
     finalAddress +=
       `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+
   }
+
 
   try {
 
-    const response = await fetch(
-      "/api/save-order",
-      {
-        method: "POST",
+    const response =
+      await fetch(
+        "/api/save-order",
+        {
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+          method: "POST",
 
-        body: JSON.stringify({
-          order_id: orderId,
-          customer_name: customer.name,
-          address: finalAddress,
-          phone_number: customer.phone,
-          item: JSON.stringify(items),
-          payment_method: "CASH ON DELIVERY",
-          total: total,
-          payment_id: null,
-          status: "New"
-        })
-      }
-    );
+          headers: {
 
-    // IMPORTANT: First read as text
-    const responseText = await response.text();
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body: JSON.stringify({
+
+            order_id:
+              orderId,
+
+            customer_name:
+              customer.name,
+
+            address:
+              finalAddress,
+
+            phone_number:
+              customer.phone,
+
+            item:
+              JSON.stringify(items),
+
+            payment_method:
+              "CASH ON DELIVERY",
+
+            total:
+              total,
+
+            payment_id:
+              null,
+
+            status:
+              "New"
+
+          })
+
+        }
+      );
+
+
+    const responseText =
+      await response.text();
+
 
     let data;
 
-    try {
-      data = JSON.parse(responseText);
-    } catch (jsonError) {
-      console.error("NON-JSON SERVER RESPONSE:", responseText);
 
-      alert(
-        "Order save failed.\n\nServer response:\n" +
+    try {
+
+      data =
+        JSON.parse(responseText);
+
+    } catch (error) {
+
+      console.error(
+        "NON-JSON SERVER RESPONSE:",
         responseText
       );
 
+
+      alert(
+        "Order save failed.\n\n" +
+        responseText
+      );
+
+
       return;
     }
+
 
     if (!response.ok) {
-      console.error("SAVE ORDER ERROR:", data);
 
       alert(
         "Order save failed:\n" +
-        (data.error || "Server error")
+        (
+          data.error ||
+          "Server error"
+        )
       );
+
 
       return;
     }
+
 
     if (!data.success) {
+
       alert(
         "Order save failed:\n" +
-        (data.error || "Unknown error")
+        (
+          data.error ||
+          "Unknown error"
+        )
       );
+
 
       return;
     }
+
 
     alert(
       "Order placed successfully! 🎉\n\n" +
@@ -2108,80 +2423,125 @@ async function placeCOD() {
       orderId
     );
 
-    console.log("ORDER SAVED:", data);
+
+    console.log(
+      "ORDER SAVED:",
+      data
+    );
+
+
+    sendWhatsApp(
+      "CASH ON DELIVERY\nOrder ID: " +
+      orderId
+    );
+
 
   } catch (error) {
 
-    console.error("PLACE COD ERROR:", error);
+    console.error(
+      "PLACE COD ERROR:",
+      error
+    );
+
 
     alert(
       "Order save failed:\n" +
       error.message
     );
+
   }
 }
+
 
 // ===============================
 // WHATSAPP
 // ===============================
 
-function sendWhatsApp(paymentInfo = "ORDER") {
+function sendWhatsApp(
+  paymentInfo = "ORDER"
+) {
 
   if (!validateDetails()) return;
+
 
   const whatsappNumber =
     "919533897337";
 
+
   const customer =
     getCustomerDetails();
 
-  const orderDateTime = new Date();
+
+  const orderDateTime =
+    new Date();
+
 
   const orderDate =
-    orderDateTime.toLocaleDateString("en-IN");
+    orderDateTime.toLocaleDateString(
+      "en-IN"
+    );
+
 
   const orderTime =
-    orderDateTime.toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+    orderDateTime.toLocaleTimeString(
+      "en-IN",
+      {
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
+
 
   let message =
     "🍔 *KravinZo New Order*\n\n";
 
-  message +=
-    "📅 Date: " + orderDate + "\n";
 
   message +=
-    "⏰ Time: " + orderTime + "\n\n";
+    "📅 Date: " +
+    orderDate +
+    "\n";
+
+
+  message +=
+    "⏰ Time: " +
+    orderTime +
+    "\n\n";
+
 
   message +=
     "Name: " +
     customer.name +
     "\n";
 
+
   message +=
     "Phone: " +
     customer.phone +
     "\n";
+
 
   message +=
     "Address: " +
     customer.address +
     "\n\n";
 
+
   message +=
     "*Items:*\n";
 
-  cart.forEach(item => {
+
+  cart.forEach(function(item) {
 
     message +=
       `${item.name} x ${item.quantity} = ₹${item.price * item.quantity}\n`;
+
   });
+
 
   message +=
     "\nTotal: ₹" +
     getTotal();
+
 
   message +=
     "\nPayment: " +
@@ -2191,8 +2551,7 @@ function sendWhatsApp(paymentInfo = "ORDER") {
   if (deliveryLocation) {
 
     message +=
-      `\n\n📍 Location:
-https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+      `\n\n📍 Location:\nhttps://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
 
   }
 
@@ -2212,11 +2571,17 @@ https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.lo
 
 
 // ===============================
-// INITIAL CART
+// INITIALIZE CART
 // ===============================
 
-updateCart();
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
 
+    updateCart();
+
+  }
+);
   <script src="script.js"></script>
 </body>
 </html>
