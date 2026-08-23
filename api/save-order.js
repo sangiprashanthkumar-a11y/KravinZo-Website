@@ -1,21 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
-import WebSocket from "ws";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-
-    realtime: {
-      transport: WebSocket
-    }
-  }
-);
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -28,55 +10,85 @@ export default async function handler(req, res) {
     const {
       order_id,
       customer_name,
-      customer_phone,
-      customer_address,
-      items,
+      address,
+      phone_number,
+      item,
+      payment_method,
       total,
-      paymentmethod,
       payment_id,
       status
     } = req.body;
 
-    const { data, error } = await supabase
-      .from("orders")
-      .insert([
-        {
-          order_id: order_id,
-          customer_name: customer_name,
-          customer_phone: customer_phone,
-          customer_address: customer_address,
-          items: items,
+    if (
+      !order_id ||
+      !customer_name ||
+      !address ||
+      !phone_number ||
+      !item ||
+      !payment_method ||
+      total === undefined
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required order details"
+      });
+    }
+
+    const response = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/orders`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": process.env.SUPABASE_SERVICE_ROLE_KEY,
+          "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          order_id,
+          customer_name,
+          address,
+          phone_number,
+          item,
+          payment_method,
           total: Number(total),
-          paymentmethod: paymentmethod,
           payment_id: payment_id || null,
           status: status || "New"
-        }
-      ])
-      .select();
+        })
+      }
+    );
 
-    if (error) {
-      console.error("Supabase Error:", error);
+    const text = await response.text();
 
-      return res.status(500).json({
+    if (!response.ok) {
+      console.error("SUPABASE ERROR:", text);
+
+      return res.status(response.status).json({
         success: false,
-        error: error.message,
-        details: error.details || null,
-        hint: error.hint || null
+        error: text
       });
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = text;
     }
 
     return res.status(200).json({
       success: true,
       message: "Order saved successfully",
-      data: data
+      data
     });
 
   } catch (error) {
-    console.error("Server Error:", error);
+    console.error("SAVE ORDER ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Unknown server error"
+      error: error.message
     });
   }
 }
