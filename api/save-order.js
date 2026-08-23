@@ -10,11 +10,11 @@ export default async function handler(req, res) {
     const {
       order_id,
       customer_name,
-      address,
-      phone_number,
-      item,
-      payment_method,
+      customer_phone,
+      customer_address,
+      items,
       total,
+      payment_method,
       payment_id,
       status
     } = req.body;
@@ -22,9 +22,9 @@ export default async function handler(req, res) {
     if (
       !order_id ||
       !customer_name ||
-      !address ||
-      !phone_number ||
-      !item ||
+      !customer_phone ||
+      !customer_address ||
+      !items ||
       !payment_method ||
       total === undefined
     ) {
@@ -38,20 +38,22 @@ export default async function handler(req, res) {
       `${process.env.SUPABASE_URL}/rest/v1/orders`,
       {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
           "apikey": process.env.SUPABASE_SERVICE_ROLE_KEY,
           "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
           "Prefer": "return=representation"
         },
+
         body: JSON.stringify({
           order_id,
           customer_name,
-          address,
-          phone_number,
-          item,
-          payment_method,
+          customer_phone,
+          customer_address,
+          items,
           total: Number(total),
+          payment_method,
           payment_id: payment_id || null,
           status: status || "New"
         })
