@@ -1785,52 +1785,187 @@ async function payOnline() {
 
   const total = getTotal();
 
-  const button =
-    document.getElementById("payButton");
-
-  const message =
-    document.getElementById("paymentMessage");
-
-  button.disabled = true;
-  button.innerText =
-    "Creating Payment...";
+  if (!total || total <= 0) {
+    alert("Your cart is empty!");
+    return;
+  }
 
   try {
 
-    const response =
-      await fetch(
-        "/api/create-order",
-        {
-          method: "POST",
+    const response = await fetch("/api/create-order", {
+      method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+      headers: {
+        "Content-Type": "application/json"
+      },
 
-          body: JSON.stringify({
-            amount: total
-          })
-        }
+      body: JSON.stringify({
+        amount: total
+      })
+    });
+
+    // IMPORTANT:
+    // First read response as TEXT
+    const responseText = await response.text();
+
+    let order;
+
+    try {
+      order = JSON.parse(responseText);
+    } catch (jsonError) {
+
+      console.error(
+        "NON-JSON SERVER RESPONSE:",
+        responseText
       );
 
-    const data =
-      await response.json();
+      alert(
+        "Payment server error:\n\n" +
+        responseText
+      );
+
+      return;
+    }
+
+    console.log(
+      "Razorpay Create Order Response:",
+      order
+    );
 
     if (!response.ok) {
-      throw new Error(
-        data.error ||
-        "Order creation failed"
+
+      alert(
+        "Payment setup failed:\n\n" +
+        (order.error || "Unknown server error")
       );
+
+      return;
     }
 
-    if (!data.id || !data.key) {
-      throw new Error(
-        "Razorpay order details missing."
+    if (!order.id || !order.amount || !order.key) {
+
+      alert(
+        "Razorpay order details are missing."
       );
+
+      return;
     }
 
+    if (typeof Razorpay === "undefined") {
 
+      alert(
+        "Razorpay SDK is not loaded. Please refresh the page."
+      );
+
+      return;
+    }
+
+    const customerName =
+      document
+        .getElementById("customer-name")
+        .value
+        .trim();
+
+    const customerPhone =
+      document
+        .getElementById("customer-phone")
+        .value
+        .trim();
+
+    const options = {
+
+      key: order.key,
+
+      amount: order.amount,
+
+      currency: "INR",
+
+      name: "KravinZo",
+
+      description: "KravinZo Food Order",
+
+      order_id: order.id,
+
+      prefill: {
+        name: customerName,
+        contact: customerPhone
+      },
+
+      theme: {
+        color: "#ff6a00"
+      },
+
+      handler: function (paymentResponse) {
+
+        console.log(
+          "Payment Successful:",
+          paymentResponse
+        );
+
+        alert(
+          "Payment successful! 🎉\n\nPayment ID: " +
+          paymentResponse.razorpay_payment_id
+        );
+
+      },
+
+      modal: {
+
+        ondismiss: function () {
+
+          console.log(
+            "Razorpay payment window closed"
+          );
+
+        }
+
+      }
+
+    };
+
+    const rzp =
+      new Razorpay(options);
+
+    rzp.on(
+      "payment.failed",
+      function (response) {
+
+        console.error(
+          "Razorpay Payment Failed:",
+          response
+        );
+
+        const error =
+          response.error || {};
+
+        alert(
+          "Payment Failed\n\n" +
+          "Code: " +
+          (error.code || "N/A") +
+          "\nDescription: " +
+          (error.description || "N/A") +
+          "\nReason: " +
+          (error.reason || "N/A")
+        );
+
+      }
+    );
+
+    rzp.open();
+
+  } catch (error) {
+
+    console.error(
+      "Payment Error:",
+      error
+    );
+
+    alert(
+      "Payment setup failed:\n\n" +
+      error.message
+    );
+  }
+}
     // ==========================
     // RAZORPAY CHECKOUT
     // ==========================
