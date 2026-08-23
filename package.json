@@ -5,6 +5,8 @@
     "node": "20.x"
   },
   "dependencies": {
-  "ws": "^8.18.0"
-}
+    "@supabase/supabase-js": "^2.0.0",
+    "razorpay": "^2.9.6",
+    "ws": "^8.18.0"
+  }
 }
