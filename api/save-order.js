@@ -1,9 +1,6 @@
 import WebSocket from "ws";
 import { createClient } from "@supabase/supabase-js";
 
-// Node.js 20 WebSocket fix
-global.WebSocket = WebSocket;
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -11,6 +8,9 @@ const supabase = createClient(
     auth: {
       autoRefreshToken: false,
       persistSession: false
+    },
+    realtime: {
+      transport: WebSocket
     }
   }
 );
