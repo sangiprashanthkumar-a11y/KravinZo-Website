@@ -1,35 +1,30 @@
 import { createClient } from "@supabase/supabase-js";
+import WebSocket from "ws";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    },
+
+    realtime: {
+      transport: WebSocket
+    }
+  }
+);
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed"
+    });
+  }
+
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({
-        success: false,
-        error: "Method not allowed"
-      });
-    }
-
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      return res.status(500).json({
-        success: false,
-        error: "Supabase environment variables are missing"
-      });
-    }
-
-    const supabase = createClient(
-      supabaseUrl,
-      supabaseKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    );
-
     const {
       order_id,
       customer_name,
@@ -42,23 +37,6 @@ export default async function handler(req, res) {
       status
     } = req.body;
 
-    if (!order_id || !customer_name || !customer_phone || !customer_address) {
-      return res.status(400).json({
-        success: false,
-        error: "Required order details are missing"
-      });
-    }
-
-    let parsedItems = items;
-
-    if (typeof items === "string") {
-      try {
-        parsedItems = JSON.parse(items);
-      } catch {
-        parsedItems = items;
-      }
-    }
-
     const { data, error } = await supabase
       .from("orders")
       .insert([
@@ -67,7 +45,7 @@ export default async function handler(req, res) {
           customer_name: customer_name,
           customer_phone: customer_phone,
           customer_address: customer_address,
-          items: parsedItems,
+          items: items,
           total: Number(total),
           paymentmethod: paymentmethod,
           payment_id: payment_id || null,
@@ -77,7 +55,7 @@ export default async function handler(req, res) {
       .select();
 
     if (error) {
-      console.error("SUPABASE ERROR:", error);
+      console.error("Supabase Error:", error);
 
       return res.status(500).json({
         success: false,
@@ -94,7 +72,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("FUNCTION ERROR:", error);
+    console.error("Server Error:", error);
 
     return res.status(500).json({
       success: false,
