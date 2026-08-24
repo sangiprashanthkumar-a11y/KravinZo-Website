@@ -1833,7 +1833,11 @@ function validateDetails() {
 // LOCATION
 // ===============================
 
-  function calculateDistance(lat1, lon1, lat2, lon2) {
+ // ===============================
+// LOCATION
+// ===============================
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
 
   const R = 6371;
 
@@ -1894,46 +1898,59 @@ function getLocation() {
 
 
       deliveryLocation = {
-
         latitude: lat,
         longitude: lng
-
       };
-      deliveryDistanceKm = calculateDistance(
-  KRAVINZO_LAT,
-  KRAVINZO_LNG,
-  lat,
-  lng
-);
+
+
+      deliveryDistanceKm =
+        calculateDistance(
+          KRAVINZO_LAT,
+          KRAVINZO_LNG,
+          lat,
+          lng
+        );
 
 
       const mapUrl =
         `https://www.google.com/maps?q=${lat},${lng}`;
 
-status.innerHTML = `
-  📍 Location captured successfully.
-  <br>
-  📏 Distance: ${deliveryDistanceKm.toFixed(2)} km
-  <br>
-  💰 Delivery Charge: ${
-    getDeliveryCharge(deliveryDistanceKm) === 0
-      ? "FREE"
-      : "₹" + getDeliveryCharge(deliveryDistanceKm)
-  }
-  <br>
-  <a
-    href="${mapUrl}"
-    target="_blank"
-  >
-    View Location
-  </a>
-`;
+
+      const delivery =
+        getDeliveryCharge(deliveryDistanceKm);
 
 
-    function() {
+      status.innerHTML = `
+        📍 Location captured successfully.
+        <br>
+        📏 Distance: ${deliveryDistanceKm.toFixed(2)} km
+        <br>
+        💰 Delivery Charge:
+        ${delivery === 0 ? "FREE" : "₹" + delivery}
+        <br>
+        <a
+          href="${mapUrl}"
+          target="_blank"
+        >
+          View Location
+        </a>
+      `;
+
+
+      updateCart();
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "Location Error:",
+        error
+      );
 
       status.innerText =
-        "Location permission denied.";
+        "Location permission denied or unavailable.";
 
     },
 
