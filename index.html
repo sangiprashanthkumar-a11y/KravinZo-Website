@@ -1473,6 +1473,11 @@ footer small {
 let cart = [];
 let deliveryLocation = null;
 
+const KRAVINZO_LAT = 17.385574;
+const KRAVINZO_LNG = 78.359336;
+
+let deliveryDistanceKm = 0;
+
 // ===============================
 // GO TO SECTION
 // ===============================
@@ -1689,8 +1694,8 @@ function getTotal() {
   // ===============================
 // DELIVERY CHARGE
 // ===============================
+function getDeliveryCharge(distanceKm = deliveryDistanceKm) {
 
-function getDeliveryCharge(distanceKm) {
   const subtotal = getTotal();
 
   // ₹299 or above = FREE DELIVERY
@@ -1698,26 +1703,33 @@ function getDeliveryCharge(distanceKm) {
     return 0;
   }
 
-  // Distance based delivery charge
+  // Location not captured
+  if (!distanceKm || distanceKm <= 0) {
+    return 50;
+  }
+
+  // Up to 2 KM
   if (distanceKm <= 2) {
     return 20;
   }
 
+  // Up to 4 KM
   if (distanceKm <= 4) {
     return 30;
   }
 
+  // Up to 6 KM
   if (distanceKm <= 6) {
     return 40;
   }
 
+  // Above 6 KM
   return 50;
 }
 
-function getFinalTotal(distanceKm) {
+function getFinalTotal(distanceKm = deliveryDistanceKm) {
   return getTotal() + getDeliveryCharge(distanceKm);
 }
-
 
 // ===============================
 // CONTINUE TO CHECKOUT
@@ -1821,6 +1833,41 @@ function validateDetails() {
 // LOCATION
 // ===============================
 
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+
+  const R = 6371;
+
+  const dLat =
+    (lat2 - lat1) * Math.PI / 180;
+
+  const dLon =
+    (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) *
+    Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+
+  const c =
+    2 * Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+  return R * c;
+}
+
+
+function getLocation() {
+
+  const status =
+    document.getElementById("locationStatus");
+
+  if (!status) return;
+
 function getLocation() {
 
   const status =
@@ -1859,23 +1906,35 @@ function getLocation() {
         longitude: lng
 
       };
+      deliveryDistanceKm = calculateDistance(
+  KRAVINZO_LAT,
+  KRAVINZO_LNG,
+  lat,
+  lng
+);
 
 
       const mapUrl =
         `https://www.google.com/maps?q=${lat},${lng}`;
 
-
-      status.innerHTML = `
-        📍 Location captured successfully.
-        <br>
-        <a
-          href="${mapUrl}"
-          target="_blank"
-        >
-          View Location
-        </a>
-      `;
-    },
+status.innerHTML = `
+  📍 Location captured successfully.
+  <br>
+  📏 Distance: ${deliveryDistanceKm.toFixed(2)} km
+  <br>
+  💰 Delivery Charge: ${
+    getDeliveryCharge(deliveryDistanceKm) === 0
+      ? "FREE"
+      : "₹" + getDeliveryCharge(deliveryDistanceKm)
+  }
+  <br>
+  <a
+    href="${mapUrl}"
+    target="_blank"
+  >
+    View Location
+  </a>
+`;
 
 
     function() {
