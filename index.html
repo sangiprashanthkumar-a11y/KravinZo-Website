@@ -1690,18 +1690,32 @@ function getTotal() {
 // DELIVERY CHARGE
 // ===============================
 
-function getDeliveryCharge() {
+function getDeliveryCharge(distanceKm) {
   const subtotal = getTotal();
 
+  // ₹299 or above = FREE DELIVERY
   if (subtotal >= 299) {
     return 0;
   }
 
-  return 29;
+  // Distance based delivery charge
+  if (distanceKm <= 2) {
+    return 20;
+  }
+
+  if (distanceKm <= 4) {
+    return 30;
+  }
+
+  if (distanceKm <= 6) {
+    return 40;
+  }
+
+  return 50;
 }
 
-function getFinalTotal() {
-  return getTotal() + getDeliveryCharge();
+function getFinalTotal(distanceKm) {
+  return getTotal() + getDeliveryCharge(distanceKm);
 }
 
 
