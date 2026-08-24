@@ -1256,15 +1256,30 @@ footer small {
     </div>
 
 
-    <div class="cart-total">
+  <div class="cart-total">
 
-      <span>Total</span>
+  <div>
+    <span>Subtotal</span>
+    <strong>
+      ₹<span id="cartSubtotal">0</span>
+    </strong>
+  </div>
 
-      <strong>
-        ₹<span id="cartTotal">0</span>
-      </strong>
+  <div>
+    <span>Delivery</span>
+    <strong id="cartDelivery">
+      ₹0
+    </strong>
+  </div>
 
-    </div>
+  <div>
+    <span>Total</span>
+    <strong>
+      ₹<span id="cartTotal">0</span>
+    </strong>
+  </div>
+
+</div>
 
 
     <button
@@ -1600,9 +1615,28 @@ function updateCart() {
     cartCount.innerText = count;
   }
 
-  if (cartTotal) {
-    cartTotal.innerText = total;
-  }
+ const cartSubtotal =
+  document.getElementById("cartSubtotal");
+
+const cartDelivery =
+  document.getElementById("cartDelivery");
+
+if (cartSubtotal) {
+  cartSubtotal.innerText = total;
+}
+
+if (cartDelivery) {
+  const delivery = getDeliveryCharge();
+
+  cartDelivery.innerText =
+    delivery === 0
+      ? "FREE"
+      : "₹" + delivery;
+}
+
+if (cartTotal) {
+  cartTotal.innerText = getFinalTotal();
+}
 }
 
 
@@ -1651,6 +1685,23 @@ function getTotal() {
     },
     0
   );
+}
+  // ===============================
+// DELIVERY CHARGE
+// ===============================
+
+function getDeliveryCharge() {
+  const subtotal = getTotal();
+
+  if (subtotal >= 299) {
+    return 0;
+  }
+
+  return 29;
+}
+
+function getFinalTotal() {
+  return getTotal() + getDeliveryCharge();
 }
 
 
@@ -1877,8 +1928,25 @@ function showSummary() {
   });
 
 
-  total.innerText =
-    getTotal();
+  const subtotal = getTotal();
+const delivery = getDeliveryCharge();
+const finalTotal = getFinalTotal();
+
+summary.innerHTML += `
+  <div class="summary-item">
+    <span>Subtotal</span>
+    <strong>₹${subtotal}</strong>
+  </div>
+
+  <div class="summary-item">
+    <span>Delivery</span>
+    <strong>
+      ${delivery === 0 ? "FREE" : "₹" + delivery}
+    </strong>
+  </div>
+`;
+
+total.innerText = finalTotal;
 
 
   const paymentArea =
@@ -1908,8 +1976,8 @@ async function payOnline() {
   if (!validateDetails()) return;
 
 
-  const total =
-    getTotal();
+ const total =
+  getFinalTotal();
 
 
   if (!total || total <= 0) {
@@ -2252,7 +2320,7 @@ async function placeCOD() {
 
 
   const total =
-    getTotal();
+  getFinalTotal();
 
   const customer =
     getCustomerDetails();
@@ -2538,9 +2606,21 @@ function sendWhatsApp(
   });
 
 
-  message +=
-    "\nTotal: ₹" +
-    getTotal();
+  const subtotal = getTotal();
+const delivery = getDeliveryCharge();
+const finalTotal = getFinalTotal();
+
+message +=
+  "\nSubtotal: ₹" +
+  subtotal;
+
+message +=
+  "\nDelivery: " +
+  (delivery === 0 ? "FREE" : "₹" + delivery);
+
+message +=
+  "\nTotal: ₹" +
+  finalTotal;
 
 
   message +=
