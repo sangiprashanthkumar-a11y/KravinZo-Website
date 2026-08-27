@@ -49,11 +49,32 @@ export default async function handler(req, res) {
     }
 
     const { data, error } = await supabase
-      .from("orders")
-      .update({ status: status })
-      .eq("order_id", orderId)
-      .select()
-      .single();
+  .from("orders")
+  .update({ status: status })
+  .eq("order_id", orderId)
+  .select();
+
+if (error) {
+  console.error("Supabase update status error:", error);
+
+  return res.status(500).json({
+    success: false,
+    error: error.message
+  });
+}
+
+if (!data || data.length === 0) {
+  return res.status(404).json({
+    success: false,
+    error: "Order not found"
+  });
+}
+
+return res.status(200).json({
+  success: true,
+  message: "Order status updated successfully",
+  order: data[0]
+});
 
     if (error) {
       console.error("Supabase update status error:", error);
