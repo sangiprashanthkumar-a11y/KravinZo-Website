@@ -259,21 +259,23 @@
           );
 
 
-        if (response.ok) {
+      if (response.ok) {
 
-          document.getElementById(
-            "loginBox"
-          ).style.display = "none";
+  document.getElementById("pageLoading").style.display = "none";
 
+  document.getElementById(
+    "loginBox"
+  ).style.display = "none";
 
-          document.getElementById(
-            "orders"
-          ).style.display = "block";
+  document.getElementById(
+    "orders"
+  ).style.display = "block";
 
+  loadOrders();
 
-          loadOrders();
+}
 
-        } else {
+         else {
 
           document.getElementById(
             "loginBox"
@@ -286,13 +288,14 @@
 
         }
 
-      } catch (error) {
+      } } catch (error) {
 
-        console.error(
-          "Session check failed:",
-          error
-        );
+  document.getElementById("pageLoading").style.display = "none";
 
+  console.error(
+    "Session check failed:",
+    error
+  );
 
         document.getElementById(
           "loginBox"
