@@ -105,7 +105,18 @@
   <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
   <p><strong>Phone:</strong> ${order.customer_phone || "N/A"}</p>
   <p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
-  <p><strong>Total:</strong> ₹${order.total || 0}</p>
+
+${
+  order.customer_address && order.customer_address.includes("Google Maps:")
+    ? `
+      <button onclick="openMap('${order.customer_address.match(/https:\/\/www\.google\.com\/maps\?q=[^\n]+/)?.[0] || ""}')">
+        📍 Open Google Maps
+      </button>
+    `
+    : ""
+}
+
+<p><strong>Total:</strong> ₹${order.total || 0}</p>
 
 <p><strong>Items:</strong></p>
 
@@ -162,6 +173,11 @@
       }
     }
 
+     function openMap(url) {
+      if (url) {
+        window.open(url, "_blank");
+      }
+    }
 
     async function updateStatus(orderId, status) {
 
