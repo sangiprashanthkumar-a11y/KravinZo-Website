@@ -175,6 +175,22 @@ async function adminLogin() {
 
         ordersContainer.innerHTML = "";
 
+        const latestOrderId = data.orders[0]?.order_id;
+const previousOrderId = sessionStorage.getItem("kravinzoLastOrderId");
+
+if (
+  previousOrderId &&
+  latestOrderId &&
+  latestOrderId !== previousOrderId
+) {
+  playKravinZoSound();
+}
+
+if (latestOrderId) {
+  sessionStorage.setItem("kravinzoLastOrderId", latestOrderId);
+}
+        
+
         data.orders.forEach(order => {
 
           const card = document.createElement("div");
@@ -303,6 +319,37 @@ ${
 
       }
     }
+
+    function playKravinZoSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioContext();
+
+  const notes = [
+    { frequency: 523.25, start: 0, duration: 0.18 },
+    { frequency: 659.25, start: 0.20, duration: 0.18 },
+    { frequency: 783.99, start: 0.40, duration: 0.25 }
+  ];
+
+  notes.forEach(note => {
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = note.frequency;
+
+    oscillator.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const startTime = audioCtx.currentTime + note.start;
+
+    gain.gain.setValueAtTime(0.001, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.25, startTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + note.duration);
+
+    oscillator.start(startTime);
+    oscillator.stop(startTime + note.duration);
+  });
+}
     
   setInterval(() => {
   if (sessionStorage.getItem("kravinzoAdminLoggedIn") === "true") {
