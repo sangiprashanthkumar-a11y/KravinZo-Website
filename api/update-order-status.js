@@ -24,20 +24,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { order_id, status } = req.body || {};
+    const { orderId, status } = req.body || {};
 
-    if (!order_id || !status) {
+    if (!orderId || !status) {
       return res.status(400).json({
         success: false,
-        error: "order_id and status are required"
+        error: "orderId and status are required"
       });
     }
 
     const allowedStatuses = [
-      "Order Placed",
+      "pending",
       "Preparing Food",
       "Food Ready",
-      "Handed to Customer"
+      "Handed to Delivery",
+      "Delivered"
     ];
 
     if (!allowedStatuses.includes(status)) {
@@ -49,15 +50,13 @@ export default async function handler(req, res) {
 
     const { data, error } = await supabase
       .from("orders")
-      .update({
-        status: status
-      })
-      .eq("order_id", order_id)
+      .update({ status: status })
+      .eq("order_id", orderId)
       .select()
       .single();
 
     if (error) {
-      console.error("Supabase status update error:", error);
+      console.error("Supabase update status error:", error);
 
       return res.status(500).json({
         success: false,
@@ -72,11 +71,11 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("Status update error:", error);
+    console.error("Update order status error:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Status update failed"
+      error: error.message || "Failed to update order status"
     });
   }
 }
