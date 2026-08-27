@@ -331,37 +331,37 @@ function playKravinZoSound() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioCtx = new AudioContext();
 
-  const notes = [
-    { freq: 392.00, time: 0.00, length: 0.12 },
-    { freq: 523.25, time: 0.13, length: 0.12 },
-    { freq: 659.25, time: 0.26, length: 0.18 },
-    { freq: 783.99, time: 0.46, length: 0.28 }
-  ];
+  const startTime = audioCtx.currentTime;
+  const duration = 10;
 
-  notes.forEach(note => {
+  function ring(offset) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(note.freq, audioCtx.currentTime + note.time);
+    osc.type = "square";
+    osc.frequency.setValueAtTime(880, startTime + offset);
 
     osc.connect(gain);
     gain.connect(audioCtx.destination);
 
-    const start = audioCtx.currentTime + note.time;
-
-    gain.gain.setValueAtTime(0.001, start);
-    gain.gain.linearRampToValueAtTime(0.28, start + 0.025);
+    gain.gain.setValueAtTime(0.001, startTime + offset);
+    gain.gain.linearRampToValueAtTime(0.18, startTime + offset + 0.03);
+    gain.gain.setValueAtTime(0.18, startTime + offset + 0.35);
     gain.gain.exponentialRampToValueAtTime(
       0.001,
-      start + note.length
+      startTime + offset + 0.45
     );
 
-    osc.start(start);
-    osc.stop(start + note.length + 0.02);
-  });
+    osc.start(startTime + offset);
+    osc.stop(startTime + offset + 0.5);
+  }
 
+  // Continuous TRING... TRING... for 10 seconds
+  for (let i = 0; i < 20; i++) {
+    ring(i * 0.5);
+  }
 }
+
     
   setInterval(() => {
   if (sessionStorage.getItem("kravinzoAdminLoggedIn") === "true") {
