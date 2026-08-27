@@ -103,6 +103,48 @@
   </div>
 
   <script>
+async function adminLogin() {
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value;
+
+  const error = document.getElementById("loginError");
+
+  if (!username || !password) {
+    error.textContent = "Please enter username and password.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/admin-login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      sessionStorage.setItem("kravinzoAdminLoggedIn", "true");
+
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("orders").style.display = "block";
+
+      loadOrders();
+    } else {
+      error.textContent = data.error || "Invalid username or password.";
+    }
+
+  } catch (err) {
+    console.error(err);
+    error.textContent = "Login failed. Please try again.";
+  }
+}
+    
     async function loadOrders() {
       const ordersContainer = document.getElementById("orders");
 
