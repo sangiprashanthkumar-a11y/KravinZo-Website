@@ -304,7 +304,11 @@ ${
       }
     }
     
-  checkAdminSession();
+  setInterval(() => {
+  if (sessionStorage.getItem("kravinzoAdminLoggedIn") === "true") {
+    loadOrders();
+  }
+}, 15000);
   
   </script>
 
