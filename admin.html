@@ -679,104 +679,137 @@
     // ==========================================
     // KRAVINZO NEW ORDER SOUND
     // ==========================================
+let kravinZoAudioCtx = null;
 
-    function playKravinZoSound() {
+function unlockKravinZoSound() {
 
-      const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
+  const AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
 
+  if (!AudioContext) return;
 
-      if (!AudioContext) {
-        return;
-      }
+  if (!kravinZoAudioCtx) {
+    kravinZoAudioCtx = new AudioContext();
+  }
 
-
-      const audioCtx =
-        new AudioContext();
-
-
-      const startTime =
-        audioCtx.currentTime;
-
-
-      function ring(offset) {
-
-        const osc =
-          audioCtx.createOscillator();
+  if (kravinZoAudioCtx.state === "suspended") {
+    kravinZoAudioCtx.resume();
+  }
+}
 
 
-        const gain =
-          audioCtx.createGain();
+function playKravinZoSound() {
+
+  const AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+  if (!AudioContext) return;
+
+  if (!kravinZoAudioCtx) {
+    kravinZoAudioCtx =
+      new AudioContext();
+  }
+
+  const audioCtx =
+    kravinZoAudioCtx;
+
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
 
 
-        osc.type =
-          "square";
+  const start =
+    audioCtx.currentTime;
+
+  const duration = 10;
 
 
-        osc.frequency.setValueAtTime(
-          880,
-          startTime + offset
-        );
+  function alarmRing(offset) {
+
+    const osc =
+      audioCtx.createOscillator();
+
+    const gain =
+      audioCtx.createGain();
 
 
-        osc.connect(gain);
-
-        gain.connect(
-          audioCtx.destination
-        );
+    osc.type = "square";
 
 
-        gain.gain.setValueAtTime(
-          0.001,
-          startTime + offset
-        );
+    // Strong alarm frequency
+    osc.frequency.setValueAtTime(
+      950,
+      start + offset
+    );
+
+    osc.frequency.linearRampToValueAtTime(
+      700,
+      start + offset + 0.18
+    );
+
+    osc.frequency.linearRampToValueAtTime(
+      950,
+      start + offset + 0.36
+    );
 
 
-        gain.gain.linearRampToValueAtTime(
-          0.18,
-          startTime + offset + 0.03
-        );
+    osc.connect(gain);
+
+    gain.connect(
+      audioCtx.destination
+    );
 
 
-        gain.gain.setValueAtTime(
-          0.18,
-          startTime + offset + 0.35
-        );
+    gain.gain.setValueAtTime(
+      0.01,
+      start + offset
+    );
+
+    gain.gain.linearRampToValueAtTime(
+      0.35,
+      start + offset + 0.03
+    );
+
+    gain.gain.setValueAtTime(
+      0.35,
+      start + offset + 0.28
+    );
+
+    gain.gain.linearRampToValueAtTime(
+      0.01,
+      start + offset + 0.40
+    );
 
 
-        gain.gain.exponentialRampToValueAtTime(
-          0.001,
-          startTime + offset + 0.45
-        );
+    osc.start(
+      start + offset
+    );
+
+    osc.stop(
+      start + offset + 0.42
+    );
+
+  }
 
 
-        osc.start(
-          startTime + offset
-        );
+  // 🔔🔔🔔
+  // STRONG KRAVINZO ALARM
+  // MINIMUM 10 SECONDS
 
+  for (
+    let i = 0;
+    i < 25;
+    i++
+  ) {
 
-        osc.stop(
-          startTime + offset + 0.5
-        );
+    alarmRing(
+      i * 0.40
+    );
 
-      }
-
-
-      // 🔔 10 SECOND CONTINUOUS RING
-
-      for (
-        let i = 0;
-        i < 20;
-        i++
-      ) {
-
-        ring(i * 0.5);
-
-      }
-
-    }
-
+  }
+}
 
     // ==========================================
     // AUTO REFRESH EVERY 15 SECONDS
