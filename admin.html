@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>KravinZo Admin</title>
 
   <style>
@@ -66,38 +67,66 @@
       padding: 20px;
       border-radius: 10px;
     }
+
+    #loginBox {
+      max-width: 400px;
+      margin: 80px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    #loginBox input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #loginBox button {
+      width: 100%;
+      font-size: 16px;
+    }
+
+    #loginError {
+      color: red;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
 <body>
-  
-  <div id="pageLoading" style="
-  position:fixed;
-  inset:0;
-  background:#f5f5f5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  font-weight:bold;
-  z-index:9999;
-">
-  Checking admin session...
-</div>
 
-  <!-- LOGIN -->
+  <!-- ==========================================
+       PAGE LOADING
+  =========================================== -->
+
   <div
-    id="loginBox"
+    id="pageLoading"
     style="
-      display:none;
-      max-width:400px;
-      margin:80px auto;
-      background:white;
-      padding:25px;
-      border-radius:12px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      position:fixed;
+      inset:0;
+      background:#f5f5f5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:20px;
+      font-weight:bold;
+      z-index:9999;
     "
   >
+    Checking admin session...
+  </div>
+
+
+  <!-- ==========================================
+       LOGIN
+  =========================================== -->
+
+  <div id="loginBox" style="display:none;">
 
     <h2 style="margin-bottom:20px;">
       🔐 KravinZo Admin Login
@@ -107,57 +136,218 @@
       type="text"
       id="adminUsername"
       placeholder="Username"
-      style="
-        width:100%;
-        padding:12px;
-        margin-bottom:10px;
-        border:1px solid #ddd;
-        border-radius:8px;
-      "
+      autocomplete="username"
     >
 
     <input
       type="password"
       id="adminPassword"
       placeholder="Password"
-      style="
-        width:100%;
-        padding:12px;
-        margin-bottom:10px;
-        border:1px solid #ddd;
-        border-radius:8px;
-      "
+      autocomplete="current-password"
     >
 
-    <button
-      onclick="adminLogin()"
-      style="width:100%;"
-    >
+    <button onclick="adminLogin()">
       Login
     </button>
 
-    <p
-      id="loginError"
-      style="color:red;margin-top:10px;"
-    ></p>
+    <p id="loginError"></p>
 
   </div>
 
 
-  <!-- ADMIN -->
-  <h1>🍔 KravinZo Admin</h1>
+  <!-- ==========================================
+       ADMIN ORDERS
+  =========================================== -->
 
-  <div
-    id="orders"
-    style="display:none;"
-  >
-    <div class="empty">
-      Loading orders...
+  <div id="adminPage" style="display:none;">
+
+    <h1>🍔 KravinZo Admin</h1>
+
+    <div id="orders">
+
+      <div class="empty">
+        Loading orders...
+      </div>
+
     </div>
+
   </div>
 
 
   <script>
+
+    // ==========================================
+    // GLOBAL VARIABLES
+    // ==========================================
+
+    let kravinZoAudioCtx = null;
+
+    let lastOrderId =
+      localStorage.getItem("kravinzoLastOrderId") || null;
+
+
+    // ==========================================
+    // SHOW LOGIN
+    // ==========================================
+
+    function showLogin() {
+
+      document.getElementById("pageLoading").style.display =
+        "none";
+
+      document.getElementById("loginBox").style.display =
+        "block";
+
+      document.getElementById("adminPage").style.display =
+        "none";
+    }
+
+
+    // ==========================================
+    // SHOW ADMIN
+    // ==========================================
+
+    function showAdmin() {
+
+      document.getElementById("pageLoading").style.display =
+        "none";
+
+      document.getElementById("loginBox").style.display =
+        "none";
+
+      document.getElementById("adminPage").style.display =
+        "block";
+    }
+
+
+    // ==========================================
+    // UNLOCK SOUND
+    // ==========================================
+
+    function unlockKravinZoSound() {
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioContext) return;
+
+      if (!kravinZoAudioCtx) {
+
+        kravinZoAudioCtx =
+          new AudioContext();
+      }
+
+      if (
+        kravinZoAudioCtx.state === "suspended"
+      ) {
+
+        kravinZoAudioCtx.resume();
+      }
+    }
+
+
+    // ==========================================
+    // NEW ORDER SOUND
+    // ==========================================
+
+    function playKravinZoSound() {
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioContext) return;
+
+      if (!kravinZoAudioCtx) {
+
+        kravinZoAudioCtx =
+          new AudioContext();
+      }
+
+      const audioCtx =
+        kravinZoAudioCtx;
+
+      if (audioCtx.state === "suspended") {
+
+        audioCtx.resume();
+      }
+
+      const start =
+        audioCtx.currentTime;
+
+
+      // 10 seconds alarm
+
+      for (let i = 0; i < 25; i++) {
+
+        const offset =
+          i * 0.40;
+
+        const osc =
+          audioCtx.createOscillator();
+
+        const gain =
+          audioCtx.createGain();
+
+
+        osc.type = "square";
+
+
+        osc.frequency.setValueAtTime(
+          950,
+          start + offset
+        );
+
+        osc.frequency.linearRampToValueAtTime(
+          700,
+          start + offset + 0.18
+        );
+
+        osc.frequency.linearRampToValueAtTime(
+          950,
+          start + offset + 0.36
+        );
+
+
+        gain.gain.setValueAtTime(
+          0.01,
+          start + offset
+        );
+
+        gain.gain.linearRampToValueAtTime(
+          0.35,
+          start + offset + 0.03
+        );
+
+        gain.gain.setValueAtTime(
+          0.35,
+          start + offset + 0.28
+        );
+
+        gain.gain.linearRampToValueAtTime(
+          0.01,
+          start + offset + 0.40
+        );
+
+
+        osc.connect(gain);
+
+        gain.connect(
+          audioCtx.destination
+        );
+
+
+        osc.start(
+          start + offset
+        );
+
+        osc.stop(
+          start + offset + 0.42
+        );
+      }
+    }
+
 
     // ==========================================
     // ADMIN LOGIN
@@ -166,13 +356,22 @@
     async function adminLogin() {
 
       const username =
-        document.getElementById("adminUsername").value.trim();
+        document.getElementById(
+          "adminUsername"
+        ).value.trim();
 
       const password =
-        document.getElementById("adminPassword").value;
+        document.getElementById(
+          "adminPassword"
+        ).value;
 
       const error =
-        document.getElementById("loginError");
+        document.getElementById(
+          "loginError"
+        );
+
+
+      error.textContent = "";
 
 
       if (!username || !password) {
@@ -186,23 +385,25 @@
 
       try {
 
-        const response = await fetch(
-          "/api/admin-login",
-          {
-            method: "POST",
+        const response =
+          await fetch(
+            "/api/admin-login",
+            {
+              method: "POST",
 
-            credentials: "include",
+              credentials: "include",
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-            body: JSON.stringify({
-              username: username,
-              password: password
-            })
-          }
-        );
+              body: JSON.stringify({
+                username: username,
+                password: password
+              })
+            }
+          );
 
 
         const data =
@@ -211,33 +412,36 @@
 
         if (data.success) {
 
-          document.getElementById(
-            "loginBox"
-          ).style.display = "none";
+          // Browser sound permission unlock
+
+          unlockKravinZoSound();
 
 
-          document.getElementById(
-            "orders"
-          ).style.display = "block";
+          showAdmin();
 
 
-          loadOrders();
+          // Load orders after login
+
+          await loadOrders();
+
 
         } else {
 
           error.textContent =
             data.error ||
             "Invalid username or password.";
-
         }
+
 
       } catch (err) {
 
-        console.error(err);
+        console.error(
+          "Login error:",
+          err
+        );
 
         error.textContent =
           "Login failed. Please try again.";
-
       }
     }
 
@@ -246,56 +450,59 @@
     // CHECK ADMIN SESSION
     // ==========================================
 
- async function checkAdminSession() {
+    async function checkAdminSession() {
 
-  try {
+      try {
 
-    const response = await fetch(
-      "/api/get-orders",
-      {
-        credentials: "include"
+        const response =
+          await fetch(
+            "/api/get-orders",
+            {
+              method: "GET",
+
+              credentials: "include",
+
+              cache: "no-store"
+            }
+          );
+
+
+        /*
+          IMPORTANT:
+
+          200 = logged in
+          401 = not logged in
+
+          Only after successful login
+          orders page is shown.
+        */
+
+
+        if (response.ok) {
+
+          showAdmin();
+
+          await loadOrders();
+
+          return;
+        }
+
+
+        // Not logged in
+
+        showLogin();
+
+
+      } catch (error) {
+
+        console.error(
+          "Session check failed:",
+          error
+        );
+
+        showLogin();
       }
-    );
-
-    // =========================
-    // ALREADY LOGGED IN
-    // =========================
-
-    if (response.ok) {
-
-      document.getElementById("pageLoading").style.display = "none";
-
-      document.getElementById("loginBox").style.display = "none";
-
-      document.getElementById("orders").style.display = "block";
-
-      loadOrders();
-
-      return;
     }
-
-    // =========================
-    // NOT LOGGED IN
-    // =========================
-
-    document.getElementById("pageLoading").style.display = "none";
-
-    document.getElementById("loginBox").style.display = "block";
-
-    document.getElementById("orders").style.display = "none";
-
-  } catch (error) {
-
-    console.error("Session check failed:", error);
-
-    document.getElementById("pageLoading").style.display = "none";
-
-    document.getElementById("loginBox").style.display = "block";
-
-    document.getElementById("orders").style.display = "none";
-
-  }
-}
 
 
     // ==========================================
@@ -305,7 +512,9 @@
     async function loadOrders() {
 
       const ordersContainer =
-        document.getElementById("orders");
+        document.getElementById(
+          "orders"
+        );
 
 
       try {
@@ -314,34 +523,43 @@
           await fetch(
             "/api/get-orders",
             {
-              credentials: "include"
+              method: "GET",
+
+              credentials: "include",
+
+              cache: "no-store"
             }
           );
+
+
+        /*
+          SESSION EXPIRED
+        */
+
+        if (response.status === 401) {
+
+          showLogin();
+
+          return;
+        }
 
 
         const data =
           await response.json();
 
 
-        // NOT LOGGED IN
+        if (!response.ok) {
 
-        if (response.status === 401) {
-
-          document.getElementById(
-            "loginBox"
-          ).style.display = "block";
-
-
-          document.getElementById(
-            "orders"
-          ).style.display = "none";
-
+          ordersContainer.innerHTML =
+            '<div class="empty">Failed to load orders.</div>';
 
           return;
         }
 
 
-        // NO ORDERS
+        /*
+          NO ORDERS
+        */
 
         if (
           !data.success ||
@@ -356,238 +574,294 @@
         }
 
 
-        ordersContainer.innerHTML = "";
+        /*
+          NEW ORDER DETECTION
+        */
 
-
-        // ==========================================
-        // NEW ORDER DETECTION
-        // ==========================================
+        const latestOrder =
+          data.orders[0];
 
         const latestOrderId =
-          data.orders[0]?.order_id;
-
-
-        const previousOrderId =
-          localStorage.getItem(
-            "kravinzoLastOrderId"
-          );
+          latestOrder?.order_id;
 
 
         if (
-          previousOrderId &&
+          lastOrderId &&
           latestOrderId &&
-          latestOrderId !== previousOrderId
+          latestOrderId !== lastOrderId
         ) {
 
-          playKravinZoSound();
+          console.log(
+            "🔔 NEW KRAVINZO ORDER:",
+            latestOrderId
+          );
 
+          playKravinZoSound();
         }
 
 
+        /*
+          Save latest order ID
+        */
+
         if (latestOrderId) {
+
+          lastOrderId =
+            latestOrderId;
 
           localStorage.setItem(
             "kravinzoLastOrderId",
             latestOrderId
           );
-
         }
 
 
-        // ==========================================
-        // DISPLAY ORDERS
-        // ==========================================
+        /*
+          CLEAR ORDERS
+        */
 
-        data.orders.forEach(order => {
-
-          const card =
-            document.createElement("div");
+        ordersContainer.innerHTML = "";
 
 
-          card.className =
-            "order-card";
+        /*
+          DISPLAY ORDERS
+        */
+
+        data.orders.forEach(
+          order => {
+
+            const card =
+              document.createElement(
+                "div"
+              );
 
 
-          card.innerHTML = `
-
-            <h3>
-              Order #${order.order_id}
-            </h3>
+            card.className =
+              "order-card";
 
 
-            <p>
-              <strong>🕐 Order Time:</strong>
-              ${
-                new Date(order.created_at)
-                .toLocaleString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true
-                })
+            let itemsHTML =
+              "Unable to read items";
+
+
+            try {
+
+              let items =
+                order.items;
+
+
+              if (
+                typeof items === "string"
+              ) {
+
+                items =
+                  JSON.parse(items);
               }
-            </p>
 
 
-            <p>
-              <strong>Customer:</strong>
-              ${order.customer_name || "N/A"}
-            </p>
+              if (Array.isArray(items)) {
+
+                itemsHTML =
+                  items
+                    .map(
+                      item => `
+                        <div style="margin:6px 0;">
+                          ${item.name || "Item"}
+                          × ${item.quantity || 1}
+                          — ₹${item.itemTotal || 0}
+                        </div>
+                      `
+                    )
+                    .join("");
+              }
 
 
-            <p>
-              <strong>Phone:</strong>
-              ${order.customer_phone || "N/A"}
-            </p>
+            } catch (error) {
+
+              console.error(
+                "Items parse error:",
+                error
+              );
+            }
 
 
-            <p>
-              <strong>Address:</strong>
-              ${order.customer_address || "N/A"}
-            </p>
+            /*
+              GOOGLE MAP URL
+            */
+
+            let mapButton = "";
 
 
-            ${
+            if (
               order.customer_address &&
               order.customer_address.includes(
                 "Google Maps:"
               )
-              ? `
+            ) {
+
+              const mapUrl =
+                order.customer_address
+                  .split(
+                    "Google Maps:"
+                  )[1]
+                  .trim();
+
+
+              mapButton = `
                 <button
-                  onclick="openMap('${order.customer_address.split("Google Maps:")[1].trim()}')"
+                  onclick="openMap(${JSON.stringify(mapUrl)})"
                 >
                   📍 Open Google Maps
                 </button>
-              `
-              : ""
+              `;
             }
 
 
-            <p>
-              <strong>Total:</strong>
-              ₹${order.total || 0}
-            </p>
+            /*
+              ORDER CARD
+            */
+
+            card.innerHTML = `
+
+              <h3>
+                Order #${order.order_id}
+              </h3>
 
 
-            <p>
-              <strong>Items:</strong>
-            </p>
+              <p style="margin-bottom:8px;">
+                <strong>🕐 Order Time:</strong>
+                ${
+                  order.created_at
+                    ? new Date(
+                        order.created_at
+                      ).toLocaleString(
+                        "en-IN",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true
+                        }
+                      )
+                    : "N/A"
+                }
+              </p>
 
 
-            <div class="items">
-
-              ${
-                (() => {
-
-                  try {
-
-                    const items =
-                      JSON.parse(
-                        order.items || "[]"
-                      );
+              <p style="margin-bottom:8px;">
+                <strong>Customer:</strong>
+                ${order.customer_name || "N/A"}
+              </p>
 
 
-                    return items
-                      .map(item => `
-
-                        <div style="margin:6px 0;">
-
-                          ${item.name}
-                          × ${item.quantity}
-                          — ₹${item.itemTotal}
-
-                        </div>
-
-                      `)
-                      .join("");
+              <p style="margin-bottom:8px;">
+                <strong>Phone:</strong>
+                ${order.customer_phone || "N/A"}
+              </p>
 
 
-                  } catch {
-
-                    return "Unable to read items";
-
-                  }
-
-                })()
-              }
-
-            </div>
+              <p style="margin-bottom:8px;">
+                <strong>Address:</strong>
+                ${order.customer_address || "N/A"}
+              </p>
 
 
-            <div class="status">
-
-              ${order.status || "pending"}
-
-            </div>
+              ${mapButton}
 
 
-            <br>
+              <p style="margin-top:10px;">
+                <strong>Total:</strong>
+                ₹${order.total || 0}
+              </p>
 
 
-            <button
-              onclick="
-                updateStatus(
-                  '${order.order_id}',
-                  'Preparing Food'
-                )
-              "
-            >
-              Preparing Food
-            </button>
+              <p style="margin-top:10px;">
+                <strong>Items:</strong>
+              </p>
 
 
-            <button
-              onclick="
-                updateStatus(
-                  '${order.order_id}',
-                  'Food Ready'
-                )
-              "
-            >
-              Food Ready
-            </button>
+              <div class="items">
+                ${itemsHTML}
+              </div>
 
 
-            <button
-              onclick="
-                updateStatus(
-                  '${order.order_id}',
-                  'Handed to Delivery'
-                )
-              "
-            >
-              Handed to Delivery
-            </button>
+              <div class="status">
+                ${order.status || "pending"}
+              </div>
 
 
-            <button
-              onclick="
-                updateStatus(
-                  '${order.order_id}',
-                  'Delivered'
-                )
-              "
-            >
-              Delivered
-            </button>
-
-          `;
+              <br>
 
 
-          ordersContainer.appendChild(card);
+              <button
+                onclick="
+                  updateStatus(
+                    ${JSON.stringify(order.order_id)},
+                    'Preparing Food'
+                  )
+                "
+              >
+                Preparing Food
+              </button>
 
-        });
+
+              <button
+                onclick="
+                  updateStatus(
+                    ${JSON.stringify(order.order_id)},
+                    'Food Ready'
+                  )
+                "
+              >
+                Food Ready
+              </button>
+
+
+              <button
+                onclick="
+                  updateStatus(
+                    ${JSON.stringify(order.order_id)},
+                    'Handed to Delivery'
+                  )
+                "
+              >
+                Handed to Delivery
+              </button>
+
+
+              <button
+                onclick="
+                  updateStatus(
+                    ${JSON.stringify(order.order_id)},
+                    'Delivered'
+                  )
+                "
+              >
+                Delivered
+              </button>
+
+            `;
+
+
+            ordersContainer.appendChild(
+              card
+            );
+          }
+        );
 
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Load orders error:",
+          error
+        );
+
 
         ordersContainer.innerHTML =
           '<div class="empty">Failed to load orders.</div>';
-
       }
     }
 
@@ -604,9 +878,7 @@
           url,
           "_blank"
         );
-
       }
-
     }
 
 
@@ -625,29 +897,33 @@
           await fetch(
             "/api/update-order-status",
             {
-
               method: "POST",
 
               credentials: "include",
 
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type":
+                  "application/json"
               },
 
               body: JSON.stringify({
-
                 orderId: orderId,
-
                 status: status
-
               })
-
             }
           );
 
 
         const data =
           await response.json();
+
+
+        if (response.status === 401) {
+
+          showLogin();
+
+          return;
+        }
 
 
         if (data.success) {
@@ -657,7 +933,8 @@
           );
 
 
-          loadOrders();
+          await loadOrders();
+
 
         } else {
 
@@ -665,193 +942,72 @@
             data.error ||
             "Failed to update status"
           );
-
         }
+
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Update status error:",
+          error
+        );
+
 
         alert(
           "Something went wrong"
         );
-
       }
-
     }
 
 
     // ==========================================
-    // KRAVINZO NEW ORDER SOUND
-    // ==========================================
-let kravinZoAudioCtx = null;
-
-function unlockKravinZoSound() {
-
-  const AudioContext =
-    window.AudioContext ||
-    window.webkitAudioContext;
-
-  if (!AudioContext) return;
-
-  if (!kravinZoAudioCtx) {
-    kravinZoAudioCtx = new AudioContext();
-  }
-
-  if (kravinZoAudioCtx.state === "suspended") {
-    kravinZoAudioCtx.resume();
-  }
-}
-
-
-function playKravinZoSound() {
-
-  const AudioContext =
-    window.AudioContext ||
-    window.webkitAudioContext;
-
-  if (!AudioContext) return;
-
-  if (!kravinZoAudioCtx) {
-    kravinZoAudioCtx =
-      new AudioContext();
-  }
-
-  const audioCtx =
-    kravinZoAudioCtx;
-
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
-
-
-  const start =
-    audioCtx.currentTime;
-
-
-  function alarmRing(offset) {
-
-    const osc =
-      audioCtx.createOscillator();
-
-    const gain =
-      audioCtx.createGain();
-
-
-    osc.type = "square";
-
-
-    // Strong alarm frequency
-    osc.frequency.setValueAtTime(
-      950,
-      start + offset
-    );
-
-    osc.frequency.linearRampToValueAtTime(
-      700,
-      start + offset + 0.18
-    );
-
-    osc.frequency.linearRampToValueAtTime(
-      950,
-      start + offset + 0.36
-    );
-
-
-    osc.connect(gain);
-
-    gain.connect(
-      audioCtx.destination
-    );
-
-
-    gain.gain.setValueAtTime(
-      0.01,
-      start + offset
-    );
-
-    gain.gain.linearRampToValueAtTime(
-      0.35,
-      start + offset + 0.03
-    );
-
-    gain.gain.setValueAtTime(
-      0.35,
-      start + offset + 0.28
-    );
-
-    gain.gain.linearRampToValueAtTime(
-      0.01,
-      start + offset + 0.40
-    );
-
-
-    osc.start(
-      start + offset
-    );
-
-    osc.stop(
-      start + offset + 0.42
-    );
-
-  }
-
-
-  // 🔔🔔🔔
-  // STRONG KRAVINZO ALARM
-  // MINIMUM 10 SECONDS
-
-  for (
-    let i = 0;
-    i < 25;
-    i++
-  ) {
-
-    alarmRing(
-      i * 0.40
-    );
-
-  }
-}
-
-    // ==========================================
-    // AUTO REFRESH EVERY 15 SECONDS
+    // AUTO REFRESH
     // ==========================================
 
-    setInterval(() => {
+    setInterval(
+      async () => {
 
-      const orders =
-        document.getElementById(
-          "orders"
-        );
+        const adminPage =
+          document.getElementById(
+            "adminPage"
+          );
 
 
-      if (
-        orders &&
-        orders.style.display !== "none"
-      ) {
+        if (
+          adminPage &&
+          adminPage.style.display !== "none"
+        ) {
 
-        loadOrders();
+          await loadOrders();
+        }
 
-      }
+      },
+      15000
+    );
 
-    }, 15000);
 
     // ==========================================
-// UNLOCK SOUND AFTER ADMIN USER INTERACTION
-// ==========================================
+    // UNLOCK SOUND AFTER USER INTERACTION
+    // ==========================================
 
-document.addEventListener("click", unlockKravinZoSound);
-document.addEventListener("keydown", unlockKravinZoSound);
-
-// ==========================================
-// START SESSION CHECK
-// ==========================================
-
-checkAdminSession();
+    document.addEventListener(
+      "click",
+      unlockKravinZoSound
+    );
 
 
- 
+    document.addEventListener(
+      "keydown",
+      unlockKravinZoSound
+    );
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    checkAdminSession();
+
   </script>
 
 </body>
