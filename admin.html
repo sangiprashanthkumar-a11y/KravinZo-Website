@@ -182,7 +182,17 @@ async function adminLogin() {
 
           card.innerHTML = `
   <h3>Order #${order.order_id}</h3>
-
+  
+  <p><strong>🕐 Order Time:</strong> ${
+  new Date(order.created_at).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  })
+}</p>
   <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
   <p><strong>Phone:</strong> ${order.customer_phone || "N/A"}</p>
   <p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
