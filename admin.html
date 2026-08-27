@@ -71,49 +71,83 @@
 
 <body>
 
-  <!-- LOGIN BOX -->
+  <!-- LOGIN -->
   <div
     id="loginBox"
-    style="display:none;max-width:400px;margin:80px auto;background:white;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);"
+    style="
+      display:none;
+      max-width:400px;
+      margin:80px auto;
+      background:white;
+      padding:25px;
+      border-radius:12px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    "
   >
 
-    <h2 style="margin-bottom:20px;">🔐 KravinZo Admin Login</h2>
+    <h2 style="margin-bottom:20px;">
+      🔐 KravinZo Admin Login
+    </h2>
 
     <input
       type="text"
       id="adminUsername"
       placeholder="Username"
-      style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
+      style="
+        width:100%;
+        padding:12px;
+        margin-bottom:10px;
+        border:1px solid #ddd;
+        border-radius:8px;
+      "
     >
 
     <input
       type="password"
       id="adminPassword"
       placeholder="Password"
-      style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
+      style="
+        width:100%;
+        padding:12px;
+        margin-bottom:10px;
+        border:1px solid #ddd;
+        border-radius:8px;
+      "
     >
 
-    <button onclick="adminLogin()" style="width:100%;">
+    <button
+      onclick="adminLogin()"
+      style="width:100%;"
+    >
       Login
     </button>
 
-    <p id="loginError" style="color:red;margin-top:10px;"></p>
+    <p
+      id="loginError"
+      style="color:red;margin-top:10px;"
+    ></p>
 
   </div>
+
 
   <!-- ADMIN -->
   <h1>🍔 KravinZo Admin</h1>
 
-  <div id="orders" style="display:none;">
-    <div class="empty">Loading orders...</div>
+  <div
+    id="orders"
+    style="display:none;"
+  >
+    <div class="empty">
+      Loading orders...
+    </div>
   </div>
 
 
   <script>
 
-    // =========================
+    // ==========================================
     // ADMIN LOGIN
-    // =========================
+    // ==========================================
 
     async function adminLogin() {
 
@@ -126,41 +160,60 @@
       const error =
         document.getElementById("loginError");
 
+
       if (!username || !password) {
+
         error.textContent =
           "Please enter username and password.";
+
         return;
       }
 
+
       try {
 
-        const response = await fetch("/api/admin-login", {
-          method: "POST",
+        const response = await fetch(
+          "/api/admin-login",
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+            credentials: "include",
 
-          body: JSON.stringify({
-            username,
-            password
-          })
-        });
+            headers: {
+              "Content-Type": "application/json"
+            },
 
-        const data = await response.json();
+            body: JSON.stringify({
+              username: username,
+              password: password
+            })
+          }
+        );
+
+
+        const data =
+          await response.json();
+
 
         if (data.success) {
 
-          document.getElementById("loginBox").style.display = "none";
+          document.getElementById(
+            "loginBox"
+          ).style.display = "none";
 
-          document.getElementById("orders").style.display = "block";
+
+          document.getElementById(
+            "orders"
+          ).style.display = "block";
+
 
           loadOrders();
 
         } else {
 
           error.textContent =
-            data.error || "Invalid username or password.";
+            data.error ||
+            "Invalid username or password.";
 
         }
 
@@ -175,75 +228,116 @@
     }
 
 
-    // =========================
-    // CHECK LOGIN SESSION
-    // =========================
+    // ==========================================
+    // CHECK ADMIN SESSION
+    // ==========================================
 
     async function checkAdminSession() {
 
       try {
 
         const response =
-          await fetch("/api/get-orders");
+          await fetch(
+            "/api/get-orders",
+            {
+              credentials: "include"
+            }
+          );
+
 
         if (response.ok) {
 
-          document.getElementById("loginBox").style.display = "none";
+          document.getElementById(
+            "loginBox"
+          ).style.display = "none";
 
-          document.getElementById("orders").style.display = "block";
+
+          document.getElementById(
+            "orders"
+          ).style.display = "block";
+
 
           loadOrders();
 
         } else {
 
-          document.getElementById("loginBox").style.display = "block";
+          document.getElementById(
+            "loginBox"
+          ).style.display = "block";
 
-          document.getElementById("orders").style.display = "none";
+
+          document.getElementById(
+            "orders"
+          ).style.display = "none";
 
         }
 
       } catch (error) {
 
-        console.error("Session check failed:", error);
+        console.error(
+          "Session check failed:",
+          error
+        );
 
-        document.getElementById("loginBox").style.display = "block";
 
-        document.getElementById("orders").style.display = "none";
+        document.getElementById(
+          "loginBox"
+        ).style.display = "block";
+
+
+        document.getElementById(
+          "orders"
+        ).style.display = "none";
 
       }
     }
 
 
-    // =========================
+    // ==========================================
     // LOAD ORDERS
-    // =========================
+    // ==========================================
 
     async function loadOrders() {
 
       const ordersContainer =
         document.getElementById("orders");
 
+
       try {
 
         const response =
-          await fetch("/api/get-orders");
+          await fetch(
+            "/api/get-orders",
+            {
+              credentials: "include"
+            }
+          );
+
 
         const data =
           await response.json();
 
 
         // NOT LOGGED IN
+
         if (response.status === 401) {
 
-          document.getElementById("loginBox").style.display = "block";
+          document.getElementById(
+            "loginBox"
+          ).style.display = "block";
 
-          document.getElementById("orders").style.display = "none";
+
+          document.getElementById(
+            "orders"
+          ).style.display = "none";
+
 
           return;
         }
 
 
         // NO ORDERS
+
         if (
           !data.success ||
           !data.orders ||
@@ -260,15 +354,16 @@
         ordersContainer.innerHTML = "";
 
 
-        // =========================
+        // ==========================================
         // NEW ORDER DETECTION
-        // =========================
+        // ==========================================
 
         const latestOrderId =
           data.orders[0]?.order_id;
 
+
         const previousOrderId =
-          sessionStorage.getItem(
+          localStorage.getItem(
             "kravinzoLastOrderId"
           );
 
@@ -286,7 +381,7 @@
 
         if (latestOrderId) {
 
-          sessionStorage.setItem(
+          localStorage.setItem(
             "kravinzoLastOrderId",
             latestOrderId
           );
@@ -294,14 +389,15 @@
         }
 
 
-        // =========================
+        // ==========================================
         // DISPLAY ORDERS
-        // =========================
+        // ==========================================
 
         data.orders.forEach(order => {
 
           const card =
             document.createElement("div");
+
 
           card.className =
             "order-card";
@@ -312,6 +408,7 @@
             <h3>
               Order #${order.order_id}
             </h3>
+
 
             <p>
               <strong>🕐 Order Time:</strong>
@@ -328,15 +425,18 @@
               }
             </p>
 
+
             <p>
               <strong>Customer:</strong>
               ${order.customer_name || "N/A"}
             </p>
 
+
             <p>
               <strong>Phone:</strong>
               ${order.customer_phone || "N/A"}
             </p>
+
 
             <p>
               <strong>Address:</strong>
@@ -346,7 +446,9 @@
 
             ${
               order.customer_address &&
-              order.customer_address.includes("Google Maps:")
+              order.customer_address.includes(
+                "Google Maps:"
+              )
               ? `
                 <button
                   onclick="openMap('${order.customer_address.split("Google Maps:")[1].trim()}')"
@@ -381,17 +483,21 @@
                         order.items || "[]"
                       );
 
-                    return items.map(item => `
 
-                      <div style="margin:6px 0;">
+                    return items
+                      .map(item => `
 
-                        ${item.name}
-                        × ${item.quantity}
-                        — ₹${item.itemTotal}
+                        <div style="margin:6px 0;">
 
-                      </div>
+                          ${item.name}
+                          × ${item.quantity}
+                          — ₹${item.itemTotal}
 
-                    `).join("");
+                        </div>
+
+                      `)
+                      .join("");
+
 
                   } catch {
 
@@ -416,28 +522,48 @@
 
 
             <button
-              onclick="updateStatus('${order.order_id}', 'Preparing Food')"
+              onclick="
+                updateStatus(
+                  '${order.order_id}',
+                  'Preparing Food'
+                )
+              "
             >
               Preparing Food
             </button>
 
 
             <button
-              onclick="updateStatus('${order.order_id}', 'Food Ready')"
+              onclick="
+                updateStatus(
+                  '${order.order_id}',
+                  'Food Ready'
+                )
+              "
             >
               Food Ready
             </button>
 
 
             <button
-              onclick="updateStatus('${order.order_id}', 'Handed to Delivery')"
+              onclick="
+                updateStatus(
+                  '${order.order_id}',
+                  'Handed to Delivery'
+                )
+              "
             >
               Handed to Delivery
             </button>
 
 
             <button
-              onclick="updateStatus('${order.order_id}', 'Delivered')"
+              onclick="
+                updateStatus(
+                  '${order.order_id}',
+                  'Delivered'
+                )
+              "
             >
               Delivered
             </button>
@@ -461,47 +587,58 @@
     }
 
 
-    // =========================
+    // ==========================================
     // GOOGLE MAP
-    // =========================
+    // ==========================================
 
     function openMap(url) {
 
       if (url) {
 
-        window.open(url, "_blank");
+        window.open(
+          url,
+          "_blank"
+        );
 
       }
 
     }
 
 
-    // =========================
+    // ==========================================
     // UPDATE ORDER STATUS
-    // =========================
+    // ==========================================
 
-    async function updateStatus(orderId, status) {
+    async function updateStatus(
+      orderId,
+      status
+    ) {
 
       try {
 
         const response =
-          await fetch("/api/update-order-status", {
+          await fetch(
+            "/api/update-order-status",
+            {
 
-            method: "POST",
+              method: "POST",
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              credentials: "include",
 
-            body: JSON.stringify({
+              headers: {
+                "Content-Type": "application/json"
+              },
 
-              orderId: orderId,
+              body: JSON.stringify({
 
-              status: status
+                orderId: orderId,
 
-            })
+                status: status
 
-          });
+              })
+
+            }
+          );
 
 
         const data =
@@ -510,7 +647,10 @@
 
         if (data.success) {
 
-          alert("Order status updated!");
+          alert(
+            "Order status updated!"
+          );
+
 
           loadOrders();
 
@@ -527,22 +667,30 @@
 
         console.error(error);
 
-        alert("Something went wrong");
+        alert(
+          "Something went wrong"
+        );
 
       }
 
     }
 
 
-    // =========================
-    // 10 SECOND KRAVINZO SOUND
-    // =========================
+    // ==========================================
+    // KRAVINZO NEW ORDER SOUND
+    // ==========================================
 
     function playKravinZoSound() {
 
       const AudioContext =
         window.AudioContext ||
         window.webkitAudioContext;
+
+
+      if (!AudioContext) {
+        return;
+      }
+
 
       const audioCtx =
         new AudioContext();
@@ -557,11 +705,14 @@
         const osc =
           audioCtx.createOscillator();
 
+
         const gain =
           audioCtx.createGain();
 
 
-        osc.type = "square";
+        osc.type =
+          "square";
+
 
         osc.frequency.setValueAtTime(
           880,
@@ -612,9 +763,13 @@
       }
 
 
-      // 🔔 10 SECOND RING
+      // 🔔 10 SECOND CONTINUOUS RING
 
-      for (let i = 0; i < 20; i++) {
+      for (
+        let i = 0;
+        i < 20;
+        i++
+      ) {
 
         ring(i * 0.5);
 
@@ -623,20 +778,33 @@
     }
 
 
-    // =========================
-    // AUTO REFRESH EVERY 15 SEC
-    // =========================
+    // ==========================================
+    // AUTO REFRESH EVERY 15 SECONDS
+    // ==========================================
 
     setInterval(() => {
 
-      loadOrders();
+      const orders =
+        document.getElementById(
+          "orders"
+        );
+
+
+      if (
+        orders &&
+        orders.style.display !== "none"
+      ) {
+
+        loadOrders();
+
+      }
 
     }, 15000);
 
 
-    // =========================
-    // START
-    // =========================
+    // ==========================================
+    // START SESSION CHECK
+    // ==========================================
 
     checkAdminSession();
 
