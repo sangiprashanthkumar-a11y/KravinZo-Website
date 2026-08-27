@@ -105,11 +105,33 @@
   <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
   <p><strong>Phone:</strong> ${order.customer_phone || "N/A"}</p>
   <p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
-  <p><strong>Total:</strong> ₹${order.total || 0}</p>
+<p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
+<p><strong>Total:</strong> ₹${order.total || 0}</p>
 
-  <div class="status">
-    ${order.status || "pending"}
-  </div>
+<p><strong>Items:</strong></p>
+
+<div class="items">
+  ${
+    (() => {
+      try {
+        const items = JSON.parse(order.items || "[]");
+
+        return items.map(item => `
+          <div style="margin:6px 0;">
+            ${item.name} × ${item.quantity} — ₹${item.itemTotal}
+          </div>
+        `).join("");
+
+      } catch {
+        return "Unable to read items";
+      }
+    })()
+  }
+</div>
+
+<div class="status">
+  ${order.status || "pending"}
+</div>
 
             <br>
 
