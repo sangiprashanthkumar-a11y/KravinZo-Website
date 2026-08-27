@@ -144,6 +144,20 @@ async function adminLogin() {
     error.textContent = "Login failed. Please try again.";
   }
 }
+
+    function checkAdminSession() {
+  const loggedIn = sessionStorage.getItem("kravinzoAdminLoggedIn");
+
+  if (loggedIn === "true") {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("orders").style.display = "block";
+
+    loadOrders();
+  } else {
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("orders").style.display = "none";
+  }
+}
     
     async function loadOrders() {
       const ordersContainer = document.getElementById("orders");
@@ -279,7 +293,8 @@ ${
 
       }
     }
-
+    
+  checkAdminSession();
   
   </script>
 
