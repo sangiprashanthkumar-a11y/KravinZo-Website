@@ -129,7 +129,7 @@ async function adminLogin() {
     const data = await response.json();
 
     if (data.success) {
-      sessionStorage.setItem("kravinzoAdminLoggedIn", "true");
+   
 
       document.getElementById("loginBox").style.display = "none";
       document.getElementById("orders").style.display = "block";
