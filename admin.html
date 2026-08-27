@@ -145,15 +145,23 @@ async function adminLogin() {
   }
 }
 
-    function checkAdminSession() {
-  const loggedIn = sessionStorage.getItem("kravinzoAdminLoggedIn");
+  async function checkAdminSession() {
+  try {
+    const response = await fetch("/api/get-orders");
 
-  if (loggedIn === "true") {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("orders").style.display = "block";
+    if (response.ok) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("orders").style.display = "block";
 
-    loadOrders();
-  } else {
+      loadOrders();
+    } else {
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("orders").style.display = "none";
+    }
+
+  } catch (error) {
+    console.error("Session check failed:", error);
+
     document.getElementById("loginBox").style.display = "block";
     document.getElementById("orders").style.display = "none";
   }
@@ -319,8 +327,7 @@ ${
 
       }
     }
-
-   function playKravinZoSound() {
+function playKravinZoSound() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioCtx = new AudioContext();
 
@@ -353,6 +360,7 @@ ${
     osc.start(start);
     osc.stop(start + note.length + 0.02);
   });
+
 }
     
   setInterval(() => {
