@@ -70,240 +70,71 @@
 </head>
 
 <body>
-  <div id="loginBox" style="max-width:400px;margin:80px auto;background:white;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
 
-  <h2 style="margin-bottom:20px;">🔐 KravinZo Admin Login</h2>
-
-  <input
-    type="text"
-    id="adminUsername"
-    placeholder="Username"
-    style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
+  <!-- LOGIN BOX -->
+  <div
+    id="loginBox"
+    style="display:none;max-width:400px;margin:80px auto;background:white;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);"
   >
 
-  <input
-    type="password"
-    id="adminPassword"
-    placeholder="Password"
-    style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
-  >
+    <h2 style="margin-bottom:20px;">🔐 KravinZo Admin Login</h2>
 
-  <button onclick="adminLogin()" style="width:100%;">
-    Login
-  </button>
+    <input
+      type="text"
+      id="adminUsername"
+      placeholder="Username"
+      style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
+    >
 
-  <p id="loginError" style="color:red;margin-top:10px;"></p>
+    <input
+      type="password"
+      id="adminPassword"
+      placeholder="Password"
+      style="width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;"
+    >
 
-</div>
+    <button onclick="adminLogin()" style="width:100%;">
+      Login
+    </button>
 
+    <p id="loginError" style="color:red;margin-top:10px;"></p>
+
+  </div>
+
+  <!-- ADMIN -->
   <h1>🍔 KravinZo Admin</h1>
 
-  <div id="orders">
+  <div id="orders" style="display:none;">
     <div class="empty">Loading orders...</div>
   </div>
 
+
   <script>
-async function adminLogin() {
-  const username = document.getElementById("adminUsername").value.trim();
-  const password = document.getElementById("adminPassword").value;
 
-  const error = document.getElementById("loginError");
+    // =========================
+    // ADMIN LOGIN
+    // =========================
 
-  if (!username || !password) {
-    error.textContent = "Please enter username and password.";
-    return;
-  }
+    async function adminLogin() {
 
-  try {
-    const response = await fetch("/api/admin-login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    });
+      const username =
+        document.getElementById("adminUsername").value.trim();
 
-    const data = await response.json();
+      const password =
+        document.getElementById("adminPassword").value;
 
-    if (data.success) {
-   
+      const error =
+        document.getElementById("loginError");
 
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("orders").style.display = "block";
-
-      loadOrders();
-    } else {
-      error.textContent = data.error || "Invalid username or password.";
-    }
-
-  } catch (err) {
-    console.error(err);
-    error.textContent = "Login failed. Please try again.";
-  }
-}
-
-  async function checkAdminSession() {
-  try {
-    const response = await fetch("/api/get-orders");
-
-    if (response.ok) {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("orders").style.display = "block";
-
-      loadOrders();
-    } else {
-      document.getElementById("loginBox").style.display = "block";
-      document.getElementById("orders").style.display = "none";
-    }
-
-  } catch (error) {
-    console.error("Session check failed:", error);
-
-    document.getElementById("loginBox").style.display = "block";
-    document.getElementById("orders").style.display = "none";
-  }
-}
-    
-    async function loadOrders() {
-      const ordersContainer = document.getElementById("orders");
-
-      try {
-        const response = await fetch("/api/get-orders");
-
-        const data = await response.json();
-        if (response.status === 401) {
-  document.getElementById("loginBox").style.display = "block";
-  document.getElementById("orders").style.display = "none";
-  return;
-}
-
-        if (!data.success || !data.orders || data.orders.length === 0) {
-          ordersContainer.innerHTML =
-            '<div class="empty">No orders found.</div>';
-          return;
-        }
-
-        ordersContainer.innerHTML = "";
-
-        const latestOrderId = data.orders[0]?.order_id;
-const previousOrderId = sessionStorage.getItem("kravinzoLastOrderId");
-
-if (
-  previousOrderId &&
-  latestOrderId &&
-  latestOrderId !== previousOrderId
-) {
-  playKravinZoSound();
-}
-
-if (latestOrderId) {
-  sessionStorage.setItem("kravinzoLastOrderId", latestOrderId);
-}
-        
-
-        data.orders.forEach(order => {
-
-          const card = document.createElement("div");
-          card.className = "order-card";
-
-          card.innerHTML = `
-  <h3>Order #${order.order_id}</h3>
-  
-  <p><strong>🕐 Order Time:</strong> ${
-  new Date(order.created_at).toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true
-  })
-}</p>
-  <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
-  <p><strong>Phone:</strong> ${order.customer_phone || "N/A"}</p>
-  <p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
-
-${
-  order.customer_address && order.customer_address.includes("Google Maps:")
-    ? `
-      <button onclick="openMap('${order.customer_address.split("Google Maps:")[1].trim()}')">
-        📍 Open Google Maps
-      </button>
-    `
-    : ""
-}
-
-<p><strong>Total:</strong> ₹${order.total || 0}</p>
-
-<p><strong>Items:</strong></p>
-
-<div class="items">
-  ${
-    (() => {
-      try {
-        const items = JSON.parse(order.items || "[]");
-
-        return items.map(item => `
-          <div style="margin:6px 0;">
-            ${item.name} × ${item.quantity} — ₹${item.itemTotal}
-          </div>
-        `).join("");
-
-      } catch {
-        return "Unable to read items";
+      if (!username || !password) {
+        error.textContent =
+          "Please enter username and password.";
+        return;
       }
-    })()
-  }
-</div>
-
-<div class="status">
-  ${order.status || "pending"}
-</div>
-
-            <br>
-
-        <button onclick="updateStatus('${order.order_id}', 'Preparing Food')">
-  Preparing Food
-</button>
-
-<button onclick="updateStatus('${order.order_id}', 'Food Ready')">
-  Food Ready
-</button>
-
-<button onclick="updateStatus('${order.order_id}', 'Handed to Delivery')">
-  Handed to Delivery
-</button>
-
-<button onclick="updateStatus('${order.order_id}', 'Delivered')">
-  Delivered
-</button>
-          `;
-
-          ordersContainer.appendChild(card);
-        });
-
-      } catch (error) {
-        console.error(error);
-
-        ordersContainer.innerHTML =
-          '<div class="empty">Failed to load orders.</div>';
-      }
-    }
-
-     function openMap(url) {
-      if (url) {
-        window.open(url, "_blank");
-      }
-    }
-
-    async function updateStatus(orderId, status) {
 
       try {
 
-        const response = await fetch("/api/update-order-status", {
+        const response = await fetch("/api/admin-login", {
           method: "POST",
 
           headers: {
@@ -311,68 +142,504 @@ ${
           },
 
           body: JSON.stringify({
-            orderId: orderId,
-            status: status
+            username,
+            password
           })
         });
 
         const data = await response.json();
 
         if (data.success) {
-          alert("Order status updated!");
+
+          document.getElementById("loginBox").style.display = "none";
+
+          document.getElementById("orders").style.display = "block";
+
           loadOrders();
+
         } else {
-          alert(data.error || "Failed to update status");
+
+          error.textContent =
+            data.error || "Invalid username or password.";
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        error.textContent =
+          "Login failed. Please try again.";
+
+      }
+    }
+
+
+    // =========================
+    // CHECK LOGIN SESSION
+    // =========================
+
+    async function checkAdminSession() {
+
+      try {
+
+        const response =
+          await fetch("/api/get-orders");
+
+        if (response.ok) {
+
+          document.getElementById("loginBox").style.display = "none";
+
+          document.getElementById("orders").style.display = "block";
+
+          loadOrders();
+
+        } else {
+
+          document.getElementById("loginBox").style.display = "block";
+
+          document.getElementById("orders").style.display = "none";
+
+        }
+
+      } catch (error) {
+
+        console.error("Session check failed:", error);
+
+        document.getElementById("loginBox").style.display = "block";
+
+        document.getElementById("orders").style.display = "none";
+
+      }
+    }
+
+
+    // =========================
+    // LOAD ORDERS
+    // =========================
+
+    async function loadOrders() {
+
+      const ordersContainer =
+        document.getElementById("orders");
+
+      try {
+
+        const response =
+          await fetch("/api/get-orders");
+
+        const data =
+          await response.json();
+
+
+        // NOT LOGGED IN
+        if (response.status === 401) {
+
+          document.getElementById("loginBox").style.display = "block";
+
+          document.getElementById("orders").style.display = "none";
+
+          return;
+        }
+
+
+        // NO ORDERS
+        if (
+          !data.success ||
+          !data.orders ||
+          data.orders.length === 0
+        ) {
+
+          ordersContainer.innerHTML =
+            '<div class="empty">No orders found.</div>';
+
+          return;
+        }
+
+
+        ordersContainer.innerHTML = "";
+
+
+        // =========================
+        // NEW ORDER DETECTION
+        // =========================
+
+        const latestOrderId =
+          data.orders[0]?.order_id;
+
+        const previousOrderId =
+          sessionStorage.getItem(
+            "kravinzoLastOrderId"
+          );
+
+
+        if (
+          previousOrderId &&
+          latestOrderId &&
+          latestOrderId !== previousOrderId
+        ) {
+
+          playKravinZoSound();
+
+        }
+
+
+        if (latestOrderId) {
+
+          sessionStorage.setItem(
+            "kravinzoLastOrderId",
+            latestOrderId
+          );
+
+        }
+
+
+        // =========================
+        // DISPLAY ORDERS
+        // =========================
+
+        data.orders.forEach(order => {
+
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "order-card";
+
+
+          card.innerHTML = `
+
+            <h3>
+              Order #${order.order_id}
+            </h3>
+
+            <p>
+              <strong>🕐 Order Time:</strong>
+              ${
+                new Date(order.created_at)
+                .toLocaleString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true
+                })
+              }
+            </p>
+
+            <p>
+              <strong>Customer:</strong>
+              ${order.customer_name || "N/A"}
+            </p>
+
+            <p>
+              <strong>Phone:</strong>
+              ${order.customer_phone || "N/A"}
+            </p>
+
+            <p>
+              <strong>Address:</strong>
+              ${order.customer_address || "N/A"}
+            </p>
+
+
+            ${
+              order.customer_address &&
+              order.customer_address.includes("Google Maps:")
+              ? `
+                <button
+                  onclick="openMap('${order.customer_address.split("Google Maps:")[1].trim()}')"
+                >
+                  📍 Open Google Maps
+                </button>
+              `
+              : ""
+            }
+
+
+            <p>
+              <strong>Total:</strong>
+              ₹${order.total || 0}
+            </p>
+
+
+            <p>
+              <strong>Items:</strong>
+            </p>
+
+
+            <div class="items">
+
+              ${
+                (() => {
+
+                  try {
+
+                    const items =
+                      JSON.parse(
+                        order.items || "[]"
+                      );
+
+                    return items.map(item => `
+
+                      <div style="margin:6px 0;">
+
+                        ${item.name}
+                        × ${item.quantity}
+                        — ₹${item.itemTotal}
+
+                      </div>
+
+                    `).join("");
+
+                  } catch {
+
+                    return "Unable to read items";
+
+                  }
+
+                })()
+              }
+
+            </div>
+
+
+            <div class="status">
+
+              ${order.status || "pending"}
+
+            </div>
+
+
+            <br>
+
+
+            <button
+              onclick="updateStatus('${order.order_id}', 'Preparing Food')"
+            >
+              Preparing Food
+            </button>
+
+
+            <button
+              onclick="updateStatus('${order.order_id}', 'Food Ready')"
+            >
+              Food Ready
+            </button>
+
+
+            <button
+              onclick="updateStatus('${order.order_id}', 'Handed to Delivery')"
+            >
+              Handed to Delivery
+            </button>
+
+
+            <button
+              onclick="updateStatus('${order.order_id}', 'Delivered')"
+            >
+              Delivered
+            </button>
+
+          `;
+
+
+          ordersContainer.appendChild(card);
+
+        });
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        ordersContainer.innerHTML =
+          '<div class="empty">Failed to load orders.</div>';
+
+      }
+    }
+
+
+    // =========================
+    // GOOGLE MAP
+    // =========================
+
+    function openMap(url) {
+
+      if (url) {
+
+        window.open(url, "_blank");
+
+      }
+
+    }
+
+
+    // =========================
+    // UPDATE ORDER STATUS
+    // =========================
+
+    async function updateStatus(orderId, status) {
+
+      try {
+
+        const response =
+          await fetch("/api/update-order-status", {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+              orderId: orderId,
+
+              status: status
+
+            })
+
+          });
+
+
+        const data =
+          await response.json();
+
+
+        if (data.success) {
+
+          alert("Order status updated!");
+
+          loadOrders();
+
+        } else {
+
+          alert(
+            data.error ||
+            "Failed to update status"
+          );
+
         }
 
       } catch (error) {
 
         console.error(error);
+
         alert("Something went wrong");
 
       }
+
     }
-function playKravinZoSound() {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioCtx = new AudioContext();
 
-  const startTime = audioCtx.currentTime;
-  const duration = 10;
 
-  function ring(offset) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+    // =========================
+    // 10 SECOND KRAVINZO SOUND
+    // =========================
 
-    osc.type = "square";
-    osc.frequency.setValueAtTime(880, startTime + offset);
+    function playKravinZoSound() {
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-    gain.gain.setValueAtTime(0.001, startTime + offset);
-    gain.gain.linearRampToValueAtTime(0.18, startTime + offset + 0.03);
-    gain.gain.setValueAtTime(0.18, startTime + offset + 0.35);
-    gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      startTime + offset + 0.45
-    );
+      const audioCtx =
+        new AudioContext();
 
-    osc.start(startTime + offset);
-    osc.stop(startTime + offset + 0.5);
-  }
 
-  // Continuous TRING... TRING... for 10 seconds
-  for (let i = 0; i < 20; i++) {
-    ring(i * 0.5);
-  }
-}
+      const startTime =
+        audioCtx.currentTime;
 
-    
-  setInterval(() => {
-  loadOrders();
-}, 15000);
+
+      function ring(offset) {
+
+        const osc =
+          audioCtx.createOscillator();
+
+        const gain =
+          audioCtx.createGain();
+
+
+        osc.type = "square";
+
+        osc.frequency.setValueAtTime(
+          880,
+          startTime + offset
+        );
+
+
+        osc.connect(gain);
+
+        gain.connect(
+          audioCtx.destination
+        );
+
+
+        gain.gain.setValueAtTime(
+          0.001,
+          startTime + offset
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+          0.18,
+          startTime + offset + 0.03
+        );
+
+
+        gain.gain.setValueAtTime(
+          0.18,
+          startTime + offset + 0.35
+        );
+
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          startTime + offset + 0.45
+        );
+
+
+        osc.start(
+          startTime + offset
+        );
+
+
+        osc.stop(
+          startTime + offset + 0.5
+        );
+
+      }
+
+
+      // 🔔 10 SECOND RING
+
+      for (let i = 0; i < 20; i++) {
+
+        ring(i * 0.5);
+
+      }
+
+    }
+
+
+    // =========================
+    // AUTO REFRESH EVERY 15 SEC
+    // =========================
+
+    setInterval(() => {
+
+      loadOrders();
+
+    }, 15000);
+
+
+    // =========================
+    // START
+    // =========================
 
     checkAdminSession();
+
   </script>
 
 </body>
