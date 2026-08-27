@@ -109,7 +109,7 @@
 ${
   order.customer_address && order.customer_address.includes("Google Maps:")
     ? `
-      <button onclick="openMap('${order.customer_address.match(/https:\/\/www\.google\.com\/maps\?q=[^\n]+/)?.[0] || ""}')">
+      <button onclick="openMap('${order.customer_address.split("Google Maps:")[1].trim()}')">
         📍 Open Google Maps
       </button>
     `
