@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -11,8 +13,9 @@ module.exports = async function handler(req, res) {
 
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+    const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
 
-    if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+    if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !ADMIN_SESSION_SECRET) {
       return res.status(500).json({
         success: false,
         error: "Admin login is not configured"
@@ -28,6 +31,16 @@ module.exports = async function handler(req, res) {
         error: "Invalid username or password"
       });
     }
+
+    const token = crypto
+      .createHmac("sha256", ADMIN_SESSION_SECRET)
+      .update(username)
+      .digest("hex");
+
+    res.setHeader(
+      "Set-Cookie",
+      `kravinzo_admin=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400`
+    );
 
     return res.status(200).json({
       success: true,
