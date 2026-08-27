@@ -246,68 +246,56 @@
     // CHECK ADMIN SESSION
     // ==========================================
 
-    async function checkAdminSession() {
+ async function checkAdminSession() {
 
-      try {
+  try {
 
-        const response =
-          await fetch(
-            "/api/get-orders",
-            {
-              credentials: "include"
-            }
-          );
-
-
-      if (response.ok) {
-
-  document.getElementById("pageLoading").style.display = "none";
-
-  document.getElementById(
-    "loginBox"
-  ).style.display = "none";
-
-  document.getElementById(
-    "orders"
-  ).style.display = "block";
-
-  loadOrders();
-
-}
-
-         else {
-
-          document.getElementById(
-            "loginBox"
-          ).style.display = "block";
-
-
-          document.getElementById(
-            "orders"
-          ).style.display = "none";
-
-        }
-
-      } } catch (error) {
-
-  document.getElementById("pageLoading").style.display = "none";
-
-  console.error(
-    "Session check failed:",
-    error
-  );
-
-        document.getElementById(
-          "loginBox"
-        ).style.display = "block";
-
-
-        document.getElementById(
-          "orders"
-        ).style.display = "none";
-
+    const response = await fetch(
+      "/api/get-orders",
+      {
+        credentials: "include"
       }
+    );
+
+    // =========================
+    // ALREADY LOGGED IN
+    // =========================
+
+    if (response.ok) {
+
+      document.getElementById("pageLoading").style.display = "none";
+
+      document.getElementById("loginBox").style.display = "none";
+
+      document.getElementById("orders").style.display = "block";
+
+      loadOrders();
+
+      return;
     }
+
+    // =========================
+    // NOT LOGGED IN
+    // =========================
+
+    document.getElementById("pageLoading").style.display = "none";
+
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("orders").style.display = "none";
+
+  } catch (error) {
+
+    console.error("Session check failed:", error);
+
+    document.getElementById("pageLoading").style.display = "none";
+
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("orders").style.display = "none";
+
+  }
+}
 
 
     // ==========================================
@@ -739,8 +727,6 @@ function playKravinZoSound() {
 
   const start =
     audioCtx.currentTime;
-
-  const duration = 10;
 
 
   function alarmRing(offset) {
