@@ -250,104 +250,88 @@
     // ==========================================
     // NEW ORDER SOUND
     // ==========================================
+function playKravinZoSound() {
 
-    function playKravinZoSound() {
+  const AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
 
-      const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
+  if (!AudioContext) return;
 
-      if (!AudioContext) return;
+  if (!kravinZoAudioCtx) {
+    kravinZoAudioCtx = new AudioContext();
+  }
 
-      if (!kravinZoAudioCtx) {
+  const audioCtx = kravinZoAudioCtx;
 
-        kravinZoAudioCtx =
-          new AudioContext();
-      }
+  const startAlarm = () => {
 
-      const audioCtx =
-        kravinZoAudioCtx;
+    const start = audioCtx.currentTime;
 
-      if (audioCtx.state === "suspended") {
+    for (let i = 0; i < 25; i++) {
 
-        audioCtx.resume();
-      }
+      const offset = i * 0.40;
 
-      const start =
-        audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
+      osc.type = "square";
 
-      // 10 seconds alarm
+      osc.frequency.setValueAtTime(
+        950,
+        start + offset
+      );
 
-      for (let i = 0; i < 25; i++) {
+      osc.frequency.linearRampToValueAtTime(
+        700,
+        start + offset + 0.18
+      );
 
-        const offset =
-          i * 0.40;
+      osc.frequency.linearRampToValueAtTime(
+        950,
+        start + offset + 0.36
+      );
 
-        const osc =
-          audioCtx.createOscillator();
+      gain.gain.setValueAtTime(
+        0.01,
+        start + offset
+      );
 
-        const gain =
-          audioCtx.createGain();
+      gain.gain.linearRampToValueAtTime(
+        0.35,
+        start + offset + 0.03
+      );
 
+      gain.gain.setValueAtTime(
+        0.35,
+        start + offset + 0.28
+      );
 
-        osc.type = "square";
+      gain.gain.linearRampToValueAtTime(
+        0.01,
+        start + offset + 0.40
+      );
 
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-        osc.frequency.setValueAtTime(
-          950,
-          start + offset
-        );
-
-        osc.frequency.linearRampToValueAtTime(
-          700,
-          start + offset + 0.18
-        );
-
-        osc.frequency.linearRampToValueAtTime(
-          950,
-          start + offset + 0.36
-        );
-
-
-        gain.gain.setValueAtTime(
-          0.01,
-          start + offset
-        );
-
-        gain.gain.linearRampToValueAtTime(
-          0.35,
-          start + offset + 0.03
-        );
-
-        gain.gain.setValueAtTime(
-          0.35,
-          start + offset + 0.28
-        );
-
-        gain.gain.linearRampToValueAtTime(
-          0.01,
-          start + offset + 0.40
-        );
-
-
-        osc.connect(gain);
-
-        gain.connect(
-          audioCtx.destination
-        );
-
-
-        osc.start(
-          start + offset
-        );
-
-        osc.stop(
-          start + offset + 0.42
-        );
-      }
+      osc.start(start + offset);
+      osc.stop(start + offset + 0.42);
     }
+  };
 
+  if (audioCtx.state === "suspended") {
+
+    audioCtx.resume().then(() => {
+      startAlarm();
+    });
+
+  } else {
+
+    startAlarm();
+
+  }
+}
 
     // ==========================================
     // ADMIN LOGIN
