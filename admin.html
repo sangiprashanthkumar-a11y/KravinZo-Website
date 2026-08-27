@@ -837,13 +837,21 @@ function playKravinZoSound() {
 
     }, 15000);
 
-
     // ==========================================
-    // START SESSION CHECK
-    // ==========================================
+// UNLOCK SOUND AFTER ADMIN USER INTERACTION
+// ==========================================
 
-    checkAdminSession();
+document.addEventListener("click", unlockKravinZoSound);
+document.addEventListener("keydown", unlockKravinZoSound);
 
+// ==========================================
+// START SESSION CHECK
+// ==========================================
+
+checkAdminSession();
+
+
+ 
   </script>
 
 </body>
