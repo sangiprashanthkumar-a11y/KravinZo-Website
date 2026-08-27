@@ -1,5 +1,31 @@
+
 import WebSocket from "ws";
 import { createClient } from "@supabase/supabase-js";
+function isAdminAuthenticated(req) {
+  const cookieHeader = req.headers.cookie || "";
+
+  const cookies = Object.fromEntries(
+    cookieHeader.split(";").map(cookie => {
+      const [name, ...value] = cookie.trim().split("=");
+      return [name, value.join("=")];
+    })
+  );
+
+  const adminToken = cookies.kravinzo_admin;
+
+  if (!adminToken || !process.env.ADMIN_SESSION_SECRET) {
+    return false;
+  }
+
+  const crypto = require("crypto");
+
+  const expectedToken = crypto
+    .createHmac("sha256", process.env.ADMIN_SESSION_SECRET)
+    .update(process.env.ADMIN_USERNAME)
+    .digest("hex");
+
+  return adminToken === expectedToken;
+}
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -16,6 +42,13 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+  
+  if (!isAdminAuthenticated(req)) {
+  return res.status(401).json({
+    success: false,
+    error: "Unauthorized"
+  });
+}
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
