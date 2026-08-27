@@ -100,34 +100,34 @@
           card.className = "order-card";
 
           card.innerHTML = `
-            <h3>Order #${order.id}</h3>
+  <h3>Order #${order.order_id}</h3>
 
-            <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
-            <p><strong>Phone:</strong> ${order.phone || "N/A"}</p>
-            <p><strong>Address:</strong> ${order.address || "N/A"}</p>
-            <p><strong>Total:</strong> ₹${order.total || 0}</p>
+  <p><strong>Customer:</strong> ${order.customer_name || "N/A"}</p>
+  <p><strong>Phone:</strong> ${order.customer_phone || "N/A"}</p>
+  <p><strong>Address:</strong> ${order.customer_address || "N/A"}</p>
+  <p><strong>Total:</strong> ₹${order.total || 0}</p>
 
-            <div class="status">
-              ${order.status || "Order Placed"}
-            </div>
+  <div class="status">
+    ${order.status || "pending"}
+  </div>
 
             <br>
 
-            <button onclick="updateStatus('${order.id}', 'Preparing Food')">
-              Preparing Food
-            </button>
+        <button onclick="updateStatus('${order.order_id}', 'Preparing Food')">
+  Preparing Food
+</button>
 
-            <button onclick="updateStatus('${order.id}', 'Food Ready')">
-              Food Ready
-            </button>
+<button onclick="updateStatus('${order.order_id}', 'Food Ready')">
+  Food Ready
+</button>
 
-            <button onclick="updateStatus('${order.id}', 'Handed to Delivery')">
-              Handed to Delivery
-            </button>
+<button onclick="updateStatus('${order.order_id}', 'Handed to Delivery')">
+  Handed to Delivery
+</button>
 
-            <button onclick="updateStatus('${order.id}', 'Delivered')">
-              Delivered
-            </button>
+<button onclick="updateStatus('${order.order_id}', 'Delivered')">
+  Delivered
+</button>
           `;
 
           ordersContainer.appendChild(card);
