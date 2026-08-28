@@ -264,57 +264,66 @@ function playKravinZoSound() {
 
   const audioCtx = kravinZoAudioCtx;
 
-  const playRing = () => {
+  const playTelephoneRing = () => {
 
     const start = audioCtx.currentTime;
 
-    // 6 seconds
-    for (let i = 0; i < 6; i++) {
+    // 3 long telephone rings = 6 seconds
+    for (let i = 0; i < 3; i++) {
 
-      const t = start + i;
+      const ringStart = start + (i * 2);
 
-      // Pleasant food-order notification
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+      // Classic landline bell frequencies
+      [420, 480].forEach((frequency) => {
 
-      osc.type = "sine";
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
 
-      // Ding sound
-      osc.frequency.setValueAtTime(880, t);
-      osc.frequency.exponentialRampToValueAtTime(
-        1320,
-        t + 0.12
-      );
+        osc.type = "sine";
 
-      gain.gain.setValueAtTime(0.001, t);
+        osc.frequency.setValueAtTime(
+          frequency,
+          ringStart
+        );
 
-      gain.gain.exponentialRampToValueAtTime(
-        0.30,
-        t + 0.02
-      );
+        gain.gain.setValueAtTime(
+          0.001,
+          ringStart
+        );
 
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        t + 0.55
-      );
+        gain.gain.linearRampToValueAtTime(
+          0.45,
+          ringStart + 0.05
+        );
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(
+          0.45,
+          ringStart + 0.85
+        );
 
-      osc.start(t);
-      osc.stop(t + 0.6);
+        gain.gain.linearRampToValueAtTime(
+          0.001,
+          ringStart + 0.95
+        );
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(ringStart);
+        osc.stop(ringStart + 1);
+      });
     }
   };
 
   if (audioCtx.state === "suspended") {
 
     audioCtx.resume().then(() => {
-      playRing();
+      playTelephoneRing();
     });
 
   } else {
 
-    playRing();
+    playTelephoneRing();
 
   }
 }
