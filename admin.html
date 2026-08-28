@@ -264,71 +264,106 @@ function playKravinZoSound() {
 
   const audioCtx = kravinZoAudioCtx;
 
-  const startAlarm = () => {
+  const startRing = () => {
 
     const start = audioCtx.currentTime;
 
-    for (let i = 0; i < 25; i++) {
+    // 6 seconds total
+    for (let i = 0; i < 3; i++) {
 
-      const offset = i * 0.40;
+      const ringStart = start + (i * 2);
 
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+      // Two-tone telephone ring
+      [660, 880].forEach((frequency) => {
 
-      osc.type = "square";
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
 
-      osc.frequency.setValueAtTime(
-        950,
-        start + offset
-      );
+        osc.type = "sine";
 
-      osc.frequency.linearRampToValueAtTime(
-        700,
-        start + offset + 0.18
-      );
+        osc.frequency.setValueAtTime(
+          frequency,
+          ringStart
+        );
 
-      osc.frequency.linearRampToValueAtTime(
-        950,
-        start + offset + 0.36
-      );
+        gain.gain.setValueAtTime(
+          0.001,
+          ringStart
+        );
 
-      gain.gain.setValueAtTime(
-        0.01,
-        start + offset
-      );
+        gain.gain.linearRampToValueAtTime(
+          0.35,
+          ringStart + 0.05
+        );
 
-      gain.gain.linearRampToValueAtTime(
-        0.35,
-        start + offset + 0.03
-      );
+        gain.gain.setValueAtTime(
+          0.35,
+          ringStart + 0.45
+        );
 
-      gain.gain.setValueAtTime(
-        0.35,
-        start + offset + 0.28
-      );
+        gain.gain.linearRampToValueAtTime(
+          0.001,
+          ringStart + 0.55
+        );
 
-      gain.gain.linearRampToValueAtTime(
-        0.01,
-        start + offset + 0.40
-      );
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+        osc.start(ringStart);
+        osc.stop(ringStart + 0.6);
+      });
 
-      osc.start(start + offset);
-      osc.stop(start + offset + 0.42);
+      // Second part of ring
+      [660, 880].forEach((frequency) => {
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sine";
+
+        osc.frequency.setValueAtTime(
+          frequency,
+          ringStart + 0.8
+        );
+
+        gain.gain.setValueAtTime(
+          0.001,
+          ringStart + 0.8
+        );
+
+        gain.gain.linearRampToValueAtTime(
+          0.35,
+          ringStart + 0.85
+        );
+
+        gain.gain.setValueAtTime(
+          0.35,
+          ringStart + 1.25
+        );
+
+        gain.gain.linearRampToValueAtTime(
+          0.001,
+          ringStart + 1.35
+        );
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(ringStart + 0.8);
+        osc.stop(ringStart + 1.4);
+      });
     }
   };
 
   if (audioCtx.state === "suspended") {
 
     audioCtx.resume().then(() => {
-      startAlarm();
+      startRing();
     });
 
   } else {
 
-    startAlarm();
+    startRing();
 
   }
 }
