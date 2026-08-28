@@ -264,70 +264,44 @@ function playKravinZoSound() {
 
   const audioCtx = kravinZoAudioCtx;
 
-  const playTelephoneRing = () => {
+  const playRing = () => {
 
     const start = audioCtx.currentTime;
 
-    // 3 long telephone rings = 6 seconds
+    // 3 loud & crisp telephone-style rings
     for (let i = 0; i < 3; i++) {
 
-      const ringStart = start + (i * 2);
+      const t = start + (i * 2);
 
-      // Classic landline bell frequencies
-      [420, 480].forEach((frequency) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+      // Metallic old telephone ring
+      osc.type = "sawtooth";
 
-        osc.type = "sine";
+      osc.frequency.setValueAtTime(440, t);
+      osc.frequency.setValueAtTime(480, t + 0.15);
 
-        osc.frequency.setValueAtTime(
-          frequency,
-          ringStart
-        );
+      // Loud and crisp
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(0.65, t + 0.03);
+      gain.gain.setValueAtTime(0.65, t + 1.35);
+      gain.gain.linearRampToValueAtTime(0.001, t + 1.5);
 
-        gain.gain.setValueAtTime(
-          0.001,
-          ringStart
-        );
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-        gain.gain.linearRampToValueAtTime(
-          0.45,
-          ringStart + 0.05
-        );
-
-        gain.gain.setValueAtTime(
-          0.45,
-          ringStart + 0.85
-        );
-
-        gain.gain.linearRampToValueAtTime(
-          0.001,
-          ringStart + 0.95
-        );
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(ringStart);
-        osc.stop(ringStart + 1);
-      });
+      osc.start(t);
+      osc.stop(t + 1.5);
     }
   };
 
   if (audioCtx.state === "suspended") {
-
-    audioCtx.resume().then(() => {
-      playTelephoneRing();
-    });
-
+    audioCtx.resume().then(playRing);
   } else {
-
-    playTelephoneRing();
-
+    playRing();
   }
 }
-
     // ==========================================
     // ADMIN LOGIN
     // ==========================================
