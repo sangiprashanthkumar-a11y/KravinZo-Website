@@ -1,1 +1,507 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KravinZo - Track Order</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f5f5;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .track-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .track-btn:hover {
+      opacity: 0.9;
+    }
+
+    .error {
+      color: #d00;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .order-info {
+      margin-bottom: 25px;
+    }
+
+    .order-info p {
+      margin: 8px 0;
+    }
+
+    .tracking {
+      position: relative;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      color: #999;
+      font-weight: bold;
+    }
+
+    .circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .step.active {
+      color: #111;
+    }
+
+    .step.active .circle {
+      background: #111;
+      color: white;
+    }
+
+    .step.current {
+      color: #111;
+    }
+
+    .step.current .circle {
+      background: #22c55e;
+      color: white;
+    }
+
+    .refresh-text {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+
+    #trackingCard {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- SEARCH CARD -->
+
+    <div class="card">
+
+      <h1>🍔 KravinZo</h1>
+
+      <p class="subtitle">
+        Track Your Order
+      </p>
+
+      <input
+        type="text"
+        id="orderIdInput"
+        placeholder="Enter Order ID"
+        autocomplete="off"
+      >
+
+      <button
+        class="track-btn"
+        id="trackButton"
+      >
+        Track Order
+      </button>
+
+      <p
+        class="error"
+        id="errorMessage"
+      ></p>
+
+    </div>
+
+
+    <!-- TRACKING CARD -->
+
+    <div
+      class="card"
+      id="trackingCard"
+    >
+
+      <div class="order-info">
+
+        <h2 style="margin-bottom:15px;">
+          Order Status
+        </h2>
+
+        <p>
+          <strong>Order ID:</strong>
+          <span id="displayOrderId">-</span>
+        </p>
+
+        <p>
+          <strong>Customer:</strong>
+          <span id="displayCustomer">-</span>
+        </p>
+
+        <p>
+          <strong>Total:</strong>
+          ₹<span id="displayTotal">0</span>
+        </p>
+
+      </div>
+
+
+      <!-- TRACKING STEPS -->
+
+      <div class="tracking">
+
+        <div
+          class="step"
+          id="step1"
+        >
+          <div class="circle">📦</div>
+          <div>Order Confirmed</div>
+        </div>
+
+
+        <div
+          class="step"
+          id="step2"
+        >
+          <div class="circle">🍳</div>
+          <div>Preparing Food</div>
+        </div>
+
+
+        <div
+          class="step"
+          id="step3"
+        >
+          <div class="circle">✅</div>
+          <div>Food Ready</div>
+        </div>
+
+
+        <div
+          class="step"
+          id="step4"
+        >
+          <div class="circle">🛵</div>
+          <div>Handed to Delivery</div>
+        </div>
+
+
+        <div
+          class="step"
+          id="step5"
+        >
+          <div class="circle">🎉</div>
+          <div>Delivered</div>
+        </div>
+
+      </div>
+
+
+      <p class="refresh-text">
+        Status updates automatically every 15 seconds.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    let currentOrderId = null;
+
+
+    // ==========================================
+    // STATUS ORDER
+    // ==========================================
+
+    const statusSteps = {
+      "pending": 1,
+      "Preparing Food": 2,
+      "Food Ready": 3,
+      "Handed to Delivery": 4,
+      "Delivered": 5
+    };
+
+
+    // ==========================================
+    // LOAD ORDER
+    // ==========================================
+
+    async function loadOrderStatus() {
+
+      if (!currentOrderId) {
+        return;
+      }
+
+      try {
+
+        const response = await fetch(
+          "/api/get-order-status?orderId=" +
+          encodeURIComponent(currentOrderId),
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+          document.getElementById(
+            "errorMessage"
+          ).textContent =
+            data.error ||
+            "Unable to find order.";
+
+          return;
+        }
+
+
+        if (!data.success || !data.order) {
+
+          document.getElementById(
+            "errorMessage"
+          ).textContent =
+            "Order not found.";
+
+          return;
+        }
+
+
+        const order = data.order;
+
+
+        // CLEAR ERROR
+
+        document.getElementById(
+          "errorMessage"
+        ).textContent = "";
+
+
+        // ORDER INFORMATION
+
+        document.getElementById(
+          "displayOrderId"
+        ).textContent =
+          order.order_id || "-";
+
+
+        document.getElementById(
+          "displayCustomer"
+        ).textContent =
+          order.customer_name || "-";
+
+
+        document.getElementById(
+          "displayTotal"
+        ).textContent =
+          order.total || 0;
+
+
+        // SHOW TRACKING
+
+        document.getElementById(
+          "trackingCard"
+        ).style.display = "block";
+
+
+        // CURRENT STEP
+
+        const currentStep =
+          statusSteps[order.status] || 1;
+
+
+        // RESET ALL STEPS
+
+        for (let i = 1; i <= 5; i++) {
+
+          const step =
+            document.getElementById(
+              "step" + i
+            );
+
+          step.classList.remove(
+            "active",
+            "current"
+          );
+
+
+          if (i < currentStep) {
+
+            step.classList.add("active");
+
+          }
+
+
+          if (i === currentStep) {
+
+            step.classList.add("current");
+
+          }
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          "Tracking error:",
+          error
+        );
+
+        document.getElementById(
+          "errorMessage"
+        ).textContent =
+          "Connection error. Please try again.";
+      }
+    }
+
+
+    // ==========================================
+    // TRACK BUTTON
+    // ==========================================
+
+    document
+      .getElementById("trackButton")
+      .addEventListener(
+        "click",
+        () => {
+
+          const orderId =
+            document
+              .getElementById(
+                "orderIdInput"
+              )
+              .value
+              .trim();
+
+
+          if (!orderId) {
+
+            document.getElementById(
+              "errorMessage"
+            ).textContent =
+              "Please enter your Order ID.";
+
+            return;
+          }
+
+
+          currentOrderId = orderId;
+
+          loadOrderStatus();
+        }
+      );
+
+
+    // ==========================================
+    // ENTER KEY
+    // ==========================================
+
+    document
+      .getElementById("orderIdInput")
+      .addEventListener(
+        "keydown",
+        (event) => {
+
+          if (event.key === "Enter") {
+
+            document
+              .getElementById(
+                "trackButton"
+              )
+              .click();
+
+          }
+
+        }
+      );
+
+
+    // ==========================================
+    // AUTO REFRESH
+    // ==========================================
+
+    setInterval(
+      () => {
+
+        if (currentOrderId) {
+
+          loadOrderStatus();
+
+        }
+
+      },
+      15000
+    );
+
+  </script>
+
+</body>
+</html>
+```
 
