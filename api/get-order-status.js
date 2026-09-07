@@ -1,12 +1,12 @@
 ```javascript
-import { createClient } from "@supabase/supabase-js";
+const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -16,8 +16,7 @@ export default async function handler(req, res) {
   }
 
   try {
-
-    const { orderId } = req.query;
+    const orderId = req.query.orderId;
 
     if (!orderId) {
       return res.status(400).json({
@@ -59,7 +58,6 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-
     console.error(
       "ORDER STATUS API ERROR:",
       error
@@ -72,6 +70,5 @@ export default async function handler(req, res) {
         "Failed to get order status"
     });
   }
-}
+};
 ```
-
