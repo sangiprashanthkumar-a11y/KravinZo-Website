@@ -1836,10 +1836,6 @@ function validateDetails() {
 // LOCATION
 // ===============================
 
- // ===============================
-// LOCATION
-// ===============================
-
 function calculateDistance(lat1, lon1, lat2, lon2) {
 
   const R = 6371;
@@ -2311,6 +2307,8 @@ if (deliveryLocation) {
   finalAddress +=
     `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
 }
+       
+const orderId = "KZ-" + Date.now();
 
 await fetch("/api/save-order", {
   method: "POST",
@@ -2318,7 +2316,7 @@ await fetch("/api/save-order", {
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    order_id: "KZ-" + Date.now(),
+    order_id: orderId,
     customer_name: customer.name,
     customer_phone: customer.phone,
     customer_address: finalAddress,
@@ -2329,6 +2327,12 @@ await fetch("/api/save-order", {
     status: "New"
   })
 });
+
+setTimeout(function() {
+  window.location.href =
+    "/order-status.html?orderId=" +
+    encodeURIComponent(orderId);
+}, 1000);
 
 
           sendWhatsApp(
@@ -2610,6 +2614,12 @@ async function placeCOD() {
       "Order ID: " +
       orderId
     );
+
+    setTimeout(function() {
+  window.location.href =
+    "/order-status.html?orderId=" +
+    encodeURIComponent(orderId);
+}, 1000);
 
 
     console.log(
