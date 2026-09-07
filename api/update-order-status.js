@@ -1,5 +1,5 @@
-import WebSocket from "ws";
 import { createClient } from "@supabase/supabase-js";
+import crypto from "crypto";
 
 function isAdminAuthenticated(req) {
   const cookieHeader = req.headers.cookie || "";
@@ -17,10 +17,11 @@ function isAdminAuthenticated(req) {
     return false;
   }
 
-  const crypto = require("crypto");
-
   const expectedToken = crypto
-    .createHmac("sha256", process.env.ADMIN_SESSION_SECRET)
+    .createHmac(
+      "sha256",
+      process.env.ADMIN_SESSION_SECRET
+    )
     .update(process.env.ADMIN_USERNAME)
     .digest("hex");
 
@@ -34,15 +35,21 @@ const supabase = createClient(
     auth: {
       autoRefreshToken: false,
       persistSession: false
-    },
-    realtime: {
-      transport: WebSocket
     }
   }
 );
 
 export default async function handler(req, res) {
 
+  // Only POST allowed
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed"
+    });
+  }
+
+  // Check admin login
   if (!isAdminAuthenticated(req)) {
     return res.status(401).json({
       success: false,
@@ -51,8 +58,10 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const { orderId, status } = req.body || {};
 
+    // Check required fields
     if (!orderId || !status) {
       return res.status(400).json({
         success: false,
@@ -60,6 +69,7 @@ export default async function handler(req, res) {
       });
     }
 
+    // Allowed statuses
     const allowedStatuses = [
       "pending",
       "Preparing Food",
@@ -75,36 +85,22 @@ export default async function handler(req, res) {
       });
     }
 
+    // Update Supabase
     const { data, error } = await supabase
-  .from("orders")
-  .update({ status: status })
-  .eq("order_id", orderId)
-  .select();
+      .from("orders")
+      .update({
+        status: status
+      })
+      .eq("order_id", orderId)
+      .select()
+      .single();
 
-if (error) {
-  console.error("Supabase update status error:", error);
-
-  return res.status(500).json({
-    success: false,
-    error: error.message
-  });
-}
-
-if (!data || data.length === 0) {
-  return res.status(404).json({
-    success: false,
-    error: "Order not found"
-  });
-}
-
-return res.status(200).json({
-  success: true,
-  message: "Order status updated successfully",
-  order: data[0]
-});
-
+    // Supabase error
     if (error) {
-      console.error("Supabase update status error:", error);
+      console.error(
+        "Supabase update status error:",
+        error
+      );
 
       return res.status(500).json({
         success: false,
@@ -112,6 +108,15 @@ return res.status(200).json({
       });
     }
 
+    // Order not found
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        error: "Order not found"
+      });
+    }
+
+    // Success
     return res.status(200).json({
       success: true,
       message: "Order status updated successfully",
@@ -119,11 +124,17 @@ return res.status(200).json({
     });
 
   } catch (error) {
-    console.error("Update order status error:", error);
+
+    console.error(
+      "Update order status error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Failed to update order status"
+      error:
+        error.message ||
+        "Failed to update order status"
     });
   }
 }
