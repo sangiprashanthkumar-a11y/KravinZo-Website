@@ -1,43 +1,51 @@
-```javascript
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
+import { createHmac } from "crypto";
 
 function isAdminAuthenticated(req) {
   const cookieHeader = req.headers.cookie || "";
 
-  const cookies = Object.fromEntries(
-    cookieHeader
-      .split(";")
-      .filter(Boolean)
-      .map(cookie => {
-        const [name, ...value] = cookie.trim().split("=");
-        return [name, value.join("=")];
-      })
-  );
+  const cookies = {};
+
+  cookieHeader.split(";").forEach((cookie) => {
+    const parts = cookie.trim().split("=");
+
+    const name = parts.shift();
+
+    if (name) {
+      cookies[name] = parts.join("=");
+    }
+  });
 
   const adminToken = cookies.kravinzo_admin;
 
-  if (!adminToken || !process.env.ADMIN_SESSION_SECRET) {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  const username = process.env.ADMIN_USERNAME;
+
+  if (!adminToken || !secret || !username) {
     return false;
   }
 
-  const expectedToken = crypto
-    .createHmac(
-      "sha256",
-      process.env.ADMIN_SESSION_SECRET
-    )
-    .update(process.env.ADMIN_USERNAME || "")
+  const expectedToken = createHmac(
+    "sha256",
+    secret
+  )
+    .update(username)
     .digest("hex");
 
   return adminToken === expectedToken;
 }
 
+
 export default async function handler(req, res) {
 
   try {
 
+    // ==========================================
     // METHOD CHECK
+    // ==========================================
+
     if (req.method !== "POST") {
+
       return res.status(405).json({
         success: false,
         error: "Method not allowed"
@@ -45,8 +53,12 @@ export default async function handler(req, res) {
     }
 
 
-    // ADMIN CHECK
+    // ==========================================
+    // ADMIN AUTH CHECK
+    // ==========================================
+
     if (!isAdminAuthenticated(req)) {
+
       return res.status(401).json({
         success: false,
         error: "Unauthorized"
@@ -54,52 +66,80 @@ export default async function handler(req, res) {
     }
 
 
+    // ==========================================
     // ENV CHECK
-    if (!process.env.SUPABASE_URL) {
+    // ==========================================
+
+    const supabaseUrl =
+      process.env.SUPABASE_URL;
+
+    const supabaseKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+
+    if (!supabaseUrl) {
+
       return res.status(500).json({
         success: false,
-        error: "SUPABASE_URL is missing in Vercel Environment Variables"
+        error: "SUPABASE_URL is missing"
       });
     }
 
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+
+    if (!supabaseKey) {
+
       return res.status(500).json({
         success: false,
-        error: "SUPABASE_SERVICE_ROLE_KEY is missing in Vercel Environment Variables"
+        error:
+          "SUPABASE_SERVICE_ROLE_KEY is missing"
       });
     }
 
 
+    // ==========================================
     // CREATE SUPABASE CLIENT
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
+    // ==========================================
+
+    const supabase =
+      createClient(
+        supabaseUrl,
+        supabaseKey,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
         }
-      }
-    );
+      );
 
 
-    // READ BODY
-    const { orderId, status } = req.body || {};
+    // ==========================================
+    // READ REQUEST
+    // ==========================================
+
+    const body = req.body || {};
+
+    const orderId =
+      body.orderId;
+
+    const status =
+      body.status;
 
 
     if (!orderId || !status) {
+
       return res.status(400).json({
         success: false,
-        error: "orderId and status are required",
-        received: {
-          orderId,
-          status
-        }
+        error:
+          "orderId and status are required"
       });
     }
 
 
-    // ALLOWED STATUSES
+    // ==========================================
+    // ALLOWED STATUS
+    // ==========================================
+
     const allowedStatuses = [
       "pending",
       "Preparing Food",
@@ -110,26 +150,33 @@ export default async function handler(req, res) {
 
 
     if (!allowedStatuses.includes(status)) {
+
       return res.status(400).json({
         success: false,
-        error: "Invalid order status",
-        receivedStatus: status
+        error:
+          "Invalid order status"
       });
     }
 
 
+    // ==========================================
     // UPDATE ORDER
-    const { data, error } = await supabase
-      .from("orders")
-      .update({
-        status: status
-      })
-      .eq("order_id", orderId)
-      .select()
-      .single();
+    // ==========================================
+
+    const { data, error } =
+      await supabase
+        .from("orders")
+        .update({
+          status: status
+        })
+        .eq("order_id", orderId)
+        .select();
 
 
+    // ==========================================
     // SUPABASE ERROR
+    // ==========================================
+
     if (error) {
 
       console.error(
@@ -147,43 +194,47 @@ export default async function handler(req, res) {
     }
 
 
+    // ==========================================
     // ORDER NOT FOUND
-    if (!data) {
+    // ==========================================
+
+    if (!data || data.length === 0) {
 
       return res.status(404).json({
         success: false,
-        error: "Order not found"
+        error:
+          "Order not found"
       });
     }
 
 
+    // ==========================================
     // SUCCESS
+    // ==========================================
+
     return res.status(200).json({
       success: true,
-      message: "Order status updated successfully",
-      order: data
+      message:
+        "Order status updated successfully",
+      order: data[0]
     });
 
 
   } catch (error) {
 
     console.error(
-      "UPDATE ORDER STATUS ERROR:",
+      "UPDATE STATUS ERROR:",
       error
     );
+
 
     return res.status(500).json({
       success: false,
       error:
-        error?.message ||
-        "Unknown server error",
-
+        error.message ||
+        "Failed to update order status",
       name:
-        error?.name || null,
-
-      stack:
-        error?.stack || null
+        error.name || null
     });
   }
 }
-```
