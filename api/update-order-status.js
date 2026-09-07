@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
+import ws from "ws";
 
 function isAdminAuthenticated(req) {
   const cookieHeader = req.headers.cookie || "";
@@ -100,17 +101,21 @@ export default async function handler(req, res) {
     // CREATE SUPABASE CLIENT
     // ==========================================
 
-    const supabase =
-      createClient(
-        supabaseUrl,
-        supabaseKey,
-        {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false
-          }
-        }
-      );
+   const supabase =
+  createClient(
+    supabaseUrl,
+    supabaseKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+
+      realtime: {
+        transport: ws
+      }
+    }
+  );
 
 
     // ==========================================
