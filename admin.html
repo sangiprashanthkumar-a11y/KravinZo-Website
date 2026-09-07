@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,6 +59,11 @@
       opacity: 0.85;
     }
 
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     #orders {
       max-width: 700px;
     }
@@ -100,9 +106,7 @@
 
 <body>
 
-  <!-- ==========================================
-       PAGE LOADING
-  =========================================== -->
+  <!-- PAGE LOADING -->
 
   <div
     id="pageLoading"
@@ -122,9 +126,7 @@
   </div>
 
 
-  <!-- ==========================================
-       LOGIN
-  =========================================== -->
+  <!-- LOGIN -->
 
   <div id="loginBox" style="display:none;">
 
@@ -146,7 +148,7 @@
       autocomplete="current-password"
     >
 
-    <button onclick="adminLogin()">
+    <button id="loginButton">
       Login
     </button>
 
@@ -155,9 +157,7 @@
   </div>
 
 
-  <!-- ==========================================
-       ADMIN ORDERS
-  =========================================== -->
+  <!-- ADMIN ORDERS -->
 
   <div id="adminPage" style="display:none;">
 
@@ -250,142 +250,199 @@
     // ==========================================
     // NEW ORDER SOUND
     // ==========================================
-function playKravinZoSound() {
 
-  const AudioContext =
-    window.AudioContext ||
-    window.webkitAudioContext;
+    function playKravinZoSound() {
 
-  if (!AudioContext) return;
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-  if (!kravinZoAudioCtx) {
-    kravinZoAudioCtx = new AudioContext();
-  }
+      if (!AudioContext) return;
 
-  const ctx = kravinZoAudioCtx;
+      if (!kravinZoAudioCtx) {
+        kravinZoAudioCtx = new AudioContext();
+      }
 
-  const playRestaurantBell = () => {
+      const ctx = kravinZoAudioCtx;
 
-    const start = ctx.currentTime;
+      const playRestaurantBell = () => {
 
-    // Compressor = loud but clean
-    const compressor = ctx.createDynamicsCompressor();
+        const start = ctx.currentTime;
 
-    compressor.threshold.setValueAtTime(-18, start);
-    compressor.knee.setValueAtTime(8, start);
-    compressor.ratio.setValueAtTime(5, start);
-    compressor.attack.setValueAtTime(0.003, start);
-    compressor.release.setValueAtTime(0.15, start);
+        const compressor =
+          ctx.createDynamicsCompressor();
 
-    compressor.connect(ctx.destination);
+        compressor.threshold.setValueAtTime(
+          -18,
+          start
+        );
 
-    // 3 strong restaurant bell rings
-    for (let r = 0; r < 3; r++) {
+        compressor.knee.setValueAtTime(
+          8,
+          start
+        );
 
-      const t = start + (r * 2);
+        compressor.ratio.setValueAtTime(
+          5,
+          start
+        );
 
-      // Main deep metallic tone
-      const osc1 = ctx.createOscillator();
-      const gain1 = ctx.createGain();
+        compressor.attack.setValueAtTime(
+          0.003,
+          start
+        );
 
-      osc1.type = "sine";
+        compressor.release.setValueAtTime(
+          0.15,
+          start
+        );
 
-      osc1.frequency.setValueAtTime(760, t);
-      osc1.frequency.exponentialRampToValueAtTime(
-        680,
-        t + 1.35
-      );
-
-      gain1.gain.setValueAtTime(0.001, t);
-
-      gain1.gain.exponentialRampToValueAtTime(
-        0.9,
-        t + 0.015
-      );
-
-      gain1.gain.exponentialRampToValueAtTime(
-        0.001,
-        t + 1.5
-      );
-
-      osc1.connect(gain1);
-      gain1.connect(compressor);
-
-      osc1.start(t);
-      osc1.stop(t + 1.55);
+        compressor.connect(ctx.destination);
 
 
-      // Bright metallic "DING"
-      const osc2 = ctx.createOscillator();
-      const gain2 = ctx.createGain();
+        // 3 restaurant bell rings
 
-      osc2.type = "sine";
+        for (let r = 0; r < 3; r++) {
 
-      osc2.frequency.setValueAtTime(1520, t);
-      osc2.frequency.exponentialRampToValueAtTime(
-        1320,
-        t + 1.25
-      );
-
-      gain2.gain.setValueAtTime(0.001, t);
-
-      gain2.gain.exponentialRampToValueAtTime(
-        0.55,
-        t + 0.01
-      );
-
-      gain2.gain.exponentialRampToValueAtTime(
-        0.001,
-        t + 1.35
-      );
-
-      osc2.connect(gain2);
-      gain2.connect(compressor);
-
-      osc2.start(t);
-      osc2.stop(t + 1.4);
+          const t = start + (r * 2);
 
 
-      // High metallic sparkle
-      const osc3 = ctx.createOscillator();
-      const gain3 = ctx.createGain();
+          // MAIN BELL
 
-      osc3.type = "sine";
+          const osc1 =
+            ctx.createOscillator();
 
-      osc3.frequency.setValueAtTime(2280, t);
+          const gain1 =
+            ctx.createGain();
 
-      gain3.gain.setValueAtTime(0.001, t);
+          osc1.type = "sine";
 
-      gain3.gain.exponentialRampToValueAtTime(
-        0.18,
-        t + 0.008
-      );
+          osc1.frequency.setValueAtTime(
+            760,
+            t
+          );
 
-      gain3.gain.exponentialRampToValueAtTime(
-        0.001,
-        t + 0.9
-      );
+          osc1.frequency.exponentialRampToValueAtTime(
+            680,
+            t + 1.35
+          );
 
-      osc3.connect(gain3);
-      gain3.connect(compressor);
+          gain1.gain.setValueAtTime(
+            0.001,
+            t
+          );
 
-      osc3.start(t);
-      osc3.stop(t + 1);
+          gain1.gain.exponentialRampToValueAtTime(
+            0.9,
+            t + 0.015
+          );
+
+          gain1.gain.exponentialRampToValueAtTime(
+            0.001,
+            t + 1.5
+          );
+
+          osc1.connect(gain1);
+          gain1.connect(compressor);
+
+          osc1.start(t);
+          osc1.stop(t + 1.55);
+
+
+          // BRIGHT DING
+
+          const osc2 =
+            ctx.createOscillator();
+
+          const gain2 =
+            ctx.createGain();
+
+          osc2.type = "sine";
+
+          osc2.frequency.setValueAtTime(
+            1520,
+            t
+          );
+
+          osc2.frequency.exponentialRampToValueAtTime(
+            1320,
+            t + 1.25
+          );
+
+          gain2.gain.setValueAtTime(
+            0.001,
+            t
+          );
+
+          gain2.gain.exponentialRampToValueAtTime(
+            0.55,
+            t + 0.01
+          );
+
+          gain2.gain.exponentialRampToValueAtTime(
+            0.001,
+            t + 1.35
+          );
+
+          osc2.connect(gain2);
+          gain2.connect(compressor);
+
+          osc2.start(t);
+          osc2.stop(t + 1.4);
+
+
+          // HIGH SPARKLE
+
+          const osc3 =
+            ctx.createOscillator();
+
+          const gain3 =
+            ctx.createGain();
+
+          osc3.type = "sine";
+
+          osc3.frequency.setValueAtTime(
+            2280,
+            t
+          );
+
+          gain3.gain.setValueAtTime(
+            0.001,
+            t
+          );
+
+          gain3.gain.exponentialRampToValueAtTime(
+            0.18,
+            t + 0.008
+          );
+
+          gain3.gain.exponentialRampToValueAtTime(
+            0.001,
+            t + 0.9
+          );
+
+          osc3.connect(gain3);
+          gain3.connect(compressor);
+
+          osc3.start(t);
+          osc3.stop(t + 1);
+        }
+      };
+
+
+      if (ctx.state === "suspended") {
+
+        ctx.resume().then(() => {
+          playRestaurantBell();
+        });
+
+      } else {
+
+        playRestaurantBell();
+      }
     }
-  };
 
-  if (ctx.state === "suspended") {
 
-    ctx.resume().then(() => {
-      playRestaurantBell();
-    });
-
-  } else {
-
-    playRestaurantBell();
-
-  }
-}
     // ==========================================
     // ADMIN LOGIN
     // ==========================================
@@ -449,18 +506,11 @@ function playKravinZoSound() {
 
         if (data.success) {
 
-          // Browser sound permission unlock
-
           unlockKravinZoSound();
-
 
           showAdmin();
 
-
-          // Load orders after login
-
           await loadOrders();
-
 
         } else {
 
@@ -504,17 +554,6 @@ function playKravinZoSound() {
           );
 
 
-        /*
-          IMPORTANT:
-
-          200 = logged in
-          401 = not logged in
-
-          Only after successful login
-          orders page is shown.
-        */
-
-
         if (response.ok) {
 
           showAdmin();
@@ -524,8 +563,6 @@ function playKravinZoSound() {
           return;
         }
 
-
-        // Not logged in
 
         showLogin();
 
@@ -569,9 +606,7 @@ function playKravinZoSound() {
           );
 
 
-        /*
-          SESSION EXPIRED
-        */
+        // SESSION EXPIRED
 
         if (response.status === 401) {
 
@@ -594,9 +629,7 @@ function playKravinZoSound() {
         }
 
 
-        /*
-          NO ORDERS
-        */
+        // NO ORDERS
 
         if (
           !data.success ||
@@ -611,9 +644,9 @@ function playKravinZoSound() {
         }
 
 
-        /*
-          NEW ORDER DETECTION
-        */
+        // ==========================================
+        // NEW ORDER DETECTION
+        // ==========================================
 
         const latestOrder =
           data.orders[0];
@@ -637,9 +670,7 @@ function playKravinZoSound() {
         }
 
 
-        /*
-          Save latest order ID
-        */
+        // SAVE LATEST ORDER ID
 
         if (latestOrderId) {
 
@@ -653,16 +684,14 @@ function playKravinZoSound() {
         }
 
 
-        /*
-          CLEAR ORDERS
-        */
+        // CLEAR ORDERS
 
         ordersContainer.innerHTML = "";
 
 
-        /*
-          DISPLAY ORDERS
-        */
+        // ==========================================
+        // DISPLAY ORDERS
+        // ==========================================
 
         data.orders.forEach(
           order => {
@@ -676,6 +705,10 @@ function playKravinZoSound() {
             card.className =
               "order-card";
 
+
+            // ==========================================
+            // ITEMS
+            // ==========================================
 
             let itemsHTML =
               "Unable to read items";
@@ -722,11 +755,13 @@ function playKravinZoSound() {
             }
 
 
-            /*
-              GOOGLE MAP URL
-            */
+            // ==========================================
+            // GOOGLE MAP
+            // ==========================================
 
-            let mapButton = "";
+            let mapUrl = null;
+
+            let mapButtonHTML = "";
 
 
             if (
@@ -736,7 +771,7 @@ function playKravinZoSound() {
               )
             ) {
 
-              const mapUrl =
+              mapUrl =
                 order.customer_address
                   .split(
                     "Google Maps:"
@@ -744,19 +779,17 @@ function playKravinZoSound() {
                   .trim();
 
 
-              mapButton = `
-                <button
-                  onclick="openMap(${JSON.stringify(mapUrl)})"
-                >
+              mapButtonHTML = `
+                <button class="map-btn">
                   📍 Open Google Maps
                 </button>
               `;
             }
 
 
-            /*
-              ORDER CARD
-            */
+            // ==========================================
+            // ORDER CARD HTML
+            // ==========================================
 
             card.innerHTML = `
 
@@ -805,7 +838,7 @@ function playKravinZoSound() {
               </p>
 
 
-              ${mapButton}
+              ${mapButtonHTML}
 
 
               <p style="margin-top:10px;">
@@ -832,59 +865,144 @@ function playKravinZoSound() {
               <br>
 
 
-              <button
-                onclick="
-                  updateStatus(
-                    ${JSON.stringify(order.order_id)},
-                    'Preparing Food'
-                  )
-                "
-              >
+              <button class="preparing-btn">
                 Preparing Food
               </button>
 
 
-              <button
-                onclick="
-                  updateStatus(
-                    ${JSON.stringify(order.order_id)},
-                    'Food Ready'
-                  )
-                "
-              >
+              <button class="ready-btn">
                 Food Ready
               </button>
 
 
-              <button
-                onclick="
-                  updateStatus(
-                    ${JSON.stringify(order.order_id)},
-                    'Handed to Delivery'
-                  )
-                "
-              >
+              <button class="delivery-btn">
                 Handed to Delivery
               </button>
 
 
-              <button
-                onclick="
-                  updateStatus(
-                    ${JSON.stringify(order.order_id)},
-                    'Delivered'
-                  )
-                "
-              >
+              <button class="delivered-btn">
                 Delivered
               </button>
 
             `;
 
 
+            // ==========================================
+            // GOOGLE MAP BUTTON
+            // ==========================================
+
+            if (mapUrl) {
+
+              const mapButton =
+                card.querySelector(
+                  ".map-btn"
+                );
+
+
+              if (mapButton) {
+
+                mapButton.addEventListener(
+                  "click",
+                  () => {
+
+                    openMap(mapUrl);
+
+                  }
+                );
+              }
+            }
+
+
+            // ==========================================
+            // PREPARING FOOD
+            // ==========================================
+
+            card
+              .querySelector(
+                ".preparing-btn"
+              )
+              .addEventListener(
+                "click",
+                () => {
+
+                  updateStatus(
+                    order.order_id,
+                    "Preparing Food"
+                  );
+
+                }
+              );
+
+
+            // ==========================================
+            // FOOD READY
+            // ==========================================
+
+            card
+              .querySelector(
+                ".ready-btn"
+              )
+              .addEventListener(
+                "click",
+                () => {
+
+                  updateStatus(
+                    order.order_id,
+                    "Food Ready"
+                  );
+
+                }
+              );
+
+
+            // ==========================================
+            // HANDED TO DELIVERY
+            // ==========================================
+
+            card
+              .querySelector(
+                ".delivery-btn"
+              )
+              .addEventListener(
+                "click",
+                () => {
+
+                  updateStatus(
+                    order.order_id,
+                    "Handed to Delivery"
+                  );
+
+                }
+              );
+
+
+            // ==========================================
+            // DELIVERED
+            // ==========================================
+
+            card
+              .querySelector(
+                ".delivered-btn"
+              )
+              .addEventListener(
+                "click",
+                () => {
+
+                  updateStatus(
+                    order.order_id,
+                    "Delivered"
+                  );
+
+                }
+              );
+
+
+            // ADD CARD
+
             ordersContainer.appendChild(
               card
             );
+
           }
         );
 
@@ -998,7 +1116,19 @@ function playKravinZoSound() {
 
 
     // ==========================================
-    // AUTO REFRESH
+    // LOGIN BUTTON
+    // ==========================================
+
+    document
+      .getElementById("loginButton")
+      .addEventListener(
+        "click",
+        adminLogin
+      );
+
+
+    // ==========================================
+    // AUTO REFRESH - 15 SECONDS
     // ==========================================
 
     setInterval(
@@ -1049,3 +1179,4 @@ function playKravinZoSound() {
 
 </body>
 </html>
+```
