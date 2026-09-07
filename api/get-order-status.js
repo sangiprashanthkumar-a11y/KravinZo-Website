@@ -1,4 +1,3 @@
-```javascript
 const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
@@ -7,7 +6,6 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
-
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
@@ -16,7 +14,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const orderId = req.query.orderId;
+    const { orderId } = req.query;
 
     if (!orderId) {
       return res.status(400).json({
@@ -34,10 +32,7 @@ module.exports = async function handler(req, res) {
       .maybeSingle();
 
     if (error) {
-      console.error(
-        "GET ORDER STATUS ERROR:",
-        error
-      );
+      console.error("GET ORDER STATUS ERROR:", error);
 
       return res.status(500).json({
         success: false,
@@ -58,17 +53,11 @@ module.exports = async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error(
-      "ORDER STATUS API ERROR:",
-      error
-    );
+    console.error("ORDER STATUS API ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error:
-        error.message ||
-        "Failed to get order status"
+      error: error.message || "Failed to get order status"
     });
   }
 };
-```
