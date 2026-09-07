@@ -32,13 +32,13 @@
     }
 
     .order-card h3 {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .status {
       display: inline-block;
-      margin: 10px 0;
-      padding: 8px 12px;
+      margin: 12px 0;
+      padding: 8px 14px;
       border-radius: 20px;
       background: #eee;
       font-weight: bold;
@@ -99,6 +99,19 @@
     #loginError {
       color: red;
       margin-top: 10px;
+    }
+
+    .map-btn {
+      background: #1976d2;
+    }
+
+    .logout-btn {
+      background: #d32f2f;
+      margin-bottom: 20px;
+    }
+
+    .status-current {
+      font-size: 15px;
     }
   </style>
 </head>
@@ -162,6 +175,13 @@
 
     <h1>🍔 KravinZo Admin</h1>
 
+    <button
+      class="logout-btn"
+      id="logoutButton"
+    >
+      Logout
+    </button>
+
     <div id="orders">
 
       <div class="empty">
@@ -220,7 +240,7 @@
 
 
     // ==========================================
-    // UNLOCK SOUND
+    // SOUND UNLOCK
     // ==========================================
 
     function unlockKravinZoSound() {
@@ -433,6 +453,7 @@
       } else {
 
         playRestaurantBell();
+
       }
     }
 
@@ -444,19 +465,18 @@
     async function adminLogin() {
 
       const username =
-        document.getElementById(
-          "adminUsername"
-        ).value.trim();
+        document
+          .getElementById("adminUsername")
+          .value
+          .trim();
 
       const password =
-        document.getElementById(
-          "adminPassword"
-        ).value;
+        document
+          .getElementById("adminPassword")
+          .value;
 
       const error =
-        document.getElementById(
-          "loginError"
-        );
+        document.getElementById("loginError");
 
       error.textContent = "";
 
@@ -477,6 +497,7 @@
             "/api/admin-login",
             {
               method: "POST",
+
               credentials: "include",
 
               headers: {
@@ -509,6 +530,7 @@
           error.textContent =
             data.error ||
             "Invalid username or password.";
+
         }
 
 
@@ -521,6 +543,7 @@
 
         error.textContent =
           "Login failed. Please try again.";
+
       }
     }
 
@@ -565,6 +588,7 @@
         );
 
         showLogin();
+
       }
     }
 
@@ -576,9 +600,7 @@
     async function loadOrders() {
 
       const ordersContainer =
-        document.getElementById(
-          "orders"
-        );
+        document.getElementById("orders");
 
 
       try {
@@ -604,8 +626,28 @@
         }
 
 
-        const data =
-          await response.json();
+        const responseText =
+          await response.text();
+
+        let data;
+
+        try {
+
+          data =
+            JSON.parse(responseText);
+
+        } catch (error) {
+
+          console.error(
+            "Invalid JSON:",
+            responseText
+          );
+
+          ordersContainer.innerHTML =
+            '<div class="empty">Server returned invalid response.</div>';
+
+          return;
+        }
 
 
         if (!response.ok) {
@@ -621,7 +663,7 @@
 
         if (
           !data.success ||
-          !data.orders ||
+          !Array.isArray(data.orders) ||
           data.orders.length === 0
         ) {
 
@@ -670,7 +712,7 @@
         }
 
 
-        // CLEAR ORDERS
+        // CLEAR
 
         ordersContainer.innerHTML = "";
 
@@ -679,334 +721,319 @@
         // DISPLAY ORDERS
         // ==========================================
 
-        data.orders.forEach(
-          order => {
+        data.orders.forEach(order => {
 
-            const card =
-              document.createElement(
-                "div"
-              );
+          const card =
+            document.createElement("div");
 
-
-            card.className =
-              "order-card";
+          card.className =
+            "order-card";
 
 
-            // ==========================================
-            // ITEMS
-            // ==========================================
+          // ==========================================
+          // ITEMS
+          // ==========================================
 
-            let itemsHTML =
-              "Unable to read items";
-
-
-            try {
-
-              let items =
-                order.items;
+          let itemsHTML =
+            "Unable to read items";
 
 
-              if (
-                typeof items === "string"
-              ) {
+          try {
 
-                items =
-                  JSON.parse(items);
-              }
+            let items =
+              order.items;
 
+            if (typeof items === "string") {
 
-              if (Array.isArray(items)) {
+              items =
+                JSON.parse(items);
 
-                itemsHTML =
-                  items
-                    .map(
-                      item => `
-                        <div style="margin:6px 0;">
-                          ${item.name || "Item"}
-                          × ${item.quantity || 1}
-                          — ₹${item.itemTotal || 0}
-                        </div>
-                      `
-                    )
-                    .join("");
-              }
-
-
-            } catch (error) {
-
-              console.error(
-                "Items parse error:",
-                error
-              );
             }
 
 
-            // ==========================================
-            // GOOGLE MAP
-            // ==========================================
+            if (Array.isArray(items)) {
 
-            let mapUrl = null;
+              itemsHTML =
+                items
+                  .map(item => {
 
-            let mapButtonHTML = "";
+                    const name =
+                      item.name || "Item";
 
+                    const quantity =
+                      item.quantity || 1;
 
-            if (
-              order.customer_address &&
-              order.customer_address.includes(
-                "Google Maps:"
-              )
-            ) {
+                    const itemTotal =
+                      item.itemTotal ??
+                      item.total ??
+                      0;
 
-              mapUrl =
-                order.customer_address
-                  .split(
-                    "Google Maps:"
-                  )[1]
-                  .trim();
+                    return `
+                      <div style="margin:6px 0;">
+                        ${name}
+                        × ${quantity}
+                        — ₹${itemTotal}
+                      </div>
+                    `;
 
+                  })
+                  .join("");
 
-              mapButtonHTML = `
-                <button class="map-btn">
-                  📍 Open Google Maps
-                </button>
-              `;
             }
 
-
-            // ==========================================
-            // ORDER CARD
-            // ==========================================
-
-            card.innerHTML = `
-
-              <h3>
-                Order #${order.order_id}
-              </h3>
-
-
-              <p style="margin-bottom:8px;">
-                <strong>🕐 Order Time:</strong>
-                ${
-                  order.created_at
-                    ? new Date(
-                        order.created_at
-                      ).toLocaleString(
-                        "en-IN",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true
-                        }
-                      )
-                    : "N/A"
-                }
-              </p>
-
-
-              <p style="margin-bottom:8px;">
-                <strong>Customer:</strong>
-                ${order.customer_name || "N/A"}
-              </p>
-
-
-              <p style="margin-bottom:8px;">
-                <strong>Phone:</strong>
-                ${order.customer_phone || "N/A"}
-              </p>
-
-
-              <p style="margin-bottom:8px;">
-                <strong>Address:</strong>
-                ${order.customer_address || "N/A"}
-              </p>
-
-
-              ${mapButtonHTML}
-
-
-              <p style="margin-top:10px;">
-                <strong>Total:</strong>
-                ₹${order.total || 0}
-              </p>
-
-
-              <p style="margin-top:10px;">
-                <strong>Items:</strong>
-              </p>
-
-
-              <div class="items">
-                ${itemsHTML}
-              </div>
-
-
-              <div class="status">
-                ${order.status || "pending"}
-              </div>
-
-
-              <br>
-
-
-              <button class="preparing-btn">
-                Preparing Food
-              </button>
-
-
-              <button class="ready-btn">
-                Food Ready
-              </button>
-
-
-              <button class="delivery-btn">
-                Handed to Delivery
-              </button>
-
-
-              <button class="delivered-btn">
-                Delivered
-              </button>
-
-            `;
-
-
-            // ==========================================
-            // GOOGLE MAP BUTTON
-            // ==========================================
-
-            if (mapUrl) {
-
-              const mapButton =
-                card.querySelector(
-                  ".map-btn"
-                );
-
-
-              if (mapButton) {
-
-                mapButton.addEventListener(
-                  "click",
-                  () => {
-
-                    openMap(mapUrl);
-
-                  }
-                );
-              }
-            }
-
-
-            // ==========================================
-            // PREPARING FOOD
-            // ==========================================
-
-            const preparingButton =
-              card.querySelector(
-                ".preparing-btn"
-              );
-
-            if (preparingButton) {
-
-              preparingButton.addEventListener(
-                "click",
-                () => {
-
-                  updateStatus(
-                    order.order_id,
-                    "Preparing Food"
-                  );
-
-                }
-              );
-            }
-
-
-            // ==========================================
-            // FOOD READY
-            // ==========================================
-
-            const readyButton =
-              card.querySelector(
-                ".ready-btn"
-              );
-
-            if (readyButton) {
-
-              readyButton.addEventListener(
-                "click",
-                () => {
-
-                  updateStatus(
-                    order.order_id,
-                    "Food Ready"
-                  );
-
-                }
-              );
-            }
-
-
-            // ==========================================
-            // HANDED TO DELIVERY
-            // ==========================================
-
-            const deliveryButton =
-              card.querySelector(
-                ".delivery-btn"
-              );
-
-            if (deliveryButton) {
-
-              deliveryButton.addEventListener(
-                "click",
-                () => {
-
-                  updateStatus(
-                    order.order_id,
-                    "Handed to Delivery"
-                  );
-
-                }
-              );
-            }
-
-
-            // ==========================================
-            // DELIVERED
-            // ==========================================
-
-            const deliveredButton =
-              card.querySelector(
-                ".delivered-btn"
-              );
-
-            if (deliveredButton) {
-
-              deliveredButton.addEventListener(
-                "click",
-                () => {
-
-                  updateStatus(
-                    order.order_id,
-                    "Delivered"
-                  );
-
-                }
-              );
-            }
-
-
-            // ADD CARD
-
-            ordersContainer.appendChild(
-              card
+          } catch (error) {
+
+            console.error(
+              "Items parse error:",
+              error
             );
 
           }
-        );
+
+
+          // ==========================================
+          // GOOGLE MAP
+          // ==========================================
+
+          let mapUrl = null;
+
+          let mapButtonHTML = "";
+
+
+          if (
+            order.customer_address &&
+            order.customer_address.includes("Google Maps:")
+          ) {
+
+            mapUrl =
+              order.customer_address
+                .split("Google Maps:")[1]
+                .trim();
+
+
+            mapButtonHTML = `
+              <button class="map-btn">
+                📍 Open Google Maps
+              </button>
+            `;
+
+          }
+
+
+          // ==========================================
+          // CURRENT STATUS
+          // ==========================================
+
+          const currentStatus =
+            order.status || "Order Confirmed";
+
+
+          // ==========================================
+          // ORDER CARD
+          // ==========================================
+
+          card.innerHTML = `
+
+            <h3>
+              Order #${order.order_id}
+            </h3>
+
+
+            <p style="margin-bottom:8px;">
+              <strong>🕐 Order Time:</strong>
+              ${
+                order.created_at
+                  ? new Date(
+                      order.created_at
+                    ).toLocaleString(
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                      }
+                    )
+                  : "N/A"
+              }
+            </p>
+
+
+            <p style="margin-bottom:8px;">
+              <strong>Customer:</strong>
+              ${order.customer_name || "N/A"}
+            </p>
+
+
+            <p style="margin-bottom:8px;">
+              <strong>Phone:</strong>
+              ${order.customer_phone || "N/A"}
+            </p>
+
+
+            <p style="margin-bottom:8px;">
+              <strong>Address:</strong>
+              ${order.customer_address || "N/A"}
+            </p>
+
+
+            ${mapButtonHTML}
+
+
+            <p style="margin-top:10px;">
+              <strong>Total:</strong>
+              ₹${order.total || 0}
+            </p>
+
+
+            <p style="margin-top:10px;">
+              <strong>Items:</strong>
+            </p>
+
+
+            <div class="items">
+              ${itemsHTML}
+            </div>
+
+
+            <div class="status status-current">
+              📦 Current Status:
+              ${currentStatus}
+            </div>
+
+
+            <br>
+
+
+            <button class="preparing-btn">
+              🍳 Preparing Food
+            </button>
+
+
+            <button class="ready-btn">
+              ✅ Food Ready
+            </button>
+
+
+            <button class="delivery-btn">
+              🛵 Handed to Delivery
+            </button>
+
+
+            <button class="delivered-btn">
+              🎉 Delivered
+            </button>
+
+          `;
+
+
+          // ==========================================
+          // GOOGLE MAP BUTTON
+          // ==========================================
+
+          if (mapUrl) {
+
+            const mapButton =
+              card.querySelector(".map-btn");
+
+            if (mapButton) {
+
+              mapButton.addEventListener(
+                "click",
+                () => {
+                  openMap(mapUrl);
+                }
+              );
+
+            }
+          }
+
+
+          // ==========================================
+          // PREPARING
+          // ==========================================
+
+          const preparingButton =
+            card.querySelector(".preparing-btn");
+
+          preparingButton.addEventListener(
+            "click",
+            () => {
+
+              updateStatus(
+                order.order_id,
+                "Preparing Food"
+              );
+
+            }
+          );
+
+
+          // ==========================================
+          // FOOD READY
+          // ==========================================
+
+          const readyButton =
+            card.querySelector(".ready-btn");
+
+          readyButton.addEventListener(
+            "click",
+            () => {
+
+              updateStatus(
+                order.order_id,
+                "Food Ready"
+              );
+
+            }
+          );
+
+
+          // ==========================================
+          // HANDED TO DELIVERY
+          // ==========================================
+
+          const deliveryButton =
+            card.querySelector(".delivery-btn");
+
+          deliveryButton.addEventListener(
+            "click",
+            () => {
+
+              updateStatus(
+                order.order_id,
+                "Handed to Delivery"
+              );
+
+            }
+          );
+
+
+          // ==========================================
+          // DELIVERED
+          // ==========================================
+
+          const deliveredButton =
+            card.querySelector(".delivered-btn");
+
+          deliveredButton.addEventListener(
+            "click",
+            () => {
+
+              updateStatus(
+                order.order_id,
+                "Delivered"
+              );
+
+            }
+          );
+
+
+          ordersContainer.appendChild(card);
+
+        });
 
 
       } catch (error) {
@@ -1016,9 +1043,9 @@
           error
         );
 
-
         ordersContainer.innerHTML =
           '<div class="empty">Failed to load orders.</div>';
+
       }
     }
 
@@ -1029,13 +1056,14 @@
 
     function openMap(url) {
 
-      if (url) {
+      if (!url) return;
 
-        window.open(
-          url,
-          "_blank"
-        );
-      }
+      window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+      );
+
     }
 
 
@@ -1071,9 +1099,6 @@
           );
 
 
-        // IMPORTANT:
-        // Read response as TEXT first
-
         const responseText =
           await response.text();
 
@@ -1083,23 +1108,18 @@
           response.status
         );
 
-
         console.log(
           "STATUS API BODY:",
           responseText
         );
 
 
-        // Convert TEXT to JSON
-
         let data;
 
         try {
 
           data =
-            JSON.parse(
-              responseText
-            );
+            JSON.parse(responseText);
 
         } catch (jsonError) {
 
@@ -1116,9 +1136,7 @@
 
         // SESSION EXPIRED
 
-        if (
-          response.status === 401
-        ) {
+        if (response.status === 401) {
 
           showLogin();
 
@@ -1133,18 +1151,13 @@
           data.success
         ) {
 
-          alert(
-            "Order status updated!"
-          );
-
-
           await loadOrders();
 
           return;
         }
 
 
-        // API ERROR
+        // ERROR
 
         alert(
           data.error ||
@@ -1160,12 +1173,42 @@
           error
         );
 
-
         alert(
           "Connection error:\n\n" +
           error.message
         );
+
       }
+    }
+
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    async function logoutAdmin() {
+
+      try {
+
+        await fetch(
+          "/api/admin-logout",
+          {
+            method: "POST",
+            credentials: "include"
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+      }
+
+      showLogin();
+
     }
 
 
@@ -1174,12 +1217,40 @@
     // ==========================================
 
     document
-      .getElementById(
-        "loginButton"
-      )
+      .getElementById("loginButton")
       .addEventListener(
         "click",
         adminLogin
+      );
+
+
+    // ==========================================
+    // ENTER KEY LOGIN
+    // ==========================================
+
+    document
+      .getElementById("adminPassword")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (event.key === "Enter") {
+            adminLogin();
+          }
+
+        }
+      );
+
+
+    // ==========================================
+    // LOGOUT BUTTON
+    // ==========================================
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener(
+        "click",
+        logoutAdmin
       );
 
 
@@ -1191,9 +1262,7 @@
       async () => {
 
         const adminPage =
-          document.getElementById(
-            "adminPage"
-          );
+          document.getElementById("adminPage");
 
 
         if (
@@ -1202,6 +1271,7 @@
         ) {
 
           await loadOrders();
+
         }
 
       },
@@ -1217,7 +1287,6 @@
       "click",
       unlockKravinZoSound
     );
-
 
     document.addEventListener(
       "keydown",
