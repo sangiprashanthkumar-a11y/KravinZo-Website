@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,7 +156,7 @@
   </div>
 
 
-  <!-- ADMIN ORDERS -->
+  <!-- ADMIN PAGE -->
 
   <div id="adminPage" style="display:none;">
 
@@ -233,15 +232,11 @@
       if (!AudioContext) return;
 
       if (!kravinZoAudioCtx) {
-
         kravinZoAudioCtx =
           new AudioContext();
       }
 
-      if (
-        kravinZoAudioCtx.state === "suspended"
-      ) {
-
+      if (kravinZoAudioCtx.state === "suspended") {
         kravinZoAudioCtx.resume();
       }
     }
@@ -260,7 +255,8 @@
       if (!AudioContext) return;
 
       if (!kravinZoAudioCtx) {
-        kravinZoAudioCtx = new AudioContext();
+        kravinZoAudioCtx =
+          new AudioContext();
       }
 
       const ctx = kravinZoAudioCtx;
@@ -299,8 +295,6 @@
 
         compressor.connect(ctx.destination);
 
-
-        // 3 restaurant bell rings
 
         for (let r = 0; r < 3; r++) {
 
@@ -464,7 +458,6 @@
           "loginError"
         );
 
-
       error.textContent = "";
 
 
@@ -484,7 +477,6 @@
             "/api/admin-login",
             {
               method: "POST",
-
               credentials: "include",
 
               headers: {
@@ -546,9 +538,7 @@
             "/api/get-orders",
             {
               method: "GET",
-
               credentials: "include",
-
               cache: "no-store"
             }
           );
@@ -598,9 +588,7 @@
             "/api/get-orders",
             {
               method: "GET",
-
               credentials: "include",
-
               cache: "no-store"
             }
           );
@@ -669,8 +657,6 @@
           playKravinZoSound();
         }
 
-
-        // SAVE LATEST ORDER ID
 
         if (latestOrderId) {
 
@@ -788,7 +774,7 @@
 
 
             // ==========================================
-            // ORDER CARD HTML
+            // ORDER CARD
             // ==========================================
 
             card.innerHTML = `
@@ -917,11 +903,14 @@
             // PREPARING FOOD
             // ==========================================
 
-            card
-              .querySelector(
+            const preparingButton =
+              card.querySelector(
                 ".preparing-btn"
-              )
-              .addEventListener(
+              );
+
+            if (preparingButton) {
+
+              preparingButton.addEventListener(
                 "click",
                 () => {
 
@@ -932,17 +921,21 @@
 
                 }
               );
+            }
 
 
             // ==========================================
             // FOOD READY
             // ==========================================
 
-            card
-              .querySelector(
+            const readyButton =
+              card.querySelector(
                 ".ready-btn"
-              )
-              .addEventListener(
+              );
+
+            if (readyButton) {
+
+              readyButton.addEventListener(
                 "click",
                 () => {
 
@@ -953,17 +946,21 @@
 
                 }
               );
+            }
 
 
             // ==========================================
             // HANDED TO DELIVERY
             // ==========================================
 
-            card
-              .querySelector(
+            const deliveryButton =
+              card.querySelector(
                 ".delivery-btn"
-              )
-              .addEventListener(
+              );
+
+            if (deliveryButton) {
+
+              deliveryButton.addEventListener(
                 "click",
                 () => {
 
@@ -974,17 +971,21 @@
 
                 }
               );
+            }
 
 
             // ==========================================
             // DELIVERED
             // ==========================================
 
-            card
-              .querySelector(
+            const deliveredButton =
+              card.querySelector(
                 ".delivered-btn"
-              )
-              .addEventListener(
+              );
+
+            if (deliveredButton) {
+
+              deliveredButton.addEventListener(
                 "click",
                 () => {
 
@@ -995,6 +996,7 @@
 
                 }
               );
+            }
 
 
             // ADD CARD
@@ -1069,11 +1071,54 @@
           );
 
 
-        const data =
-          await response.json();
+        // IMPORTANT:
+        // Read response as TEXT first
+
+        const responseText =
+          await response.text();
 
 
-        if (response.status === 401) {
+        console.log(
+          "STATUS API RESPONSE:",
+          response.status
+        );
+
+
+        console.log(
+          "STATUS API BODY:",
+          responseText
+        );
+
+
+        // Convert TEXT to JSON
+
+        let data;
+
+        try {
+
+          data =
+            JSON.parse(
+              responseText
+            );
+
+        } catch (jsonError) {
+
+          alert(
+            "Server Error (" +
+            response.status +
+            "):\n\n" +
+            responseText
+          );
+
+          return;
+        }
+
+
+        // SESSION EXPIRED
+
+        if (
+          response.status === 401
+        ) {
 
           showLogin();
 
@@ -1081,7 +1126,12 @@
         }
 
 
-        if (data.success) {
+        // SUCCESS
+
+        if (
+          response.ok &&
+          data.success
+        ) {
 
           alert(
             "Order status updated!"
@@ -1090,14 +1140,17 @@
 
           await loadOrders();
 
-
-        } else {
-
-          alert(
-            data.error ||
-            "Failed to update status"
-          );
+          return;
         }
+
+
+        // API ERROR
+
+        alert(
+          data.error ||
+          data.message ||
+          "Failed to update status"
+        );
 
 
       } catch (error) {
@@ -1109,7 +1162,8 @@
 
 
         alert(
-          "Something went wrong"
+          "Connection error:\n\n" +
+          error.message
         );
       }
     }
@@ -1120,7 +1174,9 @@
     // ==========================================
 
     document
-      .getElementById("loginButton")
+      .getElementById(
+        "loginButton"
+      )
       .addEventListener(
         "click",
         adminLogin
@@ -1154,7 +1210,7 @@
 
 
     // ==========================================
-    // UNLOCK SOUND AFTER USER INTERACTION
+    // UNLOCK SOUND
     // ==========================================
 
     document.addEventListener(
@@ -1179,4 +1235,3 @@
 
 </body>
 </html>
-```
