@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,6 +56,7 @@
       cursor: pointer;
       background: #111;
       color: white;
+      font-size: 14px;
     }
 
     button:hover {
@@ -66,6 +66,22 @@
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+
+    .preparing-btn {
+      background: #f57c00;
+    }
+
+    .ready-btn {
+      background: #2e7d32;
+    }
+
+    .delivery-btn {
+      background: #1976d2;
+    }
+
+    .delivered-btn {
+      background: #7b1fa2;
     }
 
     #orders {
@@ -99,6 +115,7 @@
     #loginBox button {
       width: 100%;
       font-size: 16px;
+      background: #111;
     }
 
     #loginError {
@@ -117,6 +134,13 @@
 
     .status-current {
       font-size: 15px;
+    }
+
+    .completed {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
     }
   </style>
 </head>
@@ -834,7 +858,91 @@
           // ==========================================
 
           const currentStatus =
-            order.status || "Order Confirmed";
+            order.status || "New";
+
+
+          // ==========================================
+          // STATUS BUTTON
+          // ==========================================
+
+          let statusButtonHTML = "";
+
+
+          // NEW ORDER
+
+          if (
+            currentStatus === "New" ||
+            currentStatus === "Order Confirmed" ||
+            currentStatus === "pending"
+          ) {
+
+            statusButtonHTML = `
+              <button class="preparing-btn">
+                🍳 Preparing Food
+              </button>
+            `;
+
+          }
+
+
+          // PREPARING FOOD
+
+          else if (
+            currentStatus === "Preparing Food"
+          ) {
+
+            statusButtonHTML = `
+              <button class="ready-btn">
+                ✅ Food Ready
+              </button>
+            `;
+
+          }
+
+
+          // FOOD READY
+
+          else if (
+            currentStatus === "Food Ready"
+          ) {
+
+            statusButtonHTML = `
+              <button class="delivery-btn">
+                🛵 Handed to Delivery
+              </button>
+            `;
+
+          }
+
+
+          // HANDED TO DELIVERY
+
+          else if (
+            currentStatus === "Handed to Delivery"
+          ) {
+
+            statusButtonHTML = `
+              <button class="delivered-btn">
+                🎉 Delivered
+              </button>
+            `;
+
+          }
+
+
+          // DELIVERED
+
+          else if (
+            currentStatus === "Delivered"
+          ) {
+
+            statusButtonHTML = `
+              <strong class="completed">
+                ✅ Order Completed
+              </strong>
+            `;
+
+          }
 
 
           // ==========================================
@@ -914,62 +1022,7 @@
 
 
             <div class="status-buttons">
-
-              ${
-                currentStatus === "Order Confirmed" ||
-                currentStatus === "pending"
-                  ? `
-                    <button class="preparing-btn">
-                      🍳 Preparing Food
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              ${
-                currentStatus === "Preparing Food"
-                  ? `
-                    <button class="ready-btn">
-                      ✅ Food Ready
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              ${
-                currentStatus === "Food Ready"
-                  ? `
-                    <button class="delivery-btn">
-                      🛵 Handed to Delivery
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              ${
-                currentStatus === "Handed to Delivery"
-                  ? `
-                    <button class="delivered-btn">
-                      🎉 Delivered
-                    </button>
-                  `
-                  : ""
-              }
-
-
-              ${
-                currentStatus === "Delivered"
-                  ? `
-                    <strong style="color:green;">
-                      ✅ Order Completed
-                    </strong>
-                  `
-                  : ""
-              }
-
+              ${statusButtonHTML}
             </div>
 
           `;
@@ -990,16 +1043,19 @@
               mapButton.addEventListener(
                 "click",
                 () => {
+
                   openMap(mapUrl);
+
                 }
               );
 
             }
+
           }
 
 
           // ==========================================
-          // PREPARING
+          // PREPARING BUTTON
           // ==========================================
 
           const preparingButton =
@@ -1010,9 +1066,14 @@
 
             preparingButton.addEventListener(
               "click",
-              () => {
+              async () => {
 
-                updateStatus(
+                preparingButton.disabled = true;
+
+                preparingButton.textContent =
+                  "Updating...";
+
+                await updateStatus(
                   order.order_id,
                   "Preparing Food"
                 );
@@ -1024,7 +1085,7 @@
 
 
           // ==========================================
-          // FOOD READY
+          // FOOD READY BUTTON
           // ==========================================
 
           const readyButton =
@@ -1035,9 +1096,14 @@
 
             readyButton.addEventListener(
               "click",
-              () => {
+              async () => {
 
-                updateStatus(
+                readyButton.disabled = true;
+
+                readyButton.textContent =
+                  "Updating...";
+
+                await updateStatus(
                   order.order_id,
                   "Food Ready"
                 );
@@ -1049,7 +1115,7 @@
 
 
           // ==========================================
-          // HANDED TO DELIVERY
+          // HANDED TO DELIVERY BUTTON
           // ==========================================
 
           const deliveryButton =
@@ -1060,9 +1126,14 @@
 
             deliveryButton.addEventListener(
               "click",
-              () => {
+              async () => {
 
-                updateStatus(
+                deliveryButton.disabled = true;
+
+                deliveryButton.textContent =
+                  "Updating...";
+
+                await updateStatus(
                   order.order_id,
                   "Handed to Delivery"
                 );
@@ -1074,7 +1145,7 @@
 
 
           // ==========================================
-          // DELIVERED
+          // DELIVERED BUTTON
           // ==========================================
 
           const deliveredButton =
@@ -1085,9 +1156,14 @@
 
             deliveredButton.addEventListener(
               "click",
-              () => {
+              async () => {
 
-                updateStatus(
+                deliveredButton.disabled = true;
+
+                deliveredButton.textContent =
+                  "Updating...";
+
+                await updateStatus(
                   order.order_id,
                   "Delivered"
                 );
@@ -1147,7 +1223,7 @@
 
         const response =
           await fetch(
-            "/api/update-order-status",
+            "/api/update-status",
             {
               method: "POST",
 
@@ -1249,6 +1325,7 @@
         );
 
       }
+
     }
 
 
@@ -1378,4 +1455,3 @@
 
 </body>
 </html>
-```
