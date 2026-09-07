@@ -9,774 +9,572 @@
   <link rel="stylesheet" href="style.css">
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
   <style>
     * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #171717;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      background: #111;
+      color: #fff;
+    }
+
+    .logo {
+      color: #ff6b00;
+      font-size: 38px;
+      font-weight: 800;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      color: #ff6b00;
+    }
+
+    .header-cart {
+      border: 0;
+      background: #ff6b00;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .hero {
+      min-height: 590px;
+      display: flex;
+      align-items: center;
+      padding: 70px 8%;
+      color: #fff;
+      background-image: url("entro.png");
+    }
+
+    .hero-content {
+      max-width: 620px;
+    }
+
+    .tag {
+      color: #ff6b00;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .hero h1 {
+      margin-top: 25px;
+      font-size: 45px;
+      color: #ff6b00;
+      line-height: 1.02;
+    }
+
+    .hero p {
+      margin-top: 22px;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
+    .main-btn {
+      border: 0;
+      background: #ff6b00;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .hero .main-btn {
+      margin-top: 28px;
+    }
+
+    .main-btn:hover {
+      background: #e85f00;
+    }
+
+    .section {
+      padding: 80px 7%;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .title span {
+      color: #ff6b00;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    .title h2 {
+      margin-top: 8px;
+      font-size: 38px;
+    }
+
+    .cart-section {
+      background: #f7f7f7;
+    }
+
+    .cart-box {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.07);
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item-info strong {
+      display: block;
+    }
+
+    .cart-item-info span {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity button {
+      border: 0;
+      background: #111;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .cart-total {
+      padding-top: 20px;
+      margin-top: 15px;
+      border-top: 2px solid #ddd;
+      font-size: 18px;
+    }
+
+    .cart-total > div {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .cart-total strong {
+      color: #ff6b00;
+    }
+
+    .full {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+    }
+
+    .checkout {
+      background: #fff;
+    }
+
+    .checkout-grid {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .checkout-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.08);
+    }
+
+    .checkout-card h3 {
+      margin-bottom: 20px;
+    }
+
+    .checkout-card label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .checkout-card input,
+    .checkout-card textarea {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .checkout-card input:focus,
+    .checkout-card textarea:focus {
+      border-color: #ff6b00;
+    }
+
+    .checkout-card textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    .location-btn {
+      width: 100%;
+      border: 2px solid #ff6b00;
+      background: #fff;
+      color: #ff6b00;
+      padding: 13px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .location-status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #555;
+      word-break: break-word;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 20px;
+      margin-top: 15px;
+      border-top: 2px solid #ddd;
+      font-size: 20px;
+    }
+
+    .summary-total strong {
+      color: #ff6b00;
+    }
+
+    .payment-title {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .payment-btn,
+    .cod-btn,
+    .whatsapp-btn {
+      width: 100%;
+      border: 0;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .payment-btn {
+      background: #ff6b00;
+      color: #fff;
+    }
+
+    .payment-btn:hover {
+      background: #e85f00;
+    }
+
+    .cod-btn {
+      background: #111;
+      color: #fff;
+    }
+
+    .whatsapp-btn {
+      background: #25d366;
+      color: #fff;
+    }
+
+    .payment-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #paymentMessage {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .tracking {
+      padding: 70px 7%;
+      background: #111;
+      color: #fff;
+      text-align: center;
+    }
+
+    .tracking-box {
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .tracking-box > span {
+      color: #ff6b00;
+      font-size: 13px;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
+
+    .tracking-box h2 {
+      margin-top: 12px;
+      font-size: 35px;
+    }
+
+    .tracking-box p {
+      margin-top: 15px;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .tracking-box .whatsapp-btn {
+      max-width: 300px;
+      margin-top: 25px;
+    }
+
+    footer {
+      background: #080808;
+      color: #fff;
+      text-align: center;
+      padding: 45px 20px;
+    }
+
+    footer h2 {
+      color: #ff6b00;
+      font-size: 28px;
+    }
+
+    footer p {
+      margin-top: 8px;
+      color: #aaa;
+    }
+
+    footer small {
+      display: block;
+      margin-top: 20px;
+      color: #777;
+    }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  color: #171717;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  height: 70px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 7%;
-
-  background: #111;
-  color: #fff;
-}
-
-.logo {
-  color: #ff6b00;
-  font-size: 38px;
-  font-weight: 800;
-}
-
-nav {
-  display: flex;
-  gap: 28px;
-}
-
-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-nav a:hover {
-  color: #ff6b00;
-}
-
-.header-cart {
-  border: 0;
-  background: #ff6b00;
-  color: #fff;
-
-  padding: 10px 16px;
-
-  border-radius: 25px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-}
-
-.hero {
-  min-height: 590px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 70px 8%;
-
-  color: #fff;
-
-  background-image:url("entro.png");
-}
-
-.hero-content {
-  max-width: 620px;
-}
-    
-
-.tag {
-  color: #ff6b00;
-  background: #fff;
-
-  padding: 8px 14px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-
-  font-weight: bold;
-
-  letter-spacing: 2px;
-}
-
-.hero h1 {
-  margin-top: 25px;
-
-  font-size: 45px;
-  color:#ff6b00;
-
-  line-height: 1.02;
-}
-
-.hero p {
-  margin-top: 22px;
-
-  font-size: 18px;
-
-  line-height: 1.6;
-
-  max-width: 500px;
-}
-
-.main-btn {
-  border: 0;
-
-  background: #ff6b00;
-  color: #fff;
-
-  padding: 14px 24px;
-
-  border-radius: 8px;
-
-  font-size: 16px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-}
-
-.hero .main-btn {
-  margin-top: 28px;
-}
-
-.main-btn:hover {
-  background: #e85f00;
-}
-
-.section {
-  padding: 80px 7%;
-}
-
-.title {
-  text-align: center;
-
-  margin-bottom: 45px;
-}
-
-.title span {
-  color: #ff6b00;
-
-  font-size: 13px;
-
-  font-weight: bold;
-
-  letter-spacing: 3px;
-}
-
-.title h2 {
-  margin-top: 8px;
-
-  font-size: 38px;
-}
-
-.products {
-  max-width: 1100px;
-
-  margin: auto;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 25px;
-}
-
-.product {
-  background: #fff;
-
-  border-radius: 15px;
-
-  overflow: hidden;
-
-  box-shadow:
-    0 5px 25px
-    rgba(0,0,0,.08);
-}
-
-.product-img {
-  height: 200px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 90px;
-
-  background: #fff0e6;
-}
-
-.product-info {
-  padding: 22px;
-}
-
-.product-info h3 {
-  font-size: 21px;
-}
-
-.product-info p {
-  color: #666;
-
-  line-height: 1.5;
-
-  margin-top: 8px;
-
-  min-height: 50px;
-}
-
-.product-bottom {
-  margin-top: 20px;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-}
-
-.product-bottom strong {
-  color: #ff6b00;
-
-  font-size: 22px;
-}
-
-.product-bottom button {
-  border: 0;
-
-  background: #111;
-  color: #fff;
-
-  padding: 9px 16px;
-
-  border-radius: 7px;
-
-  cursor: pointer;
-}
-
-.cart-section {
-  background: #f7f7f7;
-}
-
-.cart-box {
-  max-width: 700px;
-
-  margin: auto;
-
-  background: #fff;
-
-  padding: 25px;
-
-  border-radius: 15px;
-
-  box-shadow:
-    0 5px 20px
-    rgba(0,0,0,.07);
-}
-
-.cart-item {
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  padding: 15px 0;
-
-  border-bottom: 1px solid #eee;
-}
-
-.cart-item-info strong {
-  display: block;
-}
-
-.cart-item-info span {
-  color: #777;
-
-  font-size: 14px;
-}
-
-.quantity {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-.quantity button {
-  border: 0;
-
-  background: #111;
-  color: #fff;
-
-  width: 30px;
-  height: 30px;
-
-  border-radius: 5px;
-
-  cursor: pointer;
-}
-
-.cart-total,
-.summary-total {
-  display: flex;
-
-  justify-content: space-between;
-
-  padding-top: 20px;
-
-  margin-top: 15px;
-
-  border-top: 2px solid #ddd;
-
-  font-size: 20px;
-}
-
-.cart-total strong,
-.summary-total strong {
-  color: #ff6b00;
-}
-
-.full {
-  width: 100%;
-
-  margin-top: 20px;
-}
-
-.empty {
-  text-align: center;
-
-  padding: 25px;
-
-  color: #777;
-}
-
-.checkout {
-  background: #fff;
-}
-
-.checkout-grid {
-  max-width: 1000px;
-
-  margin: auto;
-
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 25px;
-}
-
-.checkout-card {
-  background: #fff;
-
-  padding: 25px;
-
-  border-radius: 15px;
-
-  box-shadow:
-    0 5px 25px
-    rgba(0,0,0,.08);
-}
-
-.checkout-card h3 {
-  margin-bottom: 20px;
-}
-
-.checkout-card label {
-  display: block;
-
-  margin-bottom: 7px;
-
-  font-size: 14px;
-
-  font-weight: bold;
-}
-
-.checkout-card input,
-.checkout-card textarea {
-  width: 100%;
-
-  padding: 13px;
-
-  margin-bottom: 15px;
-
-  border: 1px solid #ddd;
-
-  border-radius: 8px;
-
-  outline: none;
-
-  font-size: 15px;
-}
-
-.checkout-card input:focus,
-.checkout-card textarea:focus {
-  border-color: #ff6b00;
-}
-
-.checkout-card textarea {
-  height: 100px;
-
-  resize: none;
-}
-
-.location-btn {
-  width: 100%;
-
-  border: 2px solid #ff6b00;
-
-  background: #fff;
-
-  color: #ff6b00;
-
-  padding: 13px;
-
-  border-radius: 8px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-}
-
-.location-status {
-  margin-top: 10px;
-
-  font-size: 13px;
-
-  color: #555;
-
-  word-break: break-word;
-}
-
-.summary-item {
-  display: flex;
-
-  justify-content: space-between;
-
-  padding: 11px 0;
-
-  border-bottom: 1px solid #eee;
-}
-
-.payment-title {
-  margin-top: 30px;
-  padding-top: 20px;
-
-  border-top: 1px solid #ddd;
-}
-
-.payment-btn,
-.cod-btn,
-.whatsapp-btn {
-  width: 100%;
-
-  border: 0;
-
-  padding: 15px;
-
-  border-radius: 8px;
-
-  margin-top: 10px;
-
-  font-size: 16px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-}
-
-.payment-btn {
-  background: #ff6b00;
-  color: #fff;
-}
-
-.payment-btn:hover {
-  background: #e85f00;
-}
-
-.cod-btn {
-  background: #111;
-  color: #fff;
-}
-
-.whatsapp-btn {
-  background: #25d366;
-  color: #fff;
-}
-
-.payment-btn:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-#paymentMessage {
-  text-align: center;
-
-  margin-top: 15px;
-
-  font-weight: bold;
-}
-
-.tracking {
-  padding: 70px 7%;
-
-  background: #111;
-
-  color: #fff;
-
-  text-align: center;
-}
-
-.tracking-box {
-  max-width: 650px;
-
-  margin: auto;
-}
-
-.tracking-box > span {
-  color: #ff6b00;
-
-  font-size: 13px;
-
-  letter-spacing: 3px;
-
-  font-weight: bold;
-}
-
-.tracking-box h2 {
-  margin-top: 12px;
-
-  font-size: 35px;
-}
-
-.tracking-box p {
-  margin-top: 15px;
-
-  color: #ccc;
-
-  line-height: 1.6;
-}
-
-.tracking-box .whatsapp-btn {
-  max-width: 300px;
-
-  margin-top: 25px;
-}
-
-footer {
-  background: #080808;
-
-  color: #fff;
-
-  text-align: center;
-
-  padding: 45px 20px;
-}
-
-footer h2 {
-  color: #ff6b00;
-
-  font-size: 28px;
-}
-
-footer p {
-  margin-top: 8px;
-
-  color: #aaa;
-}
-
-footer small {
-  display: block;
-
-  margin-top: 20px;
-
-  color: #777;
-}
     /* =========================
-   MENU SECTION
-========================= */
+       MENU
+    ========================= */
 
-.menu {
-  padding: 60px 5%;
-  background: #fff8f0;
-}
+    .kravinzo-menu {
+      padding: 70px 5%;
+      background: #fff8f1;
+    }
 
-.menu h2 {
-  text-align: center;
-  font-size: 36px;
-  margin-bottom: 35px;
-  color: #222;
-}
+    .menu-heading {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-/* =========================
-   MENU GRID
-========================= */
+    .menu-heading h2 {
+      font-size: 38px;
+      margin: 0 0 10px;
+      color: #222;
+      font-weight: 800;
+    }
 
-.menu-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  max-width: 1200px;
-  margin: auto;
-}
+    .menu-heading p {
+      margin: 0;
+      color: #777;
+      font-size: 16px;
+    }
 
-/* =========================
-   FOOD CARD
-========================= */
+    .menu-grid {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
 
-.card {
-  background: #ffffff;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
-  transition: 0.3s ease;
-}
+    .food-card {
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+      transition: all 0.3s ease;
+    }
 
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
-}
+    .food-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+    }
 
-/* =========================
-   FOOD IMAGE
-========================= */
+    .food-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      display: block;
+    }
 
-.card img {
-  width: 100%;
-  height: 210px;
-  object-fit: cover;
-  display: block;
-}
+    .food-content {
+      padding: 18px;
+    }
 
-/* =========================
-   CARD CONTENT
-========================= */
+    .food-content h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      color: #222;
+    }
 
-.card-content {
-  padding: 18px;
-}
+    .food-content p {
+      margin: 0 0 18px;
+      color: #777;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 42px;
+    }
 
-.card-content h3 {
-  margin: 0 0 8px;
-  font-size: 22px;
-  color: #222;
-}
+    .food-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-.card-content p {
-  margin: 0 0 15px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #666;
-}
+    .price {
+      font-size: 21px;
+      font-weight: 800;
+      color: #ff4d00;
+    }
 
-/* =========================
-   PRICE
-========================= */
+    .order-btn {
+      background: #ff4d00;
+      color: white;
+      border: 0;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-.price {
-  font-size: 21px;
-  font-weight: bold;
-  color: #e63900;
-  margin-bottom: 15px;
-}
+    .order-btn:hover {
+      background: #e63f00;
+      transform: scale(1.05);
+    }
 
-/* =========================
-   ORDER BUTTON
-========================= */
+    @media (max-width: 1000px) {
+      .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-.card .btn {
-  display: inline-block;
-  width: 100%;
-  padding: 12px 0;
-  text-align: center;
-  background: #ff5a00;
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: bold;
-  transition: 0.3s ease;
-}
+    @media (max-width: 768px) {
+      .header {
+        padding: 0 15px;
+      }
 
-.card .btn:hover {
-  background: #e04800;
-  transform: scale(1.02);
-}
+      nav {
+        display: none;
+      }
 
-/* =========================
-   MOBILE
-========================= */
+      .hero {
+        min-height: 520px;
+        padding: 50px 25px;
+      }
 
-@media (max-width: 600px) {
+      .hero h1 {
+        font-size: 45px;
+      }
 
-  .menu {
-    padding: 40px 15px;
-  }
+      .section {
+        padding: 60px 20px;
+      }
 
-  .menu h2 {
-    font-size: 28px;
-  }
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
 
-  .menu-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+      .title h2 {
+        font-size: 30px;
+      }
+    }
 
-  .card img {
-    height: 200px;
-  }
+    @media (max-width: 600px) {
+      .kravinzo-menu {
+        padding: 50px 15px;
+      }
 
-}
+      .menu-heading h2 {
+        font-size: 30px;
+      }
 
-@media (max-width: 768px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
 
-  .header {
-    padding: 0 15px;
-  }
-
-  nav {
-    display: none;
-  }
-
-  .hero {
-    min-height: 520px;
-
-    padding: 50px 25px;
-  }
-
-  .hero h1 {
-    font-size: 45px;
-  }
-
-  .section {
-    padding: 60px 20px;
-  }
-
-  .products {
-    grid-template-columns: 1fr;
-  }
-
-  .checkout-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .title h2 {
-    font-size: 30px;
-  }
-
-}
+      .food-card img {
+        height: 220px;
+      }
+    }
   </style>
 </head>
 
@@ -826,7 +624,7 @@ footer small {
 
 
 <!-- =========================
-     KRAVINZO MENU SECTION
+     MENU
 ========================= -->
 
 <section id="menu" class="kravinzo-menu">
@@ -838,404 +636,301 @@ footer small {
 
   <div class="menu-grid">
 
-    <!-- Chicken Burger -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
         alt="Chicken Burger"
       >
+
       <div class="food-content">
         <h3>Chicken Burger</h3>
-        <p>Juicy chicken burger with fresh vegetables and tasty sauce.</p>
+
+        <p>
+          Juicy chicken burger with fresh vegetables and tasty sauce.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹129</span>
-        <button class="order-btn" onclick="addToCart('Chicken Burger',129)">
-      Add to Cart
-       </button>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Chicken Burger',129)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Peri Peri Fries -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80"
         alt="Peri Peri Fries"
       >
+
       <div class="food-content">
         <h3>Peri Peri Fries</h3>
-        <p>Crispy golden fries loaded with spicy peri peri seasoning.</p>
+
+        <p>
+          Crispy golden fries loaded with spicy peri peri seasoning.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹99</span>
-         <button class="order-btn" onclick="addToCart('Peri Peri Fries',99)">
-           Add to Cart
-         </button>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Peri Peri Fries',99)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
 
 
-    <!-- French Fries -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=800&q=80"
         alt="French Fries"
       >
+
       <div class="food-content">
         <h3>French Fries</h3>
-        <p>Crispy, crunchy and perfectly salted golden fries.</p>
+
+        <p>
+          Crispy, crunchy and perfectly salted golden fries.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹79</span>
-           <button class="order-btn" onclick="addToCart('French Fries',79)">
-          Add to Cart
-          </button>  
+
+          <button
+            class="order-btn"
+            onclick="addToCart('French Fries',79)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Egg Maggi -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80"
         alt="Egg Maggi"
       >
+
       <div class="food-content">
         <h3>Egg Maggi</h3>
-        <p>Hot and spicy Maggi noodles cooked with delicious egg.</p>
+
+        <p>
+          Hot and spicy Maggi noodles cooked with delicious egg.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹89</span>
-         <button class="order-btn" onclick="addToCart('Egg Maggi',89)">
-         Add to Cart
-       </button>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Egg Maggi',89)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Chicken Maggi -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80"
         alt="Chicken Maggi"
       >
+
       <div class="food-content">
         <h3>Chicken Maggi</h3>
-        <p>Spicy Maggi noodles tossed with delicious chicken pieces.</p>
+
+        <p>
+          Spicy Maggi noodles tossed with delicious chicken pieces.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹119</span>
-         <button class="order-btn" onclick="addToCart('Chicken Maggi',89)">
-        Add to Cart
-        </button>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Chicken Maggi',119)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Chicken Biryani -->
     <div class="food-card">
       <img
         src="biryani.jpeg"
         alt="Chicken Biryani"
       >
+
       <div class="food-content">
         <h3>Chicken Biryani</h3>
-        <p>Fragrant basmati rice with delicious spicy chicken.</p>
+
+        <p>
+          Fragrant basmati rice with delicious spicy chicken.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹199</span>
-          <button class="order-btn" onclick="addToCart('Chicken Biryani',199)">
-             Add to Cart
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Chicken Biryani',199)"
+          >
+            Add to Cart
           </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Fried Rice -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80"
-        alt="Fried Rice"
+        alt="Veg Fried Rice"
       >
+
       <div class="food-content">
         <h3>Veg Fried Rice</h3>
-        <p>Delicious fried rice tossed with fresh vegetables and sauces.</p>
+
+        <p>
+          Delicious fried rice tossed with fresh vegetables and sauces.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹119</span>
-          <button class="order-btn" onclick="addToCart('Veg Fried Rice',119)">
-             Add to Cart
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Veg Fried Rice',119)"
+          >
+            Add to Cart
           </button>
         </div>
       </div>
     </div>
 
 
-    <!-- Chicken Fried Rice -->
     <div class="food-card">
       <img
         src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80"
         alt="Chicken Fried Rice"
       >
+
       <div class="food-content">
         <h3>Chicken Fried Rice</h3>
-        <p>Flavorful fried rice tossed with chicken and fresh vegetables.</p>
+
+        <p>
+          Flavorful fried rice tossed with chicken and fresh vegetables.
+        </p>
+
         <div class="food-bottom">
           <span class="price">₹149</span>
-         <button class="order-btn" onclick="addToCart('Chicken Fried Rice',149)">
-             Add to Cart
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Chicken Fried Rice',149)"
+          >
+            Add to Cart
           </button>
         </div>
       </div>
     </div>
-    <!-- Sprite -->
-<div class="food-card">
-  <img
-  src="sprite.png"
-  alt="Sprite"
->
-  <div class="food-content">
-    <h3>Sprite</h3>
-    <p>Chilled and refreshing lemon-lime soft drink.</p>
 
-    <div class="food-bottom">
-      <span class="price">₹40</span>
 
-      <button
-        class="order-btn"
-        onclick="addToCart('Sprite',40)"
-      >
-        Add +
-      </button>
+    <div class="food-card">
+      <img src="sprite.png" alt="Sprite">
+
+      <div class="food-content">
+        <h3>Sprite</h3>
+
+        <p>
+          Chilled and refreshing lemon-lime soft drink.
+        </p>
+
+        <div class="food-bottom">
+          <span class="price">₹40</span>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Sprite',40)"
+          >
+            Add +
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-        <!-- cock -->
-<div class="food-card">
-  <img
-  src="coca.png"
-  alt="cola"
->
-  <div class="food-content">
-    <h3>coca-cola</h3>
-    <p>Chilled and refreshing classic cola.</p>
 
-    <div class="food-bottom">
-      <span class="price">₹40</span>
 
-      <button
-        class="order-btn"
-       onclick="addToCart('Coca-Cola',40)"
-      >
-        Add +
-      </button>
+    <div class="food-card">
+      <img src="coca.png" alt="Coca Cola">
+
+      <div class="food-content">
+        <h3>Coca-Cola</h3>
+
+        <p>
+          Chilled and refreshing classic cola.
+        </p>
+
+        <div class="food-bottom">
+          <span class="price">₹40</span>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Coca-Cola',40)"
+          >
+            Add +
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-        <!-- thumbs up -->
-<div class="food-card">
-  <img
-  src="thums.png"
-  alt="Thumbs up"
->
-  <div class="food-content">
-    <h3>Thumbs up</h3>
-   <p>Chilled and refreshing Thums Up soft drink.</p>
 
-    <div class="food-bottom">
-      <span class="price">₹40</span>
 
-      <button
-        class="order-btn"
-        onclick="addToCart('Thums Up',40)"
-      >
-        Add +
-      </button>
+    <div class="food-card">
+      <img src="thums.png" alt="Thums Up">
+
+      <div class="food-content">
+        <h3>Thums Up</h3>
+
+        <p>
+          Chilled and refreshing Thums Up soft drink.
+        </p>
+
+        <div class="food-bottom">
+          <span class="price">₹40</span>
+
+          <button
+            class="order-btn"
+            onclick="addToCart('Thums Up',40)"
+          >
+            Add +
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
 
   </div>
 
 </section>
 
 
-<style>
-
-/* =========================
-   KRAVINZO MENU
-========================= */
-
-.kravinzo-menu {
-  padding: 70px 5%;
-  background: #fff8f1;
-}
-
-.menu-heading {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.menu-heading h2 {
-  font-size: 38px;
-  margin: 0 0 10px;
-  color: #222;
-  font-weight: 800;
-}
-
-.menu-heading p {
-  margin: 0;
-  color: #777;
-  font-size: 16px;
-}
-
-
-/* MENU GRID */
-
-.menu-grid {
-  max-width: 1200px;
-  margin: auto;
-
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
-
-
-/* FOOD CARD */
-
-.food-card {
-  background: #ffffff;
-  border-radius: 18px;
-  overflow: hidden;
-
-  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
-
-  transition: all 0.3s ease;
-}
-
-.food-card:hover {
-  transform: translateY(-8px);
-
-  box-shadow: 0 12px 30px rgba(0,0,0,0.16);
-}
-
-
-/* FOOD IMAGE */
-
-.food-card img {
-  width: 100%;
-  height: 210px;
-
-  object-fit: cover;
-  display: block;
-}
-
-
-/* CONTENT */
-
-.food-content {
-  padding: 18px;
-}
-
-.food-content h3 {
-  margin: 0 0 8px;
-
-  font-size: 21px;
-  color: #222;
-}
-
-.food-content p {
-  margin: 0 0 18px;
-
-  color: #777;
-  font-size: 14px;
-  line-height: 1.5;
-
-  min-height: 42px;
-}
-
-
-/* PRICE + ORDER */
-
-.food-bottom {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-}
-
-.price {
-  font-size: 21px;
-  font-weight: 800;
-
-  color: #ff4d00;
-}
-
-.order-btn {
-  background: #ff4d00;
-
-  color: white;
-
-  text-decoration: none;
-
-  padding: 9px 18px;
-
-  border-radius: 9px;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  transition: 0.3s;
-}
-
-.order-btn:hover {
-  background: #e63f00;
-
-  transform: scale(1.05);
-}
-
-
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width: 1000px) {
-
-  .menu-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 600px) {
-
-  .kravinzo-menu {
-    padding: 50px 15px;
-  }
-
-  .menu-heading h2 {
-    font-size: 30px;
-  }
-
-  .menu-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .food-card img {
-    height: 220px;
-  }
-
-}
-
-</style>
+<!-- =========================
+     CART
+========================= -->
 
 <section class="section cart-section" id="cart">
 
@@ -1247,7 +942,6 @@ footer small {
 
   </div>
 
-
   <div class="cart-box">
 
     <div id="cartItems">
@@ -1258,32 +952,33 @@ footer small {
 
     </div>
 
+    <div class="cart-total">
 
-  <div class="cart-total">
+      <div>
+        <span>Subtotal</span>
 
-  <div>
-    <span>Subtotal</span>
-    <strong>
-      ₹<span id="cartSubtotal">0</span>
-    </strong>
-  </div>
+        <strong>
+          ₹<span id="cartSubtotal">0</span>
+        </strong>
+      </div>
 
-  <div>
-    <span>Delivery</span>
-    <strong id="cartDelivery">
-      ₹0
-    </strong>
-  </div>
+      <div>
+        <span>Delivery</span>
 
-  <div>
-    <span>Total</span>
-    <strong>
-      ₹<span id="cartTotal">0</span>
-    </strong>
-  </div>
+        <strong id="cartDelivery">
+          ₹0
+        </strong>
+      </div>
 
-</div>
+      <div>
+        <span>Total</span>
 
+        <strong>
+          ₹<span id="cartTotal">0</span>
+        </strong>
+      </div>
+
+    </div>
 
     <button
       class="main-btn full"
@@ -1297,6 +992,10 @@ footer small {
 </section>
 
 
+<!-- =========================
+     CHECKOUT
+========================= -->
+
 <section class="section checkout" id="checkout">
 
   <div class="title">
@@ -1307,14 +1006,11 @@ footer small {
 
   </div>
 
-
   <div class="checkout-grid">
-
 
     <div class="checkout-card">
 
       <h3>Customer Details</h3>
-
 
       <label>Name</label>
 
@@ -1323,7 +1019,6 @@ footer small {
         type="text"
         placeholder="Enter your name"
       >
-
 
       <label>Phone Number</label>
 
@@ -1334,14 +1029,12 @@ footer small {
         placeholder="Enter your Number"
       >
 
-
       <label>Delivery Address</label>
 
       <textarea
         id="customerAddress"
         placeholder="Enter complete delivery address"
       ></textarea>
-
 
       <button
         class="location-btn"
@@ -1350,13 +1043,10 @@ footer small {
         📍 Share Delivery Location
       </button>
 
-
       <div
         id="locationStatus"
         class="location-status"
-      >
-      </div>
-
+      ></div>
 
       <button
         class="main-btn full"
@@ -1373,11 +1063,12 @@ footer small {
       <h3>Order Summary</h3>
 
       <div id="summaryItems">
+
         <p class="empty">
           Complete delivery details first.
         </p>
-      </div>
 
+      </div>
 
       <div class="summary-total">
 
@@ -1389,13 +1080,11 @@ footer small {
 
       </div>
 
-
       <div id="paymentArea">
 
         <h3 class="payment-title">
           Payment Method
         </h3>
-
 
         <button
           id="payButton"
@@ -1405,7 +1094,6 @@ footer small {
           💳 Pay Online
         </button>
 
-
         <button
           class="cod-btn"
           onclick="placeCOD()"
@@ -1413,14 +1101,12 @@ footer small {
           💵 Cash on Delivery
         </button>
 
-
         <button
           class="whatsapp-btn"
           onclick="sendWhatsApp()"
         >
           💬 Order on WhatsApp
         </button>
-
 
         <p id="paymentMessage"></p>
 
@@ -1433,6 +1119,10 @@ footer small {
 </section>
 
 
+<!-- =========================
+     TRACKING
+========================= -->
+
 <section class="tracking">
 
   <div class="tracking-box">
@@ -1442,8 +1132,8 @@ footer small {
     <h2>Track Your KravinZo Order</h2>
 
     <p>
-      After placing your order, our team will
-      contact you on WhatsApp for delivery updates.
+      After placing your order, you can track your order
+      status online and receive delivery updates.
     </p>
 
     <button
@@ -1472,7 +1162,9 @@ footer small {
 
 </footer>
 
+
 <script>
+
 let cart = [];
 let deliveryLocation = null;
 
@@ -1481,19 +1173,25 @@ const KRAVINZO_LNG = 78.359336;
 
 let deliveryDistanceKm = 0;
 
+
 // ===============================
 // GO TO SECTION
 // ===============================
 
 function goTo(sectionId) {
-  const section = document.getElementById(sectionId);
+
+  const section =
+    document.getElementById(sectionId);
 
   if (section) {
+
     section.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
+
   }
+
 }
 
 
@@ -1503,24 +1201,31 @@ function goTo(sectionId) {
 
 function addToCart(name, price) {
 
-  const existing = cart.find(
-    item => item.name === name
-  );
+  const existing =
+    cart.find(
+      item => item.name === name
+    );
 
   if (existing) {
+
     existing.quantity++;
+
   } else {
+
     cart.push({
       name: name,
       price: Number(price),
       quantity: 1
     });
+
   }
 
   updateCart();
 
-  // Small confirmation
-  console.log(name + " added to cart");
+  console.log(
+    name + " added to cart"
+  );
+
 }
 
 
@@ -1546,6 +1251,7 @@ function updateCart() {
 
   cartItems.innerHTML = "";
 
+
   if (cart.length === 0) {
 
     cartItems.innerHTML = `
@@ -1562,6 +1268,20 @@ function updateCart() {
       cartTotal.innerText = "0";
     }
 
+    const subtotal =
+      document.getElementById("cartSubtotal");
+
+    const delivery =
+      document.getElementById("cartDelivery");
+
+    if (subtotal) {
+      subtotal.innerText = "0";
+    }
+
+    if (delivery) {
+      delivery.innerText = "₹0";
+    }
+
     return;
   }
 
@@ -1572,6 +1292,7 @@ function updateCart() {
       item.price * item.quantity;
 
     total += itemTotal;
+
     count += item.quantity;
 
 
@@ -1580,16 +1301,21 @@ function updateCart() {
 
     div.className = "cart-item";
 
+
     div.innerHTML = `
+
       <div class="cart-item-info">
 
-        <strong>${item.name}</strong>
+        <strong>
+          ${item.name}
+        </strong>
 
         <span>
           ₹${item.price}
         </span>
 
       </div>
+
 
       <div class="quantity">
 
@@ -1612,7 +1338,9 @@ function updateCart() {
         </button>
 
       </div>
+
     `;
+
 
     cartItems.appendChild(div);
 
@@ -1623,28 +1351,46 @@ function updateCart() {
     cartCount.innerText = count;
   }
 
- const cartSubtotal =
-  document.getElementById("cartSubtotal");
 
-const cartDelivery =
-  document.getElementById("cartDelivery");
+  const cartSubtotal =
+    document.getElementById(
+      "cartSubtotal"
+    );
 
-if (cartSubtotal) {
-  cartSubtotal.innerText = total;
-}
+  const cartDelivery =
+    document.getElementById(
+      "cartDelivery"
+    );
 
-if (cartDelivery) {
-  const delivery = getDeliveryCharge();
 
-  cartDelivery.innerText =
-    delivery === 0
-      ? "FREE"
-      : "₹" + delivery;
-}
+  if (cartSubtotal) {
 
-if (cartTotal) {
-  cartTotal.innerText = getFinalTotal();
-}
+    cartSubtotal.innerText =
+      total;
+
+  }
+
+
+  if (cartDelivery) {
+
+    const delivery =
+      getDeliveryCharge();
+
+    cartDelivery.innerText =
+      delivery === 0
+        ? "FREE"
+        : "₹" + delivery;
+
+  }
+
+
+  if (cartTotal) {
+
+    cartTotal.innerText =
+      getFinalTotal();
+
+  }
+
 }
 
 
@@ -1659,6 +1405,7 @@ function increase(index) {
   cart[index].quantity++;
 
   updateCart();
+
 }
 
 
@@ -1672,11 +1419,16 @@ function decrease(index) {
 
   cart[index].quantity--;
 
+
   if (cart[index].quantity <= 0) {
+
     cart.splice(index, 1);
+
   }
 
+
   updateCart();
+
 }
 
 
@@ -1688,66 +1440,102 @@ function getTotal() {
 
   return cart.reduce(
     (total, item) => {
+
       return total +
-        item.price * item.quantity;
+        item.price *
+        item.quantity;
+
     },
     0
   );
+
 }
-  // ===============================
+
+
+// ===============================
 // DELIVERY CHARGE
 // ===============================
-function getDeliveryCharge(distanceKm = deliveryDistanceKm) {
 
-  const subtotal = getTotal();
+function getDeliveryCharge(
+  distanceKm = deliveryDistanceKm
+) {
 
-  // ₹299 or above = FREE DELIVERY
+  const subtotal =
+    getTotal();
+
+
   if (subtotal >= 299) {
+
     return 0;
+
   }
 
-  // Location not captured
-  if (!distanceKm || distanceKm <= 0) {
+
+  if (!distanceKm ||
+      distanceKm <= 0) {
+
     return 50;
+
   }
 
-  // Up to 2 KM
+
   if (distanceKm <= 2) {
+
     return 20;
+
   }
 
-  // Up to 4 KM
+
   if (distanceKm <= 4) {
+
     return 30;
+
   }
 
-  // Up to 6 KM
+
   if (distanceKm <= 6) {
+
     return 40;
+
   }
 
-  // Above 6 KM
+
   return 50;
+
 }
 
-function getFinalTotal(distanceKm = deliveryDistanceKm) {
-  return getTotal() + getDeliveryCharge(distanceKm);
-}
 
 // ===============================
-// CONTINUE TO CHECKOUT
+// FINAL TOTAL
+// ===============================
+
+function getFinalTotal(
+  distanceKm = deliveryDistanceKm
+) {
+
+  return getTotal() +
+    getDeliveryCharge(distanceKm);
+
+}
+
+
+// ===============================
+// CONTINUE CHECKOUT
 // ===============================
 
 function continueCheckout() {
 
   if (cart.length === 0) {
 
-    alert("Please add items to your cart.");
+    alert(
+      "Please add items to your cart."
+    );
 
     return;
   }
 
   goTo("checkout");
+
 }
 
 
@@ -1758,28 +1546,40 @@ function continueCheckout() {
 function getCustomerDetails() {
 
   const nameInput =
-    document.getElementById("customerName");
+    document.getElementById(
+      "customerName"
+    );
 
   const phoneInput =
-    document.getElementById("customerPhone");
+    document.getElementById(
+      "customerPhone"
+    );
 
   const addressInput =
-    document.getElementById("customerAddress");
+    document.getElementById(
+      "customerAddress"
+    );
+
 
   return {
 
-    name: nameInput
-      ? nameInput.value.trim()
-      : "",
+    name:
+      nameInput
+        ? nameInput.value.trim()
+        : "",
 
-    phone: phoneInput
-      ? phoneInput.value.trim()
-      : "",
+    phone:
+      phoneInput
+        ? phoneInput.value.trim()
+        : "",
 
-    address: addressInput
-      ? addressInput.value.trim()
-      : ""
+    address:
+      addressInput
+        ? addressInput.value.trim()
+        : ""
+
   };
+
 }
 
 
@@ -1791,10 +1591,14 @@ function validateDetails() {
 
   if (cart.length === 0) {
 
-    alert("Your cart is empty.");
+    alert(
+      "Your cart is empty."
+    );
 
     return false;
+
   }
+
 
   const customer =
     getCustomerDetails();
@@ -1802,33 +1606,96 @@ function validateDetails() {
 
   if (customer.name.length < 2) {
 
-    alert("Please enter your name.");
+    alert(
+      "Please enter your name."
+    );
 
     return false;
+
   }
 
 
-  if (!/^[0-9]{10}$/.test(customer.phone)) {
+  if (
+    !/^[0-9]{10}$/.test(
+      customer.phone
+    )
+  ) {
 
     alert(
       "Please enter a valid 10-digit phone number."
     );
 
     return false;
+
   }
 
 
-  if (customer.address.length < 5) {
+  if (
+    customer.address.length < 5
+  ) {
 
     alert(
       "Please enter complete delivery address."
     );
 
     return false;
+
   }
 
 
   return true;
+
+}
+
+
+// ===============================
+// DISTANCE
+// ===============================
+
+function calculateDistance(
+  lat1,
+  lon1,
+  lat2,
+  lon2
+) {
+
+  const R = 6371;
+
+  const dLat =
+    (lat2 - lat1) *
+    Math.PI / 180;
+
+  const dLon =
+    (lon2 - lon1) *
+    Math.PI / 180;
+
+
+  const a =
+    Math.sin(dLat / 2) *
+    Math.sin(dLat / 2) +
+
+    Math.cos(
+      lat1 * Math.PI / 180
+    ) *
+
+    Math.cos(
+      lat2 * Math.PI / 180
+    ) *
+
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+
+  return R * c;
+
 }
 
 
@@ -1836,38 +1703,13 @@ function validateDetails() {
 // LOCATION
 // ===============================
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-
-  const R = 6371;
-
-  const dLat =
-    (lat2 - lat1) * Math.PI / 180;
-
-  const dLon =
-    (lon2 - lon1) * Math.PI / 180;
-
-  const a =
-    Math.sin(dLat / 2) *
-    Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) *
-    Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2);
-
-  const c =
-    2 * Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    );
-
-  return R * c;
-}
-
-
 function getLocation() {
 
   const status =
-    document.getElementById("locationStatus");
+    document.getElementById(
+      "locationStatus"
+    );
+
 
   if (!status) return;
 
@@ -1878,6 +1720,7 @@ function getLocation() {
       "Location is not supported.";
 
     return;
+
   }
 
 
@@ -1897,8 +1740,11 @@ function getLocation() {
 
 
       deliveryLocation = {
+
         latitude: lat,
+
         longitude: lng
+
       };
 
 
@@ -1916,23 +1762,38 @@ function getLocation() {
 
 
       const delivery =
-        getDeliveryCharge(deliveryDistanceKm);
+        getDeliveryCharge(
+          deliveryDistanceKm
+        );
 
 
       status.innerHTML = `
+
         📍 Location captured successfully.
+
         <br>
-        📏 Distance: ${deliveryDistanceKm.toFixed(2)} km
+
+        📏 Distance:
+        ${deliveryDistanceKm.toFixed(2)} km
+
         <br>
+
         💰 Delivery Charge:
-        ${delivery === 0 ? "FREE" : "₹" + delivery}
+        ${
+          delivery === 0
+            ? "FREE"
+            : "₹" + delivery
+        }
+
         <br>
+
         <a
           href="${mapUrl}"
           target="_blank"
         >
           View Location
         </a>
+
       `;
 
 
@@ -1961,6 +1822,7 @@ function getLocation() {
     }
 
   );
+
 }
 
 
@@ -1974,13 +1836,19 @@ function showSummary() {
 
 
   const summary =
-    document.getElementById("summaryItems");
+    document.getElementById(
+      "summaryItems"
+    );
 
   const total =
-    document.getElementById("summaryTotal");
+    document.getElementById(
+      "summaryTotal"
+    );
 
 
-  if (!summary || !total) return;
+  if (!summary || !total) {
+    return;
+  }
 
 
   summary.innerHTML = "";
@@ -1991,17 +1859,23 @@ function showSummary() {
     const div =
       document.createElement("div");
 
-    div.className = "summary-item";
+
+    div.className =
+      "summary-item";
 
 
     div.innerHTML = `
+
       <span>
-        ${item.name} × ${item.quantity}
+        ${item.name}
+        × ${item.quantity}
       </span>
 
       <strong>
-        ₹${item.price * item.quantity}
+        ₹${item.price *
+        item.quantity}
       </strong>
+
     `;
 
 
@@ -2010,29 +1884,58 @@ function showSummary() {
   });
 
 
-  const subtotal = getTotal();
-const delivery = getDeliveryCharge();
-const finalTotal = getFinalTotal();
+  const subtotal =
+    getTotal();
 
-summary.innerHTML += `
-  <div class="summary-item">
-    <span>Subtotal</span>
-    <strong>₹${subtotal}</strong>
-  </div>
+  const delivery =
+    getDeliveryCharge();
 
-  <div class="summary-item">
-    <span>Delivery</span>
-    <strong>
-      ${delivery === 0 ? "FREE" : "₹" + delivery}
-    </strong>
-  </div>
-`;
+  const finalTotal =
+    getFinalTotal();
 
-total.innerText = finalTotal;
+
+  summary.innerHTML += `
+
+    <div class="summary-item">
+
+      <span>
+        Subtotal
+      </span>
+
+      <strong>
+        ₹${subtotal}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-item">
+
+      <span>
+        Delivery
+      </span>
+
+      <strong>
+        ${
+          delivery === 0
+            ? "FREE"
+            : "₹" + delivery
+        }
+      </strong>
+
+    </div>
+
+  `;
+
+
+  total.innerText =
+    finalTotal;
 
 
   const paymentArea =
-    document.getElementById("paymentArea");
+    document.getElementById(
+      "paymentArea"
+    );
 
 
   if (paymentArea) {
@@ -2046,6 +1949,7 @@ total.innerText = finalTotal;
     });
 
   }
+
 }
 
 
@@ -2055,26 +1959,35 @@ total.innerText = finalTotal;
 
 async function payOnline() {
 
-  if (!validateDetails()) return;
-
-
- const total =
-  getFinalTotal();
-
-
-  if (!total || total <= 0) {
-
-    alert("Your cart is empty!");
-
+  if (!validateDetails()) {
     return;
   }
 
 
+  const total =
+    getFinalTotal();
+
+
+  if (!total || total <= 0) {
+
+    alert(
+      "Your cart is empty!"
+    );
+
+    return;
+
+  }
+
+
   const button =
-    document.getElementById("payButton");
+    document.getElementById(
+      "payButton"
+    );
 
   const message =
-    document.getElementById("paymentMessage");
+    document.getElementById(
+      "paymentMessage"
+    );
 
 
   if (button) {
@@ -2083,6 +1996,7 @@ async function payOnline() {
 
     button.innerText =
       "Processing...";
+
   }
 
 
@@ -2092,6 +2006,7 @@ async function payOnline() {
       await fetch(
         "/api/create-order",
         {
+
           method: "POST",
 
           headers: {
@@ -2102,6 +2017,7 @@ async function payOnline() {
           body: JSON.stringify({
             amount: total
           })
+
         }
       );
 
@@ -2116,7 +2032,9 @@ async function payOnline() {
     try {
 
       order =
-        JSON.parse(responseText);
+        JSON.parse(
+          responseText
+        );
 
     } catch (error) {
 
@@ -2138,17 +2056,13 @@ async function payOnline() {
 
         button.innerText =
           "💳 Pay Online";
+
       }
 
 
       return;
+
     }
-
-
-    console.log(
-      "Razorpay Order:",
-      order
-    );
 
 
     if (!response.ok) {
@@ -2168,10 +2082,12 @@ async function payOnline() {
 
         button.innerText =
           "💳 Pay Online";
+
       }
 
 
       return;
+
     }
 
 
@@ -2192,10 +2108,12 @@ async function payOnline() {
 
         button.innerText =
           "💳 Pay Online";
+
       }
 
 
       return;
+
     }
 
 
@@ -2215,10 +2133,12 @@ async function payOnline() {
 
         button.innerText =
           "💳 Pay Online";
+
       }
 
 
       return;
+
     }
 
 
@@ -2228,18 +2148,23 @@ async function payOnline() {
 
     const options = {
 
-      key: order.key,
+      key:
+        order.key,
 
-      amount: order.amount,
+      amount:
+        order.amount,
 
-      currency: "INR",
+      currency:
+        "INR",
 
-      name: "KravinZo",
+      name:
+        "KravinZo",
 
       description:
         "KravinZo Food Order",
 
-      order_id: order.id,
+      order_id:
+        order.id,
 
 
       prefill: {
@@ -2255,12 +2180,16 @@ async function payOnline() {
 
       theme: {
 
-        color: "#ff6a00"
+        color:
+          "#ff6a00"
 
       },
 
 
-     handler: async function(paymentResponse) {
+      handler:
+        async function(
+          paymentResponse
+        ) {
 
           console.log(
             "Payment Successful:",
@@ -2272,15 +2201,164 @@ async function payOnline() {
 
             message.innerText =
               "Payment successful! 🎉";
+
           }
 
 
-          alert(
-            "Payment successful! 🎉\n\n" +
-            "Payment ID: " +
-            paymentResponse
-              .razorpay_payment_id
-          );
+          const customer =
+            getCustomerDetails();
+
+
+          const items =
+            cart.map(function(item) {
+
+              return {
+
+                name:
+                  item.name,
+
+                quantity:
+                  item.quantity,
+
+                price:
+                  item.price,
+
+                itemTotal:
+                  item.price *
+                  item.quantity
+
+              };
+
+            });
+
+
+          let finalAddress =
+            customer.address;
+
+
+          if (deliveryLocation) {
+
+            finalAddress +=
+              `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+
+          }
+
+
+          const orderId =
+            "KZ-" + Date.now();
+
+
+          try {
+
+            const saveResponse =
+              await fetch(
+                "/api/save-order",
+                {
+
+                  method: "POST",
+
+                  headers: {
+
+                    "Content-Type":
+                      "application/json"
+
+                  },
+
+                  body:
+                    JSON.stringify({
+
+                      order_id:
+                        orderId,
+
+                      customer_name:
+                        customer.name,
+
+                      customer_phone:
+                        customer.phone,
+
+                      customer_address:
+                        finalAddress,
+
+                      items:
+                        JSON.stringify(items),
+
+                      total:
+                        getFinalTotal(),
+
+                      payment_method:
+                        "ONLINE PAYMENT",
+
+                      payment_id:
+                        paymentResponse
+                          .razorpay_payment_id,
+
+                      status:
+                        "New"
+
+                    })
+
+                }
+              );
+
+
+            const saveData =
+              await saveResponse.json();
+
+
+            if (!saveResponse.ok ||
+                !saveData.success) {
+
+              alert(
+                "Payment successful, but order saving failed."
+              );
+
+              return;
+
+            }
+
+
+            alert(
+              "Payment successful! 🎉\n\n" +
+              "Order ID: " +
+              orderId
+            );
+
+
+            // WHATSAPP WITH ORDER ID + TRACKING LINK
+
+            sendWhatsApp(
+              "ONLINE PAYMENT\nPayment ID: " +
+              paymentResponse
+                .razorpay_payment_id,
+              orderId
+            );
+
+
+            setTimeout(function() {
+
+              window.location.href =
+                "/order-status.html?orderId=" +
+                encodeURIComponent(
+                  orderId
+                );
+
+            }, 1500);
+
+
+          } catch (saveError) {
+
+            console.error(
+              "SAVE ORDER ERROR:",
+              saveError
+            );
+
+
+            alert(
+              "Payment successful, but order saving failed:\n" +
+              saveError.message
+            );
+
+          }
 
 
           if (button) {
@@ -2289,57 +2367,8 @@ async function payOnline() {
 
             button.innerText =
               "💳 Pay Online";
+
           }
-          const customer = getCustomerDetails();
-
-const items = cart.map(function(item) {
-  return {
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    itemTotal: item.price * item.quantity
-  };
-});
-
-let finalAddress = customer.address;
-
-if (deliveryLocation) {
-  finalAddress +=
-    `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
-}
-       
-const orderId = "KZ-" + Date.now();
-
-await fetch("/api/save-order", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    order_id: orderId,
-    customer_name: customer.name,
-    customer_phone: customer.phone,
-    customer_address: finalAddress,
-    items: JSON.stringify(items),
-    total: getFinalTotal(),
-    payment_method: "ONLINE PAYMENT",
-    payment_id: paymentResponse.razorpay_payment_id,
-    status: "New"
-  })
-});
-
-setTimeout(function() {
-  window.location.href =
-    "/order-status.html?orderId=" +
-    encodeURIComponent(orderId);
-}, 1000);
-
-
-          sendWhatsApp(
-            "ONLINE PAYMENT\nPayment ID: " +
-            paymentResponse
-              .razorpay_payment_id
-          );
 
         },
 
@@ -2355,6 +2384,7 @@ setTimeout(function() {
 
               button.innerText =
                 "💳 Pay Online";
+
             }
 
           }
@@ -2365,7 +2395,9 @@ setTimeout(function() {
 
 
     const razorpay =
-      new Razorpay(options);
+      new Razorpay(
+        options
+      );
 
 
     razorpay.on(
@@ -2384,12 +2416,24 @@ setTimeout(function() {
 
         alert(
           "Payment Failed\n\n" +
+
           "Code: " +
-          (error.code || "N/A") +
+          (
+            error.code ||
+            "N/A"
+          ) +
+
           "\nDescription: " +
-          (error.description || "N/A") +
+          (
+            error.description ||
+            "N/A"
+          ) +
+
           "\nReason: " +
-          (error.reason || "N/A")
+          (
+            error.reason ||
+            "N/A"
+          )
         );
 
 
@@ -2399,6 +2443,7 @@ setTimeout(function() {
 
           button.innerText =
             "💳 Pay Online";
+
         }
 
       }
@@ -2428,9 +2473,11 @@ setTimeout(function() {
 
       button.innerText =
         "💳 Pay Online";
+
     }
 
   }
+
 }
 
 
@@ -2440,11 +2487,14 @@ setTimeout(function() {
 
 async function placeCOD() {
 
-  if (!validateDetails()) return;
+  if (!validateDetails()) {
+    return;
+  }
 
 
   const total =
-  getFinalTotal();
+    getFinalTotal();
+
 
   const customer =
     getCustomerDetails();
@@ -2457,6 +2507,7 @@ async function placeCOD() {
   ) {
 
     return;
+
   }
 
 
@@ -2469,7 +2520,8 @@ async function placeCOD() {
 
       return {
 
-        name: item.name,
+        name:
+          item.name,
 
         quantity:
           item.quantity,
@@ -2514,36 +2566,37 @@ async function placeCOD() {
 
           },
 
-          body: JSON.stringify({
+          body:
+            JSON.stringify({
 
-            order_id:
-              orderId,
+              order_id:
+                orderId,
 
-            customer_name:
-              customer.name,
+              customer_name:
+                customer.name,
 
-            address:
-              finalAddress,
+              address:
+                finalAddress,
 
-            phone_number:
-              customer.phone,
+              phone_number:
+                customer.phone,
 
-            item:
-              JSON.stringify(items),
+              item:
+                JSON.stringify(items),
 
-            payment_method:
-              "CASH ON DELIVERY",
+              payment_method:
+                "CASH ON DELIVERY",
 
-            total:
-              total,
+              total:
+                total,
 
-            payment_id:
-              null,
+              payment_id:
+                null,
 
-            status:
-              "New"
+              status:
+                "New"
 
-          })
+            })
 
         }
       );
@@ -2559,7 +2612,9 @@ async function placeCOD() {
     try {
 
       data =
-        JSON.parse(responseText);
+        JSON.parse(
+          responseText
+        );
 
     } catch (error) {
 
@@ -2576,6 +2631,7 @@ async function placeCOD() {
 
 
       return;
+
     }
 
 
@@ -2591,6 +2647,7 @@ async function placeCOD() {
 
 
       return;
+
     }
 
 
@@ -2606,6 +2663,7 @@ async function placeCOD() {
 
 
       return;
+
     }
 
 
@@ -2615,22 +2673,29 @@ async function placeCOD() {
       orderId
     );
 
+
+    // WHATSAPP WITH ORDER ID + TRACKING LINK
+
+    sendWhatsApp(
+      "CASH ON DELIVERY",
+      orderId
+    );
+
+
     setTimeout(function() {
-  window.location.href =
-    "/order-status.html?orderId=" +
-    encodeURIComponent(orderId);
-}, 1000);
+
+      window.location.href =
+        "/order-status.html?orderId=" +
+        encodeURIComponent(
+          orderId
+        );
+
+    }, 1500);
 
 
     console.log(
       "ORDER SAVED:",
       data
-    );
-
-
-    sendWhatsApp(
-      "CASH ON DELIVERY\nOrder ID: " +
-      orderId
     );
 
 
@@ -2648,6 +2713,7 @@ async function placeCOD() {
     );
 
   }
+
 }
 
 
@@ -2656,10 +2722,13 @@ async function placeCOD() {
 // ===============================
 
 function sendWhatsApp(
-  paymentInfo = "ORDER"
+  paymentInfo = "ORDER",
+  orderId = null
 ) {
 
-  if (!validateDetails()) return;
+  if (!validateDetails()) {
+    return;
+  }
 
 
   const whatsappNumber =
@@ -2694,6 +2763,18 @@ function sendWhatsApp(
     "🍔 *KravinZo New Order*\n\n";
 
 
+  // ORDER ID
+
+  if (orderId) {
+
+    message +=
+      "🆔 *Order ID:* " +
+      orderId +
+      "\n";
+
+  }
+
+
   message +=
     "📅 Date: " +
     orderDate +
@@ -2707,19 +2788,19 @@ function sendWhatsApp(
 
 
   message +=
-    "Name: " +
+    "👤 Name: " +
     customer.name +
     "\n";
 
 
   message +=
-    "Phone: " +
+    "📱 Phone: " +
     customer.phone +
     "\n";
 
 
   message +=
-    "Address: " +
+    "📍 Address: " +
     customer.address +
     "\n\n";
 
@@ -2736,21 +2817,35 @@ function sendWhatsApp(
   });
 
 
-  const subtotal = getTotal();
-const delivery = getDeliveryCharge();
-const finalTotal = getFinalTotal();
+  const subtotal =
+    getTotal();
 
-message +=
-  "\nSubtotal: ₹" +
-  subtotal;
 
-message +=
-  "\nDelivery: " +
-  (delivery === 0 ? "FREE" : "₹" + delivery);
+  const delivery =
+    getDeliveryCharge();
 
-message +=
-  "\nTotal: ₹" +
-  finalTotal;
+
+  const finalTotal =
+    getFinalTotal();
+
+
+  message +=
+    "\nSubtotal: ₹" +
+    subtotal;
+
+
+  message +=
+    "\nDelivery: " +
+    (
+      delivery === 0
+        ? "FREE"
+        : "₹" + delivery
+    );
+
+
+  message +=
+    "\nTotal: ₹" +
+    finalTotal;
 
 
   message +=
@@ -2761,22 +2856,48 @@ message +=
   if (deliveryLocation) {
 
     message +=
-      `\n\n📍 Location:\nhttps://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+      `\n\n📍 *Customer Location:*\nhttps://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
 
   }
+
+
+  // TRACKING LINK
+
+  if (orderId) {
+
+    const trackingLink =
+      window.location.origin +
+      "/order-status.html?orderId=" +
+      encodeURIComponent(
+        orderId
+      );
+
+
+    message +=
+      "\n\n🔎 *Track Your Order:*\n" +
+      trackingLink;
+
+  }
+
+
+  message +=
+    "\n\n❤️ Thank you for ordering with KravinZo!";
 
 
   const url =
     "https://wa.me/" +
     whatsappNumber +
     "?text=" +
-    encodeURIComponent(message);
+    encodeURIComponent(
+      message
+    );
 
 
   window.open(
     url,
     "_blank"
   );
+
 }
 
 
@@ -2792,7 +2913,8 @@ document.addEventListener(
 
   }
 );
-  </script>
-  
+
+</script>
+
 </body>
 </html>
