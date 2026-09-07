@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,6 +43,10 @@
       border-radius: 20px;
       background: #eee;
       font-weight: bold;
+    }
+
+    .status-buttons {
+      margin-top: 5px;
     }
 
     button {
@@ -318,7 +323,8 @@
 
         for (let r = 0; r < 3; r++) {
 
-          const t = start + (r * 2);
+          const t =
+            start + (r * 2);
 
 
           // MAIN BELL
@@ -631,6 +637,7 @@
 
         let data;
 
+
         try {
 
           data =
@@ -712,7 +719,7 @@
         }
 
 
-        // CLEAR
+        // CLEAR ORDERS
 
         ordersContainer.innerHTML = "";
 
@@ -743,6 +750,7 @@
             let items =
               order.items;
 
+
             if (typeof items === "string") {
 
               items =
@@ -767,6 +775,7 @@
                       item.itemTotal ??
                       item.total ??
                       0;
+
 
                     return `
                       <div style="margin:6px 0;">
@@ -904,27 +913,64 @@
             </div>
 
 
-            <br>
+            <div class="status-buttons">
+
+              ${
+                currentStatus === "Order Confirmed" ||
+                currentStatus === "pending"
+                  ? `
+                    <button class="preparing-btn">
+                      🍳 Preparing Food
+                    </button>
+                  `
+                  : ""
+              }
 
 
-            <button class="preparing-btn">
-              🍳 Preparing Food
-            </button>
+              ${
+                currentStatus === "Preparing Food"
+                  ? `
+                    <button class="ready-btn">
+                      ✅ Food Ready
+                    </button>
+                  `
+                  : ""
+              }
 
 
-            <button class="ready-btn">
-              ✅ Food Ready
-            </button>
+              ${
+                currentStatus === "Food Ready"
+                  ? `
+                    <button class="delivery-btn">
+                      🛵 Handed to Delivery
+                    </button>
+                  `
+                  : ""
+              }
 
 
-            <button class="delivery-btn">
-              🛵 Handed to Delivery
-            </button>
+              ${
+                currentStatus === "Handed to Delivery"
+                  ? `
+                    <button class="delivered-btn">
+                      🎉 Delivered
+                    </button>
+                  `
+                  : ""
+              }
 
 
-            <button class="delivered-btn">
-              🎉 Delivered
-            </button>
+              ${
+                currentStatus === "Delivered"
+                  ? `
+                    <strong style="color:green;">
+                      ✅ Order Completed
+                    </strong>
+                  `
+                  : ""
+              }
+
+            </div>
 
           `;
 
@@ -937,6 +983,7 @@
 
             const mapButton =
               card.querySelector(".map-btn");
+
 
             if (mapButton) {
 
@@ -958,17 +1005,22 @@
           const preparingButton =
             card.querySelector(".preparing-btn");
 
-          preparingButton.addEventListener(
-            "click",
-            () => {
 
-              updateStatus(
-                order.order_id,
-                "Preparing Food"
-              );
+          if (preparingButton) {
 
-            }
-          );
+            preparingButton.addEventListener(
+              "click",
+              () => {
+
+                updateStatus(
+                  order.order_id,
+                  "Preparing Food"
+                );
+
+              }
+            );
+
+          }
 
 
           // ==========================================
@@ -978,17 +1030,22 @@
           const readyButton =
             card.querySelector(".ready-btn");
 
-          readyButton.addEventListener(
-            "click",
-            () => {
 
-              updateStatus(
-                order.order_id,
-                "Food Ready"
-              );
+          if (readyButton) {
 
-            }
-          );
+            readyButton.addEventListener(
+              "click",
+              () => {
+
+                updateStatus(
+                  order.order_id,
+                  "Food Ready"
+                );
+
+              }
+            );
+
+          }
 
 
           // ==========================================
@@ -998,17 +1055,22 @@
           const deliveryButton =
             card.querySelector(".delivery-btn");
 
-          deliveryButton.addEventListener(
-            "click",
-            () => {
 
-              updateStatus(
-                order.order_id,
-                "Handed to Delivery"
-              );
+          if (deliveryButton) {
 
-            }
-          );
+            deliveryButton.addEventListener(
+              "click",
+              () => {
+
+                updateStatus(
+                  order.order_id,
+                  "Handed to Delivery"
+                );
+
+              }
+            );
+
+          }
 
 
           // ==========================================
@@ -1018,17 +1080,22 @@
           const deliveredButton =
             card.querySelector(".delivered-btn");
 
-          deliveredButton.addEventListener(
-            "click",
-            () => {
 
-              updateStatus(
-                order.order_id,
-                "Delivered"
-              );
+          if (deliveredButton) {
 
-            }
-          );
+            deliveredButton.addEventListener(
+              "click",
+              () => {
+
+                updateStatus(
+                  order.order_id,
+                  "Delivered"
+                );
+
+              }
+            );
+
+          }
 
 
           ordersContainer.appendChild(card);
@@ -1108,6 +1175,7 @@
           response.status
         );
 
+
         console.log(
           "STATUS API BODY:",
           responseText
@@ -1115,6 +1183,7 @@
 
 
         let data;
+
 
         try {
 
@@ -1173,6 +1242,7 @@
           error
         );
 
+
         alert(
           "Connection error:\n\n" +
           error.message
@@ -1207,6 +1277,7 @@
 
       }
 
+
       showLogin();
 
     }
@@ -1235,7 +1306,9 @@
         event => {
 
           if (event.key === "Enter") {
+
             adminLogin();
+
           }
 
         }
@@ -1288,6 +1361,7 @@
       unlockKravinZoSound
     );
 
+
     document.addEventListener(
       "keydown",
       unlockKravinZoSound
@@ -1304,3 +1378,4 @@
 
 </body>
 </html>
+```
