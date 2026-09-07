@@ -2264,8 +2264,7 @@ async function payOnline() {
       },
 
 
-      handler:
-        function(paymentResponse) {
+     handler: async function(paymentResponse) {
 
           console.log(
             "Payment Successful:",
@@ -2295,6 +2294,41 @@ async function payOnline() {
             button.innerText =
               "💳 Pay Online";
           }
+          const customer = getCustomerDetails();
+
+const items = cart.map(function(item) {
+  return {
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    itemTotal: item.price * item.quantity
+  };
+});
+
+let finalAddress = customer.address;
+
+if (deliveryLocation) {
+  finalAddress +=
+    `\nGoogle Maps: https://www.google.com/maps?q=${deliveryLocation.latitude},${deliveryLocation.longitude}`;
+}
+
+await fetch("/api/save-order", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    order_id: "KZ-" + Date.now(),
+    customer_name: customer.name,
+    customer_phone: customer.phone,
+    customer_address: finalAddress,
+    items: JSON.stringify(items),
+    total: getFinalTotal(),
+    payment_method: "ONLINE PAYMENT",
+    payment_id: paymentResponse.razorpay_payment_id,
+    status: "New"
+  })
+});
 
 
           sendWhatsApp(
