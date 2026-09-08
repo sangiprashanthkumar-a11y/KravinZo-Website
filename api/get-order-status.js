@@ -1,4 +1,4 @@
-```javascript
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -13,7 +13,6 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
@@ -22,7 +21,6 @@ export default async function handler(req, res) {
   }
 
   try {
-
     const { orderId } = req.query;
 
     if (!orderId) {
@@ -34,17 +32,9 @@ export default async function handler(req, res) {
 
     const { data, error } = await supabase
       .from("orders")
-      .select(`
-        order_id,
-        customer_name,
-        total,
-        status,
-        created_at,
-        delivery_latitude,
-        delivery_longitude,
-        delivery_accuracy,
-        delivery_location_updated_at
-      `)
+      .select(
+        "order_id, customer_name, total, status, created_at, delivery_latitude, delivery_longitude, delivery_accuracy, delivery_location_updated_at"
+      )
       .eq("order_id", orderId)
       .maybeSingle();
 
@@ -66,30 +56,16 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      order: {
-        order_id: data.order_id,
-        customer_name: data.customer_name,
-        total: data.total,
-        status: data.status,
-        created_at: data.created_at,
-        delivery_latitude: data.delivery_latitude,
-        delivery_longitude: data.delivery_longitude,
-        delivery_accuracy: data.delivery_accuracy,
-        delivery_location_updated_at:
-          data.delivery_location_updated_at
-      }
+      order: data
     });
 
   } catch (error) {
-
     console.error("ORDER STATUS API ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error:
-        error.message ||
-        "Failed to get order status"
+      error: error.message || "Failed to get order status"
     });
   }
 }
-```
+
