@@ -1,11 +1,22 @@
 import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    },
+    realtime: {
+      transport: ws
+    }
+  }
 );
 
 export default async function handler(req, res) {
+
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
@@ -14,13 +25,18 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const {
       orderId,
       latitude,
       longitude
     } = req.body;
 
-    if (!orderId || latitude == null || longitude == null) {
+    if (
+      !orderId ||
+      latitude == null ||
+      longitude == null
+    ) {
       return res.status(400).json({
         success: false,
         error: "Order ID, latitude and longitude are required"
@@ -32,14 +48,19 @@ export default async function handler(req, res) {
       .update({
         delivery_latitude: Number(latitude),
         delivery_longitude: Number(longitude),
-        delivery_location_updated_at: new Date().toISOString()
+        delivery_location_updated_at:
+          new Date().toISOString()
       })
       .eq("order_id", orderId)
       .select()
       .single();
 
     if (error) {
-      console.error("GPS UPDATE ERROR:", error);
+
+      console.error(
+        "GPS UPDATE ERROR:",
+        error
+      );
 
       return res.status(500).json({
         success: false,
@@ -54,11 +75,17 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("DELIVERY LOCATION API ERROR:", error);
+
+    console.error(
+      "DELIVERY LOCATION API ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Failed to update location"
+      error:
+        error.message ||
+        "Failed to update delivery location"
     });
   }
 }
