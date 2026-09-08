@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
+import WebSocket from "ws";
 
-function isAdminAuthenticated(req) { 
+function isAdminAuthenticated(req) {
   const cookieHeader = req.headers.cookie || "";
 
   const cookies = {};
@@ -76,6 +77,9 @@ export default async function handler(req, res) {
         auth: {
           autoRefreshToken: false,
           persistSession: false
+        },
+        realtime: {
+          transport: WebSocket
         }
       }
     );
@@ -109,7 +113,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // UPDATE
+    // UPDATE STATUS
     const { data, error } = await supabase
       .from("orders")
       .update({
@@ -121,7 +125,10 @@ export default async function handler(req, res) {
 
     // SUPABASE ERROR
     if (error) {
-      console.error("SUPABASE UPDATE ERROR:", error);
+      console.error(
+        "SUPABASE UPDATE ERROR:",
+        error
+      );
 
       return res.status(500).json({
         success: false,
@@ -148,11 +155,16 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("UPDATE STATUS ERROR:", error);
+    console.error(
+      "UPDATE STATUS ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Failed to update order status",
+      error:
+        error.message ||
+        "Failed to update order status",
       name: error.name || null
     });
   }
