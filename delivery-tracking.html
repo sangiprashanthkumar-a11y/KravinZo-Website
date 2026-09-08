@@ -1,1 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KravinZo | Delivery GPS</title>
 
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    #startButton {
+      background: #111;
+      color: white;
+    }
+
+    #stopButton {
+      background: #ddd;
+      color: #111;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #eef7ff;
+    }
+
+    .location {
+      margin-top: 15px;
+      line-height: 1.8;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>🚴 KravinZo</h1>
+
+    <h3>Delivery Boy GPS Tracking</h3>
+
+    <input
+      type="text"
+      id="orderId"
+      placeholder="Enter Order ID (KZ-...)"
+    >
+
+    <button id="startButton" onclick="startTracking()">
+      📍 Start Delivery Tracking
+    </button>
+
+    <button id="stopButton" onclick="stopTracking()" disabled>
+      ⛔ Stop Tracking
+    </button>
+
+    <div id="status" class="status">
+      Waiting to start GPS...
+    </div>
+
+    <div class="location">
+
+      <div>
+        Latitude:
+        <strong id="latitude">--</strong>
+      </div>
+
+      <div>
+        Longitude:
+        <strong id="longitude">--</strong>
+      </div>
+
+      <div>
+        Last Update:
+        <strong id="lastUpdate">--</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let watchId = null;
+let tracking = false;
+
+
+// ----------------------------------
+// START GPS TRACKING
+// ----------------------------------
+
+function startTracking() {
+
+  const orderId =
+    document.getElementById("orderId")
+      .value
+      .trim();
+
+  if (!orderId) {
+
+    showError(
+      "Please enter Order ID"
+    );
+
+    return;
+  }
+
+
+  if (!navigator.geolocation) {
+
+    showError(
+      "GPS is not supported on this device"
+    );
+
+    return;
+  }
+
+
+  tracking = true;
+
+
+  document.getElementById("startButton")
+    .disabled = true;
+
+  document.getElementById("stopButton")
+    .disabled = false;
+
+
+  showStatus(
+    "🟡 Getting your GPS location..."
+  );
+
+
+  watchId =
+    navigator.geolocation.watchPosition(
+
+      function(position) {
+
+        const latitude =
+          position.coords.latitude;
+
+        const longitude =
+          position.coords.longitude;
+
+
+        updateLocation(
+          orderId,
+          latitude,
+          longitude
+        );
+
+      },
+
+      function(error) {
+
+        console.error(
+          "GPS ERROR:",
+          error
+        );
+
+        showError(
+          "GPS permission/location failed. Please allow location access."
+        );
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 15000
+      }
+    );
+}
+
+
+// ----------------------------------
+// SEND LOCATION TO SERVER
+// ----------------------------------
+
+async function updateLocation(
+  orderId,
+  latitude,
+  longitude
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/update-delivery-location",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            orderId: orderId,
+
+            latitude: latitude,
+
+            longitude: longitude
+
+          })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!response.ok || !result.success) {
+
+      showError(
+        result.error ||
+        "Failed to update GPS"
+      );
+
+      return;
+    }
+
+
+    document.getElementById("latitude")
+      .textContent =
+      latitude.toFixed(6);
+
+
+    document.getElementById("longitude")
+      .textContent =
+      longitude.toFixed(6);
+
+
+    document.getElementById("lastUpdate")
+      .textContent =
+      new Date()
+        .toLocaleTimeString("en-IN");
+
+
+    showStatus(
+      "🟢 GPS Tracking Active"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "LOCATION UPDATE ERROR:",
+      error
+    );
+
+    showError(
+      "Unable to connect to server"
+    );
+  }
+}
+
+
+// ----------------------------------
+// STOP TRACKING
+// ----------------------------------
+
+function stopTracking() {
+
+  if (watchId !== null) {
+
+    navigator.geolocation.clearWatch(
+      watchId
+    );
+
+    watchId = null;
+  }
+
+
+  tracking = false;
+
+
+  document.getElementById("startButton")
+    .disabled = false;
+
+  document.getElementById("stopButton")
+    .disabled = true;
+
+
+  showStatus(
+    "⛔ GPS Tracking Stopped"
+  );
+}
+
+
+// ----------------------------------
+// STATUS
+// ----------------------------------
+
+function showStatus(message) {
+
+  const box =
+    document.getElementById("status");
+
+  box.className = "status";
+
+  box.textContent = message;
+}
+
+
+function showError(message) {
+
+  const box =
+    document.getElementById("status");
+
+  box.className =
+    "status error";
+
+  box.textContent =
+    "❌ " + message;
+}
+
+</script>
+
+</body>
+</html>
