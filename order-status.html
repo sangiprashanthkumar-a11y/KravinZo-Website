@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="UTF-8">
@@ -12,7 +11,6 @@
 
   <title>KravinZo - Order Status</title>
 
-
   <style>
 
     * {
@@ -22,19 +20,16 @@
       font-family: Arial, sans-serif;
     }
 
-
     body {
       background: #f5f5f5;
       min-height: 100vh;
       padding: 20px;
     }
 
-
     .container {
       max-width: 600px;
-      margin: 25px auto;
+      margin: 30px auto;
     }
-
 
     .logo {
       text-align: center;
@@ -43,7 +38,6 @@
       margin-bottom: 25px;
     }
 
-
     .card {
       background: white;
       border-radius: 16px;
@@ -51,20 +45,16 @@
       box-shadow: 0 3px 15px rgba(0,0,0,0.08);
     }
 
-
     h1 {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-
 
     .order-id {
       text-align: center;
       color: #555;
       margin-bottom: 25px;
-      word-break: break-all;
     }
-
 
     .status-box {
       text-align: center;
@@ -74,12 +64,10 @@
       margin-bottom: 25px;
     }
 
-
     .status-icon {
-      font-size: 52px;
+      font-size: 50px;
       margin-bottom: 10px;
     }
-
 
     .status-title {
       font-size: 24px;
@@ -87,36 +75,31 @@
       margin-bottom: 8px;
     }
 
-
     .status-message {
       color: #555;
       font-size: 15px;
       line-height: 1.5;
     }
 
-
     .steps {
-      margin-top: 10px;
+      margin-top: 20px;
     }
-
 
     .step {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 13px 0;
+      padding: 12px 0;
       border-bottom: 1px solid #eee;
     }
-
 
     .step:last-child {
       border-bottom: none;
     }
 
-
     .step-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: #ddd;
       display: flex;
@@ -126,43 +109,36 @@
       flex-shrink: 0;
     }
 
-
     .step.active .step-icon {
       background: #111;
       color: white;
     }
-
 
     .step.completed .step-icon {
       background: #2e7d32;
       color: white;
     }
 
-
     .step-text {
       font-weight: bold;
     }
-
 
     .delivered-box {
       text-align: center;
       background: #f1fff4;
       border-radius: 15px;
       padding: 30px 20px;
-      margin-top: 25px;
+      margin-top: 20px;
     }
-
 
     .delivered-box .big-icon {
       font-size: 55px;
     }
 
-
     .delivered-box h2 {
       color: #2e7d32;
       margin: 10px 0;
     }
-
 
     .delivered-box p {
       color: #444;
@@ -170,11 +146,10 @@
       margin-bottom: 8px;
     }
 
-
     .order-again-btn {
       display: inline-block;
       margin-top: 15px;
-      padding: 13px 28px;
+      padding: 13px 25px;
       border: none;
       border-radius: 9px;
       background: #111;
@@ -185,52 +160,33 @@
       text-decoration: none;
     }
 
-
     .order-again-btn:hover {
       opacity: 0.85;
     }
 
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #555;
-    }
-
-
     .error {
       text-align: center;
-      padding: 20px;
       color: red;
+      padding: 20px;
     }
 
   </style>
 
 </head>
 
-
 <body>
 
-
   <div class="container">
-
-
-    <!-- LOGO -->
 
     <div class="logo">
       🍔 KravinZo
     </div>
 
-
     <div class="card">
-
-
-      <!-- TITLE -->
 
       <h1>
         Your Order
       </h1>
-
 
       <div
         id="orderId"
@@ -238,7 +194,6 @@
       >
         Loading order...
       </div>
-
 
       <!-- CURRENT STATUS -->
 
@@ -254,14 +209,12 @@
           ⏳
         </div>
 
-
         <div
           id="statusTitle"
           class="status-title"
         >
           Loading...
         </div>
-
 
         <div
           id="statusMessage"
@@ -272,13 +225,12 @@
 
       </div>
 
-
       <!-- STATUS STEPS -->
 
-      <div class="steps">
-
-
-        <!-- PREPARING -->
+      <div
+        id="steps"
+        class="steps"
+      >
 
         <div
           id="stepPreparing"
@@ -295,9 +247,6 @@
 
         </div>
 
-
-        <!-- READY -->
-
         <div
           id="stepReady"
           class="step"
@@ -313,9 +262,6 @@
 
         </div>
 
-
-        <!-- DELIVERY -->
-
         <div
           id="stepDelivery"
           class="step"
@@ -330,9 +276,6 @@
           </div>
 
         </div>
-
-
-        <!-- DELIVERED -->
 
         <div
           id="stepDelivered"
@@ -351,8 +294,7 @@
 
       </div>
 
-
-      <!-- DELIVERED MESSAGE -->
+      <!-- DELIVERED -->
 
       <div
         id="deliveredBox"
@@ -364,22 +306,18 @@
           🎉
         </div>
 
-
         <h2>
           Order Delivered!
         </h2>
-
 
         <p>
           Thank you for ordering from
           <strong>KravinZo</strong> ❤️
         </p>
 
-
         <p>
           Your order has been delivered successfully.
         </p>
-
 
         <a
           href="/"
@@ -390,18 +328,15 @@
 
       </div>
 
-
     </div>
 
   </div>
 
 
-
   <script>
 
-
     // ==========================================
-    // GET ORDER ID
+    // GET ORDER ID FROM URL
     // ==========================================
 
     const params =
@@ -409,32 +344,8 @@
         window.location.search
       );
 
-
-    let orderId =
-      params.get("orderId") ||
-      params.get("order_id") ||
-      params.get("id") ||
-      localStorage.getItem(
-        "kravinzoOrderId"
-      );
-
-
-    // ==========================================
-    // SAVE ORDER ID
-    // ==========================================
-
-    if (orderId) {
-
-      orderId =
-        String(orderId).trim();
-
-
-      localStorage.setItem(
-        "kravinzoOrderId",
-        orderId
-      );
-
-    }
+    const orderId =
+      params.get("orderId");
 
 
     // ==========================================
@@ -442,95 +353,41 @@
     // ==========================================
 
     const orderIdElement =
-      document.getElementById(
-        "orderId"
-      );
-
-
-    const statusBox =
-      document.getElementById(
-        "statusBox"
-      );
-
+      document.getElementById("orderId");
 
     const statusIcon =
-      document.getElementById(
-        "statusIcon"
-      );
-
+      document.getElementById("statusIcon");
 
     const statusTitle =
-      document.getElementById(
-        "statusTitle"
-      );
-
+      document.getElementById("statusTitle");
 
     const statusMessage =
-      document.getElementById(
-        "statusMessage"
-      );
+      document.getElementById("statusMessage");
 
+    const statusBox =
+      document.getElementById("statusBox");
 
     const deliveredBox =
-      document.getElementById(
-        "deliveredBox"
-      );
-
+      document.getElementById("deliveredBox");
 
     const stepPreparing =
-      document.getElementById(
-        "stepPreparing"
-      );
-
+      document.getElementById("stepPreparing");
 
     const stepReady =
-      document.getElementById(
-        "stepReady"
-      );
-
+      document.getElementById("stepReady");
 
     const stepDelivery =
-      document.getElementById(
-        "stepDelivery"
-      );
-
+      document.getElementById("stepDelivery");
 
     const stepDelivered =
-      document.getElementById(
-        "stepDelivered"
-      );
+      document.getElementById("stepDelivered");
 
 
     // ==========================================
-    // NO ORDER ID
+    // UPDATE STEPS
     // ==========================================
 
-    if (!orderId) {
-
-      orderIdElement.textContent =
-        "Order ID missing";
-
-
-      statusIcon.textContent =
-        "❌";
-
-
-      statusTitle.textContent =
-        "Order Not Found";
-
-
-      statusMessage.textContent =
-        "Please open the order tracking link again.";
-
-
-    }
-
-
-    // ==========================================
-    // RESET STEPS
-    // ==========================================
-
-    function resetSteps() {
+    function updateSteps(status) {
 
       const steps = [
         stepPreparing,
@@ -538,7 +395,6 @@
         stepDelivery,
         stepDelivered
       ];
-
 
       steps.forEach(step => {
 
@@ -549,24 +405,11 @@
 
       });
 
-    }
-
-
-    // ==========================================
-    // UPDATE STEPS
-    // ==========================================
-
-    function updateSteps(status) {
-
-      resetSteps();
-
-
-      // NEW
 
       if (
         status === "New" ||
-        status === "pending" ||
-        status === "Order Confirmed"
+        status === "Order Confirmed" ||
+        status === "pending"
       ) {
 
         stepPreparing.classList.add(
@@ -575,24 +418,9 @@
 
       }
 
-
-      // PREPARING
 
       else if (
         status === "Preparing Food"
-      ) {
-
-        stepPreparing.classList.add(
-          "active"
-        );
-
-      }
-
-
-      // FOOD READY
-
-      else if (
-        status === "Food Ready"
       ) {
 
         stepPreparing.classList.add(
@@ -606,10 +434,8 @@
       }
 
 
-      // HANDED TO DELIVERY
-
       else if (
-        status === "Handed to Delivery"
+        status === "Food Ready"
       ) {
 
         stepPreparing.classList.add(
@@ -627,10 +453,8 @@
       }
 
 
-      // DELIVERED
-
       else if (
-        status === "Delivered"
+        status === "Handed to Delivery"
       ) {
 
         stepPreparing.classList.add(
@@ -646,8 +470,23 @@
         );
 
         stepDelivered.classList.add(
-          "completed"
+          "active"
         );
+
+      }
+
+
+      else if (
+        status === "Delivered"
+      ) {
+
+        steps.forEach(step => {
+
+          step.classList.add(
+            "completed"
+          );
+
+        });
 
       }
 
@@ -664,42 +503,34 @@
         String(status || "New").trim();
 
 
-      // ORDER ID
-
       orderIdElement.textContent =
         "Order #" + orderId;
 
 
-      // STEPS
-
       updateSteps(status);
 
 
-      // ========================================
+      // ----------------------------------------
       // NEW
-      // ========================================
+      // ----------------------------------------
 
       if (
         status === "New" ||
-        status === "pending" ||
-        status === "Order Confirmed"
+        status === "Order Confirmed" ||
+        status === "pending"
       ) {
 
         statusIcon.textContent =
           "🕐";
 
-
         statusTitle.textContent =
           "Order Confirmed";
-
 
         statusMessage.textContent =
           "Your order has been confirmed. Our kitchen will start preparing your food.";
 
-
         statusBox.style.background =
           "#fff8e1";
-
 
         deliveredBox.style.display =
           "none";
@@ -707,9 +538,9 @@
       }
 
 
-      // ========================================
+      // ----------------------------------------
       // PREPARING
-      // ========================================
+      // ----------------------------------------
 
       else if (
         status === "Preparing Food"
@@ -718,18 +549,14 @@
         statusIcon.textContent =
           "🍳";
 
-
         statusTitle.textContent =
           "Preparing Your Food";
-
 
         statusMessage.textContent =
           "Our kitchen is preparing your order. Please wait.";
 
-
         statusBox.style.background =
           "#fff3e0";
-
 
         deliveredBox.style.display =
           "none";
@@ -737,9 +564,9 @@
       }
 
 
-      // ========================================
+      // ----------------------------------------
       // FOOD READY
-      // ========================================
+      // ----------------------------------------
 
       else if (
         status === "Food Ready"
@@ -748,18 +575,14 @@
         statusIcon.textContent =
           "✅";
 
-
         statusTitle.textContent =
           "Food Ready";
-
 
         statusMessage.textContent =
           "Your food is ready and waiting for delivery.";
 
-
         statusBox.style.background =
           "#e8f5e9";
-
 
         deliveredBox.style.display =
           "none";
@@ -767,9 +590,9 @@
       }
 
 
-      // ========================================
+      // ----------------------------------------
       // HANDED TO DELIVERY
-      // ========================================
+      // ----------------------------------------
 
       else if (
         status === "Handed to Delivery"
@@ -778,18 +601,14 @@
         statusIcon.textContent =
           "🛵";
 
-
         statusTitle.textContent =
           "Out for Delivery";
-
 
         statusMessage.textContent =
           "Your order has been handed to the delivery partner and is on the way.";
 
-
         statusBox.style.background =
           "#e3f2fd";
-
 
         deliveredBox.style.display =
           "none";
@@ -797,9 +616,9 @@
       }
 
 
-      // ========================================
+      // ----------------------------------------
       // DELIVERED
-      // ========================================
+      // ----------------------------------------
 
       else if (
         status === "Delivered"
@@ -808,18 +627,14 @@
         statusIcon.textContent =
           "🎉";
 
-
         statusTitle.textContent =
           "Order Delivered!";
-
 
         statusMessage.textContent =
           "Your order has been delivered successfully.";
 
-
         statusBox.style.background =
           "#e8f5e9";
-
 
         deliveredBox.style.display =
           "block";
@@ -827,23 +642,20 @@
       }
 
 
-      // ========================================
-      // UNKNOWN STATUS
-      // ========================================
+      // ----------------------------------------
+      // UNKNOWN
+      // ----------------------------------------
 
       else {
 
         statusIcon.textContent =
           "📦";
 
-
         statusTitle.textContent =
           status;
 
-
         statusMessage.textContent =
           "Your order status has been updated.";
-
 
         deliveredBox.style.display =
           "none";
@@ -854,7 +666,28 @@
 
 
     // ==========================================
-    // LOAD ORDER
+    // NO ORDER ID
+    // ==========================================
+
+    if (!orderId) {
+
+      orderIdElement.textContent =
+        "Order ID missing";
+
+      statusIcon.textContent =
+        "❌";
+
+      statusTitle.textContent =
+        "Order Not Found";
+
+      statusMessage.textContent =
+        "Please check your order link.";
+
+    }
+
+
+    // ==========================================
+    // LOAD ORDER STATUS
     // ==========================================
 
     async function loadOrderStatus() {
@@ -881,18 +714,6 @@
           await response.text();
 
 
-        console.log(
-          "ORDER STATUS API:",
-          response.status
-        );
-
-
-        console.log(
-          "ORDER STATUS RESPONSE:",
-          responseText
-        );
-
-
         let data;
 
 
@@ -904,18 +725,15 @@
         } catch (error) {
 
           console.error(
-            "Invalid JSON:",
+            "Invalid API response:",
             responseText
           );
-
 
           statusIcon.textContent =
             "❌";
 
-
           statusTitle.textContent =
             "Server Error";
-
 
           statusMessage.textContent =
             "Unable to load order status.";
@@ -925,19 +743,13 @@
         }
 
 
-        // ======================================
-        // API ERROR
-        // ======================================
-
         if (!response.ok) {
 
           statusIcon.textContent =
             "❌";
 
-
           statusTitle.textContent =
             "Order Not Found";
-
 
           statusMessage.textContent =
             data.error ||
@@ -948,19 +760,13 @@
         }
 
 
-        // ======================================
-        // SUCCESS CHECK
-        // ======================================
-
         if (!data.success) {
 
           statusIcon.textContent =
             "❌";
 
-
           statusTitle.textContent =
             "Unable to Load Order";
-
 
           statusMessage.textContent =
             data.error ||
@@ -970,10 +776,6 @@
 
         }
 
-
-        // ======================================
-        // GET ORDER
-        // ======================================
 
         const order =
           data.order ||
@@ -986,30 +788,21 @@
           "New";
 
 
-        // ======================================
-        // DISPLAY
-        // ======================================
-
         displayStatus(status);
 
-      }
 
-
-      catch (error) {
+      } catch (error) {
 
         console.error(
           "Order status error:",
           error
         );
 
-
         statusIcon.textContent =
           "❌";
 
-
         statusTitle.textContent =
           "Connection Error";
-
 
         statusMessage.textContent =
           "Please check your internet connection.";
@@ -1027,7 +820,7 @@
 
 
     // ==========================================
-    // AUTO REFRESH
+    // AUTO REFRESH EVERY 10 SECONDS
     // ==========================================
 
     setInterval(
@@ -1035,9 +828,7 @@
       10000
     );
 
-
   </script>
-
 
 </body>
 </html>
