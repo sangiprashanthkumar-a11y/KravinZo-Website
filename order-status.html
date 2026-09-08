@@ -1,10 +1,18 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KravinZo | Order Tracking</title>
+  <title>KravinZo | Live Order Tracking</title>
+
+  <!-- Leaflet Map -->
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
 
   <style>
     * {
@@ -21,6 +29,7 @@
     }
 
     .container {
+      width: 100%;
       max-width: 600px;
       margin: auto;
     }
@@ -28,8 +37,8 @@
     .header {
       background: #111;
       color: white;
-      padding: 20px;
-      border-radius: 15px;
+      padding: 22px;
+      border-radius: 16px;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -41,24 +50,24 @@
     .card {
       background: white;
       padding: 20px;
-      border-radius: 15px;
+      border-radius: 16px;
       box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
     }
 
     .order-id {
       font-size: 14px;
       color: #666;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .status-title {
       font-size: 24px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .message {
       color: #555;
+      margin-top: 10px;
       margin-bottom: 20px;
     }
 
@@ -89,48 +98,66 @@
     }
 
     .gps-box {
+      margin-top: 20px;
       background: #f1f8ff;
       border: 1px solid #cfe7ff;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 20px;
+      border-radius: 14px;
+      padding: 15px;
     }
 
-    .gps-box h3 {
-      margin-bottom: 10px;
+    .gps-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
 
     .gps-status {
       font-weight: bold;
-      margin-bottom: 10px;
+      color: #159447;
+      margin-bottom: 12px;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 360px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      background: #ddd;
+    }
+
+    #liveMap {
+      width: 100%;
+      height: 100%;
     }
 
     .gps-data {
-      font-size: 14px;
+      margin-top: 12px;
+      font-size: 13px;
       line-height: 1.8;
       color: #444;
     }
 
     .map-button {
-      display: inline-block;
+      display: block;
       margin-top: 12px;
-      padding: 11px 16px;
+      padding: 12px;
       background: #1976d2;
       color: white;
       text-decoration: none;
+      text-align: center;
       border-radius: 8px;
+      font-weight: bold;
     }
 
-    .order-again {
-      width: 100%;
+    .waiting {
+      background: #fff8df;
+      border: 1px solid #f0d77b;
+      color: #705900;
+      padding: 14px;
+      border-radius: 10px;
       margin-top: 20px;
-      padding: 13px;
-      border: none;
-      border-radius: 9px;
-      background: #ff6600;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
+      line-height: 1.5;
     }
 
     .error {
@@ -147,555 +174,783 @@
       color: #666;
     }
 
+    .order-again {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #ff6600;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
     hr {
       border: none;
       border-top: 1px solid #eee;
       margin: 20px 0;
     }
+
+    /* Scooter marker */
+    .scooter-marker {
+      font-size: 38px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.35));
+    }
+
+    .live-badge {
+      background: white;
+      border: 2px solid #20a464;
+      color: #159447;
+      padding: 5px 9px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
   </style>
+
 </head>
 
 <body>
 
   <div class="container">
 
-    <div class="header">
-      <h1>🚴 KravinZo</h1>
-      <p>Live Order Tracking</p>
+```
+<div class="header">
+  <h1>🚴 KravinZo</h1>
+  <p>Live Order Tracking</p>
+</div>
+
+<div class="card">
+
+  <div id="orderId" class="order-id">
+    Loading order...
+  </div>
+
+  <div id="orderStatus">
+    <div class="loading">
+      🔄 Loading order status...
     </div>
+  </div>
 
-    <div class="card">
-
-      <div id="orderId" class="order-id">
-        Loading order...
-      </div>
-
-      <div id="orderStatus">
-        <div class="loading">
-          🔄 Loading order status...
-        </div>
-      </div>
-
-    </div>
+</div>
+```
 
   </div>
 
+  <!-- Leaflet JS -->
 
-<script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
 
-let statusInterval = null;
+  <script>
 
+    let refreshTimer = null;
 
-/* ================================
-   LOAD ORDER STATUS
-================================ */
+    let map = null;
 
-async function loadOrderStatus() {
+    let scooterMarker = null;
 
-  const params = new URLSearchParams(window.location.search);
-
-  const orderId = params.get("orderId");
-
-  const orderIdElement =
-    document.getElementById("orderId");
-
-  const statusElement =
-    document.getElementById("orderStatus");
+    let firstMapLoad = true;
 
 
-  if (!orderId) {
+    /* =========================================
+       GET ORDER ID FROM URL
+    ========================================= */
 
-    statusElement.innerHTML = `
-      <div class="error">
+    function getOrderId() {
 
-        ❌ <strong>Order ID missing</strong>
+      const params =
+        new URLSearchParams(window.location.search);
 
-        <p style="margin-top:8px;">
-          Please check your order tracking link.
-        </p>
+      return params.get("orderId");
 
-      </div>
-    `;
-
-    return;
-  }
-
-
-  orderIdElement.innerText =
-    "Order ID: " + orderId;
-
-
-  try {
-
-    const response = await fetch(
-      "/api/get-order-status?orderId=" +
-      encodeURIComponent(orderId) +
-      "&t=" +
-      Date.now(),
-      {
-        cache: "no-store"
-      }
-    );
-
-
-    const data = await response.json();
-
-
-    if (!response.ok || !data.success) {
-
-      statusElement.innerHTML = `
-        <div class="error">
-
-          ❌ <strong>Order Not Found</strong>
-
-          <p style="margin-top:8px;">
-            Please check your order ID.
-          </p>
-
-          <p style="margin-top:8px;">
-            Order ID: ${orderId}
-          </p>
-
-        </div>
-      `;
-
-      return;
     }
 
 
-    const order = data.order;
+    /* =========================================
+       CREATE SCOOTER ICON
+    ========================================= */
+
+    function createScooterIcon() {
+
+      return L.divIcon({
+
+        className: "",
+
+        html: `
+          <div class="scooter-marker">
+            🛵
+          </div>
+        `,
+
+        iconSize: [45, 45],
+
+        iconAnchor: [22, 22]
+
+      });
+
+    }
 
 
-    const currentStatus =
-      order.status || "New";
+    /* =========================================
+       CREATE / UPDATE MAP
+    ========================================= */
+
+    function updateLiveMap(latitude, longitude) {
+
+      const lat =
+        Number(latitude);
+
+      const lng =
+        Number(longitude);
 
 
-    /* ================================
-       ORDER STATUS STEPS
-    ================================= */
+      if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng)
+      ) {
 
-    const steps = [
+        return;
 
-      {
-        status: "New",
-        icon: "📦",
-        text: "Order Received"
-      },
-
-      {
-        status: "Preparing Food",
-        icon: "🍳",
-        text: "Preparing Food"
-      },
-
-      {
-        status: "Food Ready",
-        icon: "✅",
-        text: "Food Ready"
-      },
-
-      {
-        status: "Handed to Delivery",
-        icon: "🛵",
-        text: "Handed to Delivery"
-      },
-
-      {
-        status: "Delivered",
-        icon: "🎉",
-        text: "Delivered"
       }
 
-    ];
+
+      /* First time */
+
+      if (!map) {
+
+        map =
+          L.map("liveMap", {
+            zoomControl: true
+          }).setView(
+            [lat, lng],
+            16
+          );
 
 
-    const currentIndex =
-      steps.findIndex(
-        step =>
-          step.status === currentStatus
+        L.tileLayer(
+          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {
+            maxZoom: 19,
+            attribution:
+              "&copy; OpenStreetMap contributors"
+          }
+        ).addTo(map);
+
+
+        scooterMarker =
+          L.marker(
+            [lat, lng],
+            {
+              icon:
+                createScooterIcon()
+            }
+          ).addTo(map);
+
+
+        scooterMarker.bindTooltip(
+          "🛵 Delivery Boy • LIVE",
+          {
+            permanent: true,
+            direction: "top",
+            offset: [0, -22],
+            className: "live-badge"
+          }
+        );
+
+
+        firstMapLoad = false;
+
+        return;
+
+      }
+
+
+      /* Existing marker */
+
+      const oldPosition =
+        scooterMarker.getLatLng();
+
+
+      const newPosition =
+        L.latLng(lat, lng);
+
+
+      scooterMarker.setLatLng(
+        newPosition
       );
 
 
-    const trackingHTML =
-      steps.map(
-        (step, index) => {
+      /*
+        Move map smoothly only when
+        delivery boy changes location.
+      */
 
-          let className =
-            "tracking-step";
+      if (
+        oldPosition.lat !== lat ||
+        oldPosition.lng !== lng
+      ) {
+
+        map.panTo(
+          newPosition,
+          {
+            animate: true,
+            duration: 1
+          }
+        );
+
+      }
+
+    }
 
 
-          if (index < currentIndex) {
+    /* =========================================
+       LOAD ORDER
+    ========================================= */
 
-            className +=
-              " completed";
+    async function loadOrderStatus() {
+
+      const orderId =
+        getOrderId();
+
+
+      const orderIdElement =
+        document.getElementById(
+          "orderId"
+        );
+
+
+      const statusElement =
+        document.getElementById(
+          "orderStatus"
+        );
+
+
+      if (!orderId) {
+
+        statusElement.innerHTML = `
+
+          <div class="error">
+
+            ❌ <strong>Order ID missing</strong>
+
+            <p style="margin-top:8px;">
+              Please check your tracking link.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      orderIdElement.innerText =
+        "Order ID: " + orderId;
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/get-order-status?orderId=" +
+            encodeURIComponent(orderId) +
+            "&t=" +
+            Date.now(),
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+
+        let data;
+
+
+        try {
+
+          data =
+            await response.json();
+
+        }
+        catch (jsonError) {
+
+          throw new Error(
+            "Invalid server response"
+          );
+
+        }
+
+
+        if (
+          !response.ok ||
+          !data.success
+        ) {
+
+          statusElement.innerHTML = `
+
+            <div class="error">
+
+              ❌ <strong>Unable to load order</strong>
+
+              <p style="margin-top:8px;">
+                ${
+                  data.error ||
+                  "Please try again."
+                }
+              </p>
+
+              <p style="margin-top:8px;">
+                Order ID: ${orderId}
+              </p>
+
+            </div>
+
+          `;
+
+          return;
+
+        }
+
+
+        const order =
+          data.order;
+
+
+        const currentStatus =
+          order.status || "New";
+
+
+        /* =====================================
+           ORDER STEPS
+        ===================================== */
+
+        const steps = [
+
+          {
+            status: "New",
+            icon: "📦",
+            text: "Order Received"
+          },
+
+          {
+            status: "Preparing Food",
+            icon: "🍳",
+            text: "Preparing Food"
+          },
+
+          {
+            status: "Food Ready",
+            icon: "✅",
+            text: "Food Ready"
+          },
+
+          {
+            status: "Handed to Delivery",
+            icon: "🛵",
+            text: "Handed to Delivery"
+          },
+
+          {
+            status: "Delivered",
+            icon: "🎉",
+            text: "Delivered"
+          }
+
+        ];
+
+
+        const currentIndex =
+          steps.findIndex(
+            step =>
+              step.status ===
+              currentStatus
+          );
+
+
+        const trackingHTML =
+          steps.map(
+            (step, index) => {
+
+              let className =
+                "tracking-step";
+
+
+              if (
+                index < currentIndex
+              ) {
+
+                className +=
+                  " completed";
+
+              }
+              else if (
+                index === currentIndex
+              ) {
+
+                className +=
+                  " active";
+
+              }
+
+
+              return `
+
+                <div
+                  class="${className}"
+                >
+
+                  <span>
+                    ${step.icon}
+                  </span>
+
+                  <strong>
+                    ${step.text}
+                  </strong>
+
+                </div>
+
+              `;
+
+            }
+          ).join("");
+
+
+        /* =====================================
+           STATUS MESSAGE
+        ===================================== */
+
+        let message =
+          "📝 Your order has been received.";
+
+
+        if (
+          currentStatus ===
+          "Preparing Food"
+        ) {
+
+          message =
+            "👨‍🍳 Your food is being prepared.";
+
+        }
+
+        else if (
+          currentStatus ===
+          "Food Ready"
+        ) {
+
+          message =
+            "🍱 Your food is ready!";
+
+        }
+
+        else if (
+          currentStatus ===
+          "Handed to Delivery"
+        ) {
+
+          message =
+            "🛵 Your order is on the way.";
+
+        }
+
+        else if (
+          currentStatus ===
+          "Delivered"
+        ) {
+
+          message =
+            "🎉 Your order has been delivered!";
+
+        }
+
+
+        /* =====================================
+           GPS DATA
+        ===================================== */
+
+        const latitude =
+          order.delivery_latitude;
+
+        const longitude =
+          order.delivery_longitude;
+
+        const updatedAt =
+          order.delivery_location_updated_at;
+
+
+        const hasGPS =
+          latitude !== null &&
+          latitude !== undefined &&
+          longitude !== null &&
+          longitude !== undefined;
+
+
+        let gpsHTML = "";
+
+
+        if (hasGPS) {
+
+          let updateText =
+            "Just now";
+
+
+          if (updatedAt) {
+
+            const date =
+              new Date(updatedAt);
+
+
+            updateText =
+              date.toLocaleTimeString(
+                "en-IN",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit"
+                }
+              );
 
           }
-          else if (index === currentIndex) {
-
-            className +=
-              " active";
-
-          }
 
 
-          return `
+          const googleMapsURL =
+            "https://www.google.com/maps?q=" +
+            encodeURIComponent(
+              latitude +
+              "," +
+              longitude
+            );
 
-            <div class="${className}">
 
-              <span>
-                ${step.icon}
-              </span>
+          gpsHTML = `
 
-              <strong>
-                ${step.text}
-              </strong>
+            <div class="gps-box">
+
+              <div class="gps-title">
+                🟢 Live Delivery Tracking
+              </div>
+
+              <div class="gps-status">
+                🛵 Delivery Boy is moving
+              </div>
+
+              <div class="map-container">
+
+                <div id="liveMap"></div>
+
+              </div>
+
+              <div class="gps-data">
+
+                <div>
+                  <strong>📍 Location:</strong>
+                  Live
+                </div>
+
+                <div>
+                  <strong>🕐 Last Update:</strong>
+                  ${updateText}
+                </div>
+
+              </div>
+
+              <a
+                class="map-button"
+                href="${googleMapsURL}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📍 Open Google Maps
+              </a>
 
             </div>
 
           `;
 
         }
-      ).join("");
 
+        else {
 
-    /* ================================
-       STATUS MESSAGE
-    ================================= */
+          gpsHTML = `
 
-    let message = "";
+            <div class="waiting">
 
+              🟡 <strong>GPS Tracking Waiting</strong>
 
-    if (currentStatus === "New") {
+              <p style="margin-top:6px;">
+                🛵 Delivery boy location will appear
+                here when delivery tracking starts.
+              </p>
 
-      message =
-        "📝 Your order has been received.";
-
-    }
-    else if (
-      currentStatus === "Preparing Food"
-    ) {
-
-      message =
-        "👨‍🍳 Your food is being prepared.";
-
-    }
-    else if (
-      currentStatus === "Food Ready"
-    ) {
-
-      message =
-        "🍱 Your food is ready!";
-
-    }
-    else if (
-      currentStatus === "Handed to Delivery"
-    ) {
-
-      message =
-        "🛵 Your order is on the way.";
-
-    }
-    else if (
-      currentStatus === "Delivered"
-    ) {
-
-      message =
-        "🎉 Your order has been delivered!";
-
-    }
-
-
-    /* ================================
-       GPS DATA
-    ================================= */
-
-    const latitude =
-      order.delivery_latitude;
-
-    const longitude =
-      order.delivery_longitude;
-
-
-    const accuracy =
-      order.delivery_accuracy;
-
-
-    const updatedAt =
-      order.delivery_location_updated_at;
-
-
-    let gpsHTML = "";
-
-
-    if (
-      latitude !== null &&
-      latitude !== undefined &&
-      longitude !== null &&
-      longitude !== undefined
-    ) {
-
-      const googleMapsURL =
-        "https://www.google.com/maps?q=" +
-        encodeURIComponent(
-          latitude + "," + longitude
-        );
-
-
-      let updateText = "";
-
-
-      if (updatedAt) {
-
-        const date =
-          new Date(updatedAt);
-
-        updateText =
-          date.toLocaleTimeString(
-            "en-IN",
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit"
-            }
-          );
-
-      }
-
-
-      gpsHTML = `
-
-        <div class="gps-box">
-
-          <h3>
-            🟢 GPS Tracking Active
-          </h3>
-
-          <div class="gps-status">
-            📍 Delivery Boy Location
-          </div>
-
-          <div class="gps-data">
-
-            <div>
-              <strong>Latitude:</strong>
-              ${latitude}
             </div>
 
-            <div>
-              <strong>Longitude:</strong>
-              ${longitude}
-            </div>
-
-            ${
-              accuracy
-              ? `
-                <div>
-                  <strong>Accuracy:</strong>
-                  ${accuracy} meters
-                </div>
-              `
-              : ""
-            }
-
-            ${
-              updateText
-              ? `
-                <div>
-                  <strong>Last Update:</strong>
-                  ${updateText}
-                </div>
-              `
-              : ""
-            }
-
-          </div>
-
-          <a
-            class="map-button"
-            href="${googleMapsURL}"
-            target="_blank"
-            rel="noopener"
-          >
-            📍 Open Live Location
-          </a>
-
-        </div>
-
-      `;
-
-    }
-    else {
-
-      gpsHTML = `
-
-        <div class="gps-box">
-
-          <h3>
-            🟡 GPS Tracking
-          </h3>
-
-          <p>
-            Delivery boy location will appear
-            when GPS tracking starts.
-          </p>
-
-        </div>
-
-      `;
-
-    }
-
-
-    /* ================================
-       FINAL HTML
-    ================================= */
-
-    statusElement.innerHTML = `
-
-      <div>
-
-        <h2 class="status-title">
-          Order #${order.order_id}
-        </h2>
-
-
-        <p>
-          <strong>Total:</strong>
-          ₹${order.total}
-        </p>
-
-
-        <p style="margin-top:8px;">
-
-          <strong>Status:</strong>
-
-          <span>
-            ${currentStatus}
-          </span>
-
-        </p>
-
-
-        <p class="message"
-           style="margin-top:10px;">
-
-          ${message}
-
-        </p>
-
-
-        <hr>
-
-
-        <div>
-
-          ${trackingHTML}
-
-        </div>
-
-
-        ${gpsHTML}
-
-
-        ${
-          currentStatus === "Delivered"
-
-          ? `
-
-            <button
-              class="order-again"
-              onclick="window.location.href='/'"
-            >
-              🍔 Order Again
-            </button>
-
-          `
-
-          : ""
+          `;
 
         }
 
-      </div>
 
-    `;
+        /* =====================================
+           FINAL PAGE
+        ===================================== */
 
-  }
+        statusElement.innerHTML = `
 
+          <div>
 
-  catch (error) {
+            <h2 class="status-title">
+              Order #${order.order_id}
+            </h2>
 
-    console.error(
-      "TRACKING ERROR:",
-      error
-    );
+            <p>
+              <strong>Total:</strong>
+              ₹${order.total}
+            </p>
 
+            <p style="margin-top:8px;">
 
-    statusElement.innerHTML = `
+              <strong>Status:</strong>
+              ${currentStatus}
 
-      <div class="error">
+            </p>
 
-        ❌ Unable to load order status.
+            <p class="message">
+              ${message}
+            </p>
 
-        <p style="margin-top:8px;">
-          Please try again.
-        </p>
+            <hr>
 
-      </div>
+            ${trackingHTML}
 
-    `;
+            ${gpsHTML}
 
-  }
+            ${
+              currentStatus ===
+              "Delivered"
+              ? `
+                <button
+                  class="order-again"
+                  onclick="window.location.href='/'"
+                >
+                  🍔 Order Again
+                </button>
+              `
+              : ""
+            }
 
-}
+          </div>
 
-
-/* ================================
-   PAGE LOAD
-================================ */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    loadOrderStatus();
-
-
-    /*
-      Refresh every 5 seconds
-      so customer gets latest status
-      and GPS location.
-    */
-
-    statusInterval =
-      setInterval(
-        loadOrderStatus,
-        5000
-      );
-
-  }
-);
+        `;
 
 
-/* ================================
-   STOP REFRESH
-================================ */
+        /* =====================================
+           MAP UPDATE
+        ===================================== */
 
-window.addEventListener(
-  "beforeunload",
-  function () {
+        if (hasGPS) {
 
-    if (statusInterval) {
+          setTimeout(
+            function () {
 
-      clearInterval(
-        statusInterval
-      );
+              updateLiveMap(
+                latitude,
+                longitude
+              );
+
+            },
+            100
+          );
+
+        }
+
+      }
+      catch (error) {
+
+        console.error(
+          "TRACKING ERROR:",
+          error
+        );
+
+
+        statusElement.innerHTML = `
+
+          <div class="error">
+
+            ❌ <strong>Unable to load order status</strong>
+
+            <p style="margin-top:8px;">
+              ${error.message}
+            </p>
+
+          </div>
+
+        `;
+
+      }
 
     }
 
-  }
-);
 
-</script>
+    /* =========================================
+       START PAGE
+    ========================================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        loadOrderStatus();
+
+
+        /*
+          Every 5 seconds:
+          - Order status refresh
+          - GPS location refresh
+          - Scooter marker movement
+        */
+
+        refreshTimer =
+          setInterval(
+            loadOrderStatus,
+            5000
+          );
+
+      }
+    );
+
+
+    /* =========================================
+       STOP REFRESH
+    ========================================= */
+
+    window.addEventListener(
+      "beforeunload",
+      function () {
+
+        if (refreshTimer) {
+
+          clearInterval(
+            refreshTimer
+          );
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
