@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
 
-function isAdminAuthenticated(req) {
+function isAdminAuthenticated(req) { 
   const cookieHeader = req.headers.cookie || "";
 
   const cookies = {};
