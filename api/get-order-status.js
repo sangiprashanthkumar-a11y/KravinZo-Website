@@ -1,16 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-);
-
+```javascript
 export default async function handler(req, res) {
 
   if (req.method !== "GET") {
@@ -31,29 +19,48 @@ export default async function handler(req, res) {
       });
     }
 
-    const { data, error } = await supabase
-      .from("orders")
-      .select(
-        "order_id, customer_name, total, status, created_at, delivery_latitude, delivery_longitude, delivery_location_updated_at"
-      )
-      .eq("order_id", orderId)
-      .maybeSingle();
+    const supabaseUrl =
+      process.env.SUPABASE_URL;
 
-    if (error) {
+    const supabaseKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({
+        success: false,
+        error: "Supabase environment variables are missing"
+      });
+    }
+
+    const url =
+      `${supabaseUrl}/rest/v1/orders` +
+      `?order_id=eq.${encodeURIComponent(orderId)}` +
+      `&select=order_id,customer_name,total,status,created_at,delivery_latitude,delivery_longitude,delivery_location_updated_at`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "apikey": supabaseKey,
+        "Authorization": `Bearer ${supabaseKey}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
       console.error(
-        "GET ORDER STATUS ERROR:",
-        error
+        "SUPABASE ORDER STATUS ERROR:",
+        data
       );
 
       return res.status(500).json({
         success: false,
-        error: error.message
+        error: data
       });
     }
 
-    if (!data) {
-
+    if (!data || data.length === 0) {
       return res.status(404).json({
         success: false,
         error: "Order not found"
@@ -62,7 +69,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      order: data
+      order: data[0]
     });
 
   } catch (error) {
@@ -80,3 +87,4 @@ export default async function handler(req, res) {
     });
   }
 }
+```
