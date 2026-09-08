@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KravinZo - Track Order</title>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>KravinZo - Order Status</title>
+
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,273 +22,331 @@
       font-family: Arial, sans-serif;
     }
 
+
     body {
       background: #f5f5f5;
       min-height: 100vh;
       padding: 20px;
     }
 
+
     .container {
       max-width: 600px;
-      margin: 40px auto;
+      margin: 25px auto;
     }
+
+
+    .logo {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
 
     .card {
       background: white;
-      padding: 25px;
       border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+      padding: 25px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
     }
+
 
     h1 {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
-    .subtitle {
+
+    .order-id {
       text-align: center;
-      color: #666;
+      color: #555;
+      margin-bottom: 25px;
+      word-break: break-all;
+    }
+
+
+    .status-box {
+      text-align: center;
+      padding: 25px;
+      border-radius: 15px;
+      background: #f7f7f7;
       margin-bottom: 25px;
     }
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
+
+    .status-icon {
+      font-size: 52px;
       margin-bottom: 10px;
     }
 
-    .track-btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #111;
-      color: white;
-      font-size: 16px;
+
+    .status-title {
+      font-size: 24px;
       font-weight: bold;
-      cursor: pointer;
+      margin-bottom: 8px;
     }
 
-    .track-btn:hover {
-      opacity: 0.9;
+
+    .status-message {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
-    .error {
-      color: #d00;
-      text-align: center;
-      margin-top: 15px;
+
+    .steps {
+      margin-top: 10px;
     }
 
-    .order-info {
-      margin-bottom: 25px;
-    }
-
-    .order-info p {
-      margin: 8px 0;
-    }
-
-    .tracking {
-      position: relative;
-    }
 
     .step {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 15px 0;
-      color: #999;
-      font-weight: bold;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #eee;
     }
 
-    .circle {
-      width: 42px;
-      height: 42px;
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: #ddd;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       font-size: 18px;
+      flex-shrink: 0;
     }
 
-    .step.active {
-      color: #111;
-    }
 
-    .step.active .circle {
+    .step.active .step-icon {
       background: #111;
       color: white;
     }
 
-    .step.current {
-      color: #111;
-    }
 
-    .step.current .circle {
-      background: #22c55e;
+    .step.completed .step-icon {
+      background: #2e7d32;
       color: white;
     }
 
-    /* DELIVERED MESSAGE */
 
-    .delivered-message {
-      display: none;
+    .step-text {
+      font-weight: bold;
+    }
+
+
+    .delivered-box {
+      text-align: center;
+      background: #f1fff4;
+      border-radius: 15px;
+      padding: 30px 20px;
       margin-top: 25px;
-      padding: 22px;
-      border-radius: 14px;
-      background: #ecfdf5;
-      border: 1px solid #86efac;
-      text-align: center;
     }
 
-    .delivered-message .big-icon {
-      font-size: 45px;
+
+    .delivered-box .big-icon {
+      font-size: 55px;
+    }
+
+
+    .delivered-box h2 {
+      color: #2e7d32;
+      margin: 10px 0;
+    }
+
+
+    .delivered-box p {
+      color: #444;
+      line-height: 1.6;
       margin-bottom: 8px;
     }
 
-    .delivered-message h3 {
-      color: #15803d;
-      margin-bottom: 8px;
-      font-size: 22px;
+
+    .order-again-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 13px 28px;
+      border: none;
+      border-radius: 9px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
     }
 
-    .delivered-message p {
-      color: #166534;
-      font-size: 14px;
-      line-height: 1.5;
+
+    .order-again-btn:hover {
+      opacity: 0.85;
     }
 
-    .refresh-text {
+
+    .loading {
       text-align: center;
-      color: #777;
-      font-size: 13px;
-      margin-top: 20px;
+      padding: 20px;
+      color: #555;
     }
 
-    #trackingCard {
-      display: none;
+
+    .error {
+      text-align: center;
+      padding: 20px;
+      color: red;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="container">
 
-    <!-- SEARCH CARD -->
 
-    <div class="card">
+    <!-- LOGO -->
 
-      <h1>🍔 KravinZo</h1>
-
-      <p class="subtitle">
-        Track Your Order
-      </p>
-
-      <input
-        type="text"
-        id="orderIdInput"
-        placeholder="Enter Order ID"
-        autocomplete="off"
-      >
-
-      <button
-        class="track-btn"
-        id="trackButton"
-      >
-        Track Order
-      </button>
-
-      <p
-        class="error"
-        id="errorMessage"
-      ></p>
-
+    <div class="logo">
+      🍔 KravinZo
     </div>
 
 
-    <!-- TRACKING CARD -->
+    <div class="card">
 
-    <div
-      class="card"
-      id="trackingCard"
-    >
 
-      <div class="order-info">
+      <!-- TITLE -->
 
-        <h2 style="margin-bottom:15px;">
-          Order Status
-        </h2>
+      <h1>
+        Your Order
+      </h1>
 
-        <p>
-          <strong>Order ID:</strong>
-          <span id="displayOrderId">-</span>
-        </p>
 
-        <p>
-          <strong>Customer:</strong>
-          <span id="displayCustomer">-</span>
-        </p>
+      <div
+        id="orderId"
+        class="order-id"
+      >
+        Loading order...
+      </div>
 
-        <p>
-          <strong>Total:</strong>
-          ₹<span id="displayTotal">0</span>
-        </p>
+
+      <!-- CURRENT STATUS -->
+
+      <div
+        id="statusBox"
+        class="status-box"
+      >
+
+        <div
+          id="statusIcon"
+          class="status-icon"
+        >
+          ⏳
+        </div>
+
+
+        <div
+          id="statusTitle"
+          class="status-title"
+        >
+          Loading...
+        </div>
+
+
+        <div
+          id="statusMessage"
+          class="status-message"
+        >
+          Please wait...
+        </div>
 
       </div>
 
 
-      <!-- TRACKING STEPS -->
+      <!-- STATUS STEPS -->
 
-      <div class="tracking">
+      <div class="steps">
+
+
+        <!-- PREPARING -->
 
         <div
+          id="stepPreparing"
           class="step"
-          id="step1"
         >
-          <div class="circle">📦</div>
-          <div>Order Confirmed</div>
+
+          <div class="step-icon">
+            🍳
+          </div>
+
+          <div class="step-text">
+            Preparing Food
+          </div>
+
         </div>
 
 
+        <!-- READY -->
+
         <div
+          id="stepReady"
           class="step"
-          id="step2"
         >
-          <div class="circle">🍳</div>
-          <div>Preparing Food</div>
+
+          <div class="step-icon">
+            ✅
+          </div>
+
+          <div class="step-text">
+            Food Ready
+          </div>
+
         </div>
 
 
+        <!-- DELIVERY -->
+
         <div
+          id="stepDelivery"
           class="step"
-          id="step3"
         >
-          <div class="circle">✅</div>
-          <div>Food Ready</div>
+
+          <div class="step-icon">
+            🛵
+          </div>
+
+          <div class="step-text">
+            Handed to Delivery
+          </div>
+
         </div>
 
 
-        <div
-          class="step"
-          id="step4"
-        >
-          <div class="circle">🛵</div>
-          <div>Handed to Delivery</div>
-        </div>
-
+        <!-- DELIVERED -->
 
         <div
+          id="stepDelivered"
           class="step"
-          id="step5"
         >
-          <div class="circle">🎉</div>
-          <div>Delivered</div>
+
+          <div class="step-icon">
+            🎉
+          </div>
+
+          <div class="step-text">
+            Delivered
+          </div>
+
         </div>
 
       </div>
@@ -289,59 +355,502 @@
       <!-- DELIVERED MESSAGE -->
 
       <div
-        class="delivered-message"
-        id="deliveredMessage"
+        id="deliveredBox"
+        class="delivered-box"
+        style="display:none;"
       >
 
         <div class="big-icon">
           🎉
         </div>
 
-        <h3>
+
+        <h2>
           Order Delivered!
-        </h3>
+        </h2>
+
 
         <p>
-          Thank you for ordering with KravinZo ❤️
+          Thank you for ordering from
+          <strong>KravinZo</strong> ❤️
         </p>
 
-        <p style="margin-top:6px;">
-          We hope you enjoyed your meal! 🍔✨
+
+        <p>
+          Your order has been delivered successfully.
         </p>
+
+
+        <a
+          href="/"
+          class="order-again-btn"
+        >
+          🍔 Order Again
+        </a>
 
       </div>
 
-
-      <p
-        class="refresh-text"
-        id="refreshText"
-      >
-        Status updates automatically every 15 seconds.
-      </p>
 
     </div>
 
   </div>
 
 
+
   <script>
 
-    let currentOrderId = null;
+
+    // ==========================================
+    // GET ORDER ID
+    // ==========================================
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    let orderId =
+      params.get("orderId") ||
+      params.get("order_id") ||
+      params.get("id") ||
+      localStorage.getItem(
+        "kravinzoOrderId"
+      );
 
 
     // ==========================================
-    // STATUS ORDER
+    // SAVE ORDER ID
     // ==========================================
 
-    const statusSteps = {
-      "New": 1,
-      "Order Confirmed": 1,
-      "pending": 1,
-      "Preparing Food": 2,
-      "Food Ready": 3,
-      "Handed to Delivery": 4,
-      "Delivered": 5
-    };
+    if (orderId) {
+
+      orderId =
+        String(orderId).trim();
+
+
+      localStorage.setItem(
+        "kravinzoOrderId",
+        orderId
+      );
+
+    }
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const orderIdElement =
+      document.getElementById(
+        "orderId"
+      );
+
+
+    const statusBox =
+      document.getElementById(
+        "statusBox"
+      );
+
+
+    const statusIcon =
+      document.getElementById(
+        "statusIcon"
+      );
+
+
+    const statusTitle =
+      document.getElementById(
+        "statusTitle"
+      );
+
+
+    const statusMessage =
+      document.getElementById(
+        "statusMessage"
+      );
+
+
+    const deliveredBox =
+      document.getElementById(
+        "deliveredBox"
+      );
+
+
+    const stepPreparing =
+      document.getElementById(
+        "stepPreparing"
+      );
+
+
+    const stepReady =
+      document.getElementById(
+        "stepReady"
+      );
+
+
+    const stepDelivery =
+      document.getElementById(
+        "stepDelivery"
+      );
+
+
+    const stepDelivered =
+      document.getElementById(
+        "stepDelivered"
+      );
+
+
+    // ==========================================
+    // NO ORDER ID
+    // ==========================================
+
+    if (!orderId) {
+
+      orderIdElement.textContent =
+        "Order ID missing";
+
+
+      statusIcon.textContent =
+        "❌";
+
+
+      statusTitle.textContent =
+        "Order Not Found";
+
+
+      statusMessage.textContent =
+        "Please open the order tracking link again.";
+
+
+    }
+
+
+    // ==========================================
+    // RESET STEPS
+    // ==========================================
+
+    function resetSteps() {
+
+      const steps = [
+        stepPreparing,
+        stepReady,
+        stepDelivery,
+        stepDelivered
+      ];
+
+
+      steps.forEach(step => {
+
+        step.classList.remove(
+          "active",
+          "completed"
+        );
+
+      });
+
+    }
+
+
+    // ==========================================
+    // UPDATE STEPS
+    // ==========================================
+
+    function updateSteps(status) {
+
+      resetSteps();
+
+
+      // NEW
+
+      if (
+        status === "New" ||
+        status === "pending" ||
+        status === "Order Confirmed"
+      ) {
+
+        stepPreparing.classList.add(
+          "active"
+        );
+
+      }
+
+
+      // PREPARING
+
+      else if (
+        status === "Preparing Food"
+      ) {
+
+        stepPreparing.classList.add(
+          "active"
+        );
+
+      }
+
+
+      // FOOD READY
+
+      else if (
+        status === "Food Ready"
+      ) {
+
+        stepPreparing.classList.add(
+          "completed"
+        );
+
+        stepReady.classList.add(
+          "active"
+        );
+
+      }
+
+
+      // HANDED TO DELIVERY
+
+      else if (
+        status === "Handed to Delivery"
+      ) {
+
+        stepPreparing.classList.add(
+          "completed"
+        );
+
+        stepReady.classList.add(
+          "completed"
+        );
+
+        stepDelivery.classList.add(
+          "active"
+        );
+
+      }
+
+
+      // DELIVERED
+
+      else if (
+        status === "Delivered"
+      ) {
+
+        stepPreparing.classList.add(
+          "completed"
+        );
+
+        stepReady.classList.add(
+          "completed"
+        );
+
+        stepDelivery.classList.add(
+          "completed"
+        );
+
+        stepDelivered.classList.add(
+          "completed"
+        );
+
+      }
+
+    }
+
+
+    // ==========================================
+    // DISPLAY STATUS
+    // ==========================================
+
+    function displayStatus(status) {
+
+      status =
+        String(status || "New").trim();
+
+
+      // ORDER ID
+
+      orderIdElement.textContent =
+        "Order #" + orderId;
+
+
+      // STEPS
+
+      updateSteps(status);
+
+
+      // ========================================
+      // NEW
+      // ========================================
+
+      if (
+        status === "New" ||
+        status === "pending" ||
+        status === "Order Confirmed"
+      ) {
+
+        statusIcon.textContent =
+          "🕐";
+
+
+        statusTitle.textContent =
+          "Order Confirmed";
+
+
+        statusMessage.textContent =
+          "Your order has been confirmed. Our kitchen will start preparing your food.";
+
+
+        statusBox.style.background =
+          "#fff8e1";
+
+
+        deliveredBox.style.display =
+          "none";
+
+      }
+
+
+      // ========================================
+      // PREPARING
+      // ========================================
+
+      else if (
+        status === "Preparing Food"
+      ) {
+
+        statusIcon.textContent =
+          "🍳";
+
+
+        statusTitle.textContent =
+          "Preparing Your Food";
+
+
+        statusMessage.textContent =
+          "Our kitchen is preparing your order. Please wait.";
+
+
+        statusBox.style.background =
+          "#fff3e0";
+
+
+        deliveredBox.style.display =
+          "none";
+
+      }
+
+
+      // ========================================
+      // FOOD READY
+      // ========================================
+
+      else if (
+        status === "Food Ready"
+      ) {
+
+        statusIcon.textContent =
+          "✅";
+
+
+        statusTitle.textContent =
+          "Food Ready";
+
+
+        statusMessage.textContent =
+          "Your food is ready and waiting for delivery.";
+
+
+        statusBox.style.background =
+          "#e8f5e9";
+
+
+        deliveredBox.style.display =
+          "none";
+
+      }
+
+
+      // ========================================
+      // HANDED TO DELIVERY
+      // ========================================
+
+      else if (
+        status === "Handed to Delivery"
+      ) {
+
+        statusIcon.textContent =
+          "🛵";
+
+
+        statusTitle.textContent =
+          "Out for Delivery";
+
+
+        statusMessage.textContent =
+          "Your order has been handed to the delivery partner and is on the way.";
+
+
+        statusBox.style.background =
+          "#e3f2fd";
+
+
+        deliveredBox.style.display =
+          "none";
+
+      }
+
+
+      // ========================================
+      // DELIVERED
+      // ========================================
+
+      else if (
+        status === "Delivered"
+      ) {
+
+        statusIcon.textContent =
+          "🎉";
+
+
+        statusTitle.textContent =
+          "Order Delivered!";
+
+
+        statusMessage.textContent =
+          "Your order has been delivered successfully.";
+
+
+        statusBox.style.background =
+          "#e8f5e9";
+
+
+        deliveredBox.style.display =
+          "block";
+
+      }
+
+
+      // ========================================
+      // UNKNOWN STATUS
+      // ========================================
+
+      else {
+
+        statusIcon.textContent =
+          "📦";
+
+
+        statusTitle.textContent =
+          status;
+
+
+        statusMessage.textContent =
+          "Your order status has been updated.";
+
+
+        deliveredBox.style.display =
+          "none";
+
+      }
+
+    }
 
 
     // ==========================================
@@ -350,167 +859,160 @@
 
     async function loadOrderStatus() {
 
-      if (!currentOrderId) {
+      if (!orderId) {
         return;
       }
 
+
       try {
 
-        const response = await fetch(
-          "/api/get-order-status?orderId=" +
-          encodeURIComponent(currentOrderId),
-          {
-            method: "GET",
-            cache: "no-store"
-          }
+        const response =
+          await fetch(
+            "/api/get-order-status?orderId=" +
+            encodeURIComponent(orderId),
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+
+        const responseText =
+          await response.text();
+
+
+        console.log(
+          "ORDER STATUS API:",
+          response.status
         );
 
 
-        const data = await response.json();
+        console.log(
+          "ORDER STATUS RESPONSE:",
+          responseText
+        );
 
+
+        let data;
+
+
+        try {
+
+          data =
+            JSON.parse(responseText);
+
+        } catch (error) {
+
+          console.error(
+            "Invalid JSON:",
+            responseText
+          );
+
+
+          statusIcon.textContent =
+            "❌";
+
+
+          statusTitle.textContent =
+            "Server Error";
+
+
+          statusMessage.textContent =
+            "Unable to load order status.";
+
+          return;
+
+        }
+
+
+        // ======================================
+        // API ERROR
+        // ======================================
 
         if (!response.ok) {
 
-          document.getElementById(
-            "errorMessage"
-          ).textContent =
+          statusIcon.textContent =
+            "❌";
+
+
+          statusTitle.textContent =
+            "Order Not Found";
+
+
+          statusMessage.textContent =
             data.error ||
-            "Unable to find order.";
+            "Unable to find this order.";
 
           return;
-        }
-
-
-        if (!data.success || !data.order) {
-
-          document.getElementById(
-            "errorMessage"
-          ).textContent =
-            "Order not found.";
-
-          return;
-        }
-
-
-        const order = data.order;
-
-
-        // CLEAR ERROR
-
-        document.getElementById(
-          "errorMessage"
-        ).textContent = "";
-
-
-        // ORDER INFORMATION
-
-        document.getElementById(
-          "displayOrderId"
-        ).textContent =
-          order.order_id || "-";
-
-
-        document.getElementById(
-          "displayCustomer"
-        ).textContent =
-          order.customer_name || "-";
-
-
-        document.getElementById(
-          "displayTotal"
-        ).textContent =
-          order.total || 0;
-
-
-        // SHOW TRACKING
-
-        document.getElementById(
-          "trackingCard"
-        ).style.display = "block";
-
-
-        // CURRENT STEP
-
-        const currentStep =
-          statusSteps[order.status] || 1;
-
-
-        // RESET ALL STEPS
-
-        for (let i = 1; i <= 5; i++) {
-
-          const step =
-            document.getElementById(
-              "step" + i
-            );
-
-          step.classList.remove(
-            "active",
-            "current"
-          );
-
-
-          if (i < currentStep) {
-
-            step.classList.add("active");
-
-          }
-
-
-          if (i === currentStep) {
-
-            step.classList.add("current");
-
-          }
 
         }
 
 
         // ======================================
-        // DELIVERED MESSAGE
+        // SUCCESS CHECK
         // ======================================
 
-        const deliveredMessage =
-          document.getElementById(
-            "deliveredMessage"
-          );
+        if (!data.success) {
 
-        const refreshText =
-          document.getElementById(
-            "refreshText"
-          );
+          statusIcon.textContent =
+            "❌";
 
 
-        if (order.status === "Delivered") {
+          statusTitle.textContent =
+            "Unable to Load Order";
 
-          deliveredMessage.style.display =
-            "block";
 
-          refreshText.textContent =
-            "Order successfully delivered 🎉";
+          statusMessage.textContent =
+            data.error ||
+            "Please try again.";
 
-        } else {
-
-          deliveredMessage.style.display =
-            "none";
-
-          refreshText.textContent =
-            "Status updates automatically every 15 seconds.";
+          return;
 
         }
 
 
-      } catch (error) {
+        // ======================================
+        // GET ORDER
+        // ======================================
+
+        const order =
+          data.order ||
+          data.data ||
+          data;
+
+
+        const status =
+          order.status ||
+          "New";
+
+
+        // ======================================
+        // DISPLAY
+        // ======================================
+
+        displayStatus(status);
+
+      }
+
+
+      catch (error) {
 
         console.error(
-          "Tracking error:",
+          "Order status error:",
           error
         );
 
-        document.getElementById(
-          "errorMessage"
-        ).textContent =
-          "Connection error. Please try again.";
+
+        statusIcon.textContent =
+          "❌";
+
+
+        statusTitle.textContent =
+          "Connection Error";
+
+
+        statusMessage.textContent =
+          "Please check your internet connection.";
 
       }
 
@@ -518,65 +1020,10 @@
 
 
     // ==========================================
-    // TRACK BUTTON
+    // FIRST LOAD
     // ==========================================
 
-    document
-      .getElementById("trackButton")
-      .addEventListener(
-        "click",
-        () => {
-
-          const orderId =
-            document
-              .getElementById(
-                "orderIdInput"
-              )
-              .value
-              .trim();
-
-
-          if (!orderId) {
-
-            document.getElementById(
-              "errorMessage"
-            ).textContent =
-              "Please enter your Order ID.";
-
-            return;
-          }
-
-
-          currentOrderId = orderId;
-
-          loadOrderStatus();
-
-        }
-      );
-
-
-    // ==========================================
-    // ENTER KEY
-    // ==========================================
-
-    document
-      .getElementById("orderIdInput")
-      .addEventListener(
-        "keydown",
-        (event) => {
-
-          if (event.key === "Enter") {
-
-            document
-              .getElementById(
-                "trackButton"
-              )
-              .click();
-
-          }
-
-        }
-      );
+    loadOrderStatus();
 
 
     // ==========================================
@@ -584,19 +1031,13 @@
     // ==========================================
 
     setInterval(
-      () => {
-
-        if (currentOrderId) {
-
-          loadOrderStatus();
-
-        }
-
-      },
-      15000
+      loadOrderStatus,
+      10000
     );
 
+
   </script>
+
 
 </body>
 </html>
