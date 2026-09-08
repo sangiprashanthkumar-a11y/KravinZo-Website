@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,6 +142,17 @@
       font-weight: bold;
       margin-top: 10px;
       display: block;
+    }
+
+    .order-address {
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+
+    .update-message {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -858,7 +870,15 @@
           // ==========================================
 
           const currentStatus =
-            order.status || "New";
+            String(order.status || "New").trim();
+
+
+          // ==========================================
+          // NORMALIZED STATUS
+          // ==========================================
+
+          const normalizedStatus =
+            currentStatus.toLowerCase();
 
 
           // ==========================================
@@ -868,12 +888,16 @@
           let statusButtonHTML = "";
 
 
-          // NEW ORDER
+          // ==========================================
+          // NEW / PENDING ORDER
+          // ==========================================
 
           if (
-            currentStatus === "New" ||
-            currentStatus === "Order Confirmed" ||
-            currentStatus === "pending"
+            normalizedStatus === "new" ||
+            normalizedStatus === "order confirmed" ||
+            normalizedStatus === "pending" ||
+            normalizedStatus === "confirmed" ||
+            normalizedStatus === ""
           ) {
 
             statusButtonHTML = `
@@ -885,10 +909,12 @@
           }
 
 
+          // ==========================================
           // PREPARING FOOD
+          // ==========================================
 
           else if (
-            currentStatus === "Preparing Food"
+            normalizedStatus === "preparing food"
           ) {
 
             statusButtonHTML = `
@@ -900,10 +926,12 @@
           }
 
 
+          // ==========================================
           // FOOD READY
+          // ==========================================
 
           else if (
-            currentStatus === "Food Ready"
+            normalizedStatus === "food ready"
           ) {
 
             statusButtonHTML = `
@@ -915,10 +943,12 @@
           }
 
 
+          // ==========================================
           // HANDED TO DELIVERY
+          // ==========================================
 
           else if (
-            currentStatus === "Handed to Delivery"
+            normalizedStatus === "handed to delivery"
           ) {
 
             statusButtonHTML = `
@@ -930,16 +960,33 @@
           }
 
 
+          // ==========================================
           // DELIVERED
+          // ==========================================
 
           else if (
-            currentStatus === "Delivered"
+            normalizedStatus === "delivered"
           ) {
 
             statusButtonHTML = `
               <strong class="completed">
                 ✅ Order Completed
               </strong>
+            `;
+
+          }
+
+
+          // ==========================================
+          // UNKNOWN STATUS
+          // ==========================================
+
+          else {
+
+            statusButtonHTML = `
+              <button class="preparing-btn">
+                🍳 Preparing Food
+              </button>
             `;
 
           }
@@ -990,7 +1037,7 @@
             </p>
 
 
-            <p style="margin-bottom:8px;">
+            <p class="order-address" style="margin-bottom:8px;">
               <strong>Address:</strong>
               ${order.customer_address || "N/A"}
             </p>
@@ -1455,3 +1502,4 @@
 
 </body>
 </html>
+```
