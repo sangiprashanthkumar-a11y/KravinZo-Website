@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "order_id, customer_name, total, status, created_at, delivery_latitude, delivery_longitude, delivery_accuracy, delivery_location_updated_at"
+       "order_id, customer_name, total, status, created_at, delivery_latitude, delivery_longitude, delivery_location_updated_at"
       )
       .eq("order_id", orderId)
       .maybeSingle();
