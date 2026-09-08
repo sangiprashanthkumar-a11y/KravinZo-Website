@@ -1,13 +1,17 @@
+```html
 <script>
+let statusInterval = null;
+
 async function loadOrderStatus() {
 
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get("orderId");
 
   const orderIdElement = document.getElementById("orderId");
+  const statusElement = document.getElementById("orderStatus");
 
   if (!orderId) {
-    document.getElementById("orderStatus").innerHTML = `
+    statusElement.innerHTML = `
       <div class="error">
         ❌ <strong>Order ID missing</strong>
         <p>Please check your order link.</p>
@@ -23,15 +27,19 @@ async function loadOrderStatus() {
   try {
 
     const response = await fetch(
-      "/api/order-status?orderId=" +
-      encodeURIComponent(orderId)
+      "/api/get-order-status?orderId=" +
+      encodeURIComponent(orderId) +
+      "&t=" + Date.now(),
+      {
+        cache: "no-store"
+      }
     );
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
 
-      document.getElementById("orderStatus").innerHTML = `
+      statusElement.innerHTML = `
         <div class="error">
           ❌ <strong>Order Not Found</strong>
           <p>Please check your order link.</p>
@@ -44,31 +52,110 @@ async function loadOrderStatus() {
 
     const order = data.order;
 
-    document.getElementById("orderStatus").innerHTML = `
+    const currentStatus = order.status || "New";
+
+    const steps = [
+      {
+        status: "New",
+        icon: "📦",
+        text: "Order Received"
+      },
+      {
+        status: "Preparing Food",
+        icon: "🍳",
+        text: "Preparing Food"
+      },
+      {
+        status: "Food Ready",
+        icon: "✅",
+        text: "Food Ready"
+      },
+      {
+        status: "Handed to Delivery",
+        icon: "🛵",
+        text: "Handed to Delivery"
+      },
+      {
+        status: "Delivered",
+        icon: "🎉",
+        text: "Delivered"
+      }
+    ];
+
+    const currentIndex = steps.findIndex(
+      step => step.status === currentStatus
+    );
+
+    const trackingHTML = steps.map((step, index) => {
+
+      let className = "tracking-step";
+
+      if (index < currentIndex) {
+        className += " completed";
+      } else if (index === currentIndex) {
+        className += " active";
+      }
+
+      return `
+        <div class="${className}">
+          <span>${step.icon}</span>
+          <strong>${step.text}</strong>
+        </div>
+      `;
+
+    }).join("");
+
+    let message = "";
+
+    if (currentStatus === "New") {
+      message = "📝 Your order has been received.";
+    } else if (currentStatus === "Preparing Food") {
+      message = "👨‍🍳 Your food is being prepared.";
+    } else if (currentStatus === "Food Ready") {
+      message = "🍱 Your food is ready!";
+    } else if (currentStatus === "Handed to Delivery") {
+      message = "🛵 Your order is on the way.";
+    } else if (currentStatus === "Delivered") {
+      message = "🎉 Your order has been delivered!";
+    }
+
+    statusElement.innerHTML = `
       <div class="success">
+
         <h2>Order #${order.order_id}</h2>
 
         <p>Total: ₹${order.total}</p>
 
-        <p>Status: <strong>${order.status}</strong></p>
+        <p>
+          Status:
+          <strong>${currentStatus}</strong>
+        </p>
+
+        <p>${message}</p>
 
         <hr>
 
-        <div class="tracking-step">
-          🍳 Preparing Food
-        </div>
+        ${trackingHTML}
 
-        <div class="tracking-step">
-          ✅ Food Ready
-        </div>
+        ${
+          currentStatus === "Delivered"
+            ? `
+              <button
+                onclick="window.location.href='/'"
+                style="
+                  margin-top:20px;
+                  padding:12px 20px;
+                  border:none;
+                  border-radius:8px;
+                  cursor:pointer;
+                "
+              >
+                🍔 Order Again
+              </button>
+            `
+            : ""
+        }
 
-        <div class="tracking-step">
-          🛵 Handed to Delivery
-        </div>
-
-        <div class="tracking-step">
-          🎉 Delivered
-        </div>
       </div>
     `;
 
@@ -76,14 +163,42 @@ async function loadOrderStatus() {
 
     console.error("TRACKING ERROR:", error);
 
-    document.getElementById("orderStatus").innerHTML = `
-      ❌ Unable to load order status.
+    statusElement.innerHTML = `
+      <div class="error">
+        ❌ Unable to load order status.
+        <p>Please try again.</p>
+      </div>
     `;
   }
 }
 
+
 document.addEventListener(
   "DOMContentLoaded",
-  loadOrderStatus
+  function () {
+
+    loadOrderStatus();
+
+    // Refresh status every 5 seconds
+    statusInterval = setInterval(
+      loadOrderStatus,
+      5000
+    );
+
+  }
+);
+
+
+// Stop refresh when page is closed
+window.addEventListener(
+  "beforeunload",
+  function () {
+
+    if (statusInterval) {
+      clearInterval(statusInterval);
+    }
+
+  }
 );
 </script>
+```
