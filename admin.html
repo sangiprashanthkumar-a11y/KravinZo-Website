@@ -1583,30 +1583,21 @@
 
       try {
 
-        const response =
-          await fetch(
-            "/api/update-status",
-            {
-              method: "POST",
-
-              credentials:
-                "include",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  orderId:
-                    orderId,
-
-                  status:
-                    status
-                })
-            }
-          );
+       const response =
+  await fetch(
+    "/api/update-order-status",
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        orderId: orderId,
+        status: status
+      })
+    }
+  );
 
 
         const text =
