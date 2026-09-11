@@ -1,3 +1,5 @@
+import { createClient } from "@supabase/supabase-js";
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -7,15 +9,56 @@ export default async function handler(req, res) {
   }
 
   try {
-    const orderId = req.query?.orderId;
+    // =========================
+    // ADMIN LOGIN CHECK
+    // =========================
+    const cookieHeader = req.headers.cookie || "";
 
-    if (!orderId) {
-      return res.status(400).json({
+    const cookies = Object.fromEntries(
+      cookieHeader.split(";").map(cookie => {
+        const [key, ...value] = cookie.trim().split("=");
+        return [key, value.join("=")];
+      })
+    );
+
+    const adminCookie = cookies.kravinzo_admin;
+
+    if (!adminCookie) {
+      return res.status(401).json({
         success: false,
-        error: "Order ID is required"
+        error: "Unauthorized. Please login."
       });
     }
 
+    // =========================
+    // VERIFY ADMIN SESSION
+    // =========================
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminSessionSecret = process.env.ADMIN_SESSION_SECRET;
+
+    if (!adminUsername || !adminSessionSecret) {
+      console.error("Missing admin environment variables");
+
+      return res.status(500).json({
+        success: false,
+        error: "Admin configuration is missing on server."
+      });
+    }
+
+    const expectedToken = Buffer.from(
+      `${adminUsername}:${adminSessionSecret}`
+    ).toString("base64");
+
+    if (adminCookie !== expectedToken) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid admin session. Please login again."
+      });
+    }
+
+    // =========================
+    // SUPABASE
+    // =========================
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -28,86 +71,41 @@ export default async function handler(req, res) {
       });
     }
 
-    const cleanOrderId = String(orderId).trim();
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseKey
+    );
 
-    const url =
-      `${supabaseUrl}/rest/v1/orders` +
-      `?select=order_id,customer_name,total,status,created_at,delivery_latitude,delivery_longitude,delivery_location_updated_at` +
-      `&order_id=eq.${encodeURIComponent(cleanOrderId)}` +
-      `&limit=1`;
+    // =========================
+    // GET ALL ORDERS
+    // =========================
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
 
-    console.log("Getting order:", cleanOrderId);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-        Accept: "application/json"
-      }
-    });
-
-    const responseText = await response.text();
-
-    console.log("Supabase status:", response.status);
-    console.log("Supabase response:", responseText);
-
-    let result;
-
-    try {
-      result = JSON.parse(responseText);
-    } catch (parseError) {
-      console.error("Supabase returned non-JSON response");
+    if (error) {
+      console.error("Supabase orders error:", error);
 
       return res.status(500).json({
         success: false,
-        error: "Invalid response from Supabase"
+        error: error.message || "Failed to get orders"
       });
     }
-
-    if (!response.ok) {
-      console.error("Supabase REST error:", result);
-
-      return res.status(500).json({
-        success: false,
-        error:
-          result?.message ||
-          result?.error_description ||
-          result?.error ||
-          "Failed to get order from Supabase"
-      });
-    }
-
-    if (!Array.isArray(result) || result.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: "Order not found"
-      });
-    }
-
-    const order = result[0];
 
     return res.status(200).json({
       success: true,
-      order: {
-        order_id: order.order_id || cleanOrderId,
-        customer_name: order.customer_name || "",
-        total: order.total ?? 0,
-        status: order.status || "New",
-        created_at: order.created_at || null,
-        delivery_latitude: order.delivery_latitude ?? null,
-        delivery_longitude: order.delivery_longitude ?? null,
-        delivery_location_updated_at:
-          order.delivery_location_updated_at || null
-      }
+      orders: data || []
     });
 
   } catch (error) {
-    console.error("GET ORDER STATUS ERROR:", error);
+    console.error("GET ORDERS ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error: error?.message || "Failed to get order status"
+      error: error?.message || "Failed to get orders"
     });
   }
 }
