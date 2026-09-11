@@ -9,61 +9,71 @@ export default async function handler(req, res) {
   }
 
   try {
-    // =========================
-    // ADMIN LOGIN CHECK
-    // =========================
+    // ==============================
+    // READ ADMIN COOKIE
+    // ==============================
     const cookieHeader = req.headers.cookie || "";
 
-    const cookies = Object.fromEntries(
-      cookieHeader.split(";").map(cookie => {
-        const [key, ...value] = cookie.trim().split("=");
-        return [key, value.join("=")];
-      })
+    const adminCookieMatch = cookieHeader.match(
+      /(?:^|;\s*)kravinzo_admin=([^;]+)/
     );
 
-    const adminCookie = cookies.kravinzo_admin;
+    const adminCookie = adminCookieMatch
+      ? decodeURIComponent(adminCookieMatch[1])
+      : null;
 
     if (!adminCookie) {
+      console.log("ADMIN COOKIE NOT FOUND");
+
       return res.status(401).json({
         success: false,
-        error: "Unauthorized. Please login."
+        error: "Unauthorized"
       });
     }
 
-    // =========================
-    // VERIFY ADMIN SESSION
-    // =========================
-    const adminUsername = process.env.ADMIN_USERNAME;
-    const adminSessionSecret = process.env.ADMIN_SESSION_SECRET;
+    // ==============================
+    // CREATE EXPECTED TOKEN
+    // ==============================
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+    const ADMIN_SESSION_SECRET =
+      process.env.ADMIN_SESSION_SECRET;
 
-    if (!adminUsername || !adminSessionSecret) {
-      console.error("Missing admin environment variables");
+    if (!ADMIN_USERNAME || !ADMIN_SESSION_SECRET) {
+      console.error("Admin environment variables missing");
 
       return res.status(500).json({
         success: false,
-        error: "Admin configuration is missing on server."
+        error: "Admin configuration is missing"
       });
     }
 
     const expectedToken = Buffer.from(
-      `${adminUsername}:${adminSessionSecret}`
+      `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
     ).toString("base64");
 
+    // ==============================
+    // VERIFY TOKEN
+    // ==============================
     if (adminCookie !== expectedToken) {
+      console.log("ADMIN COOKIE INVALID");
+
       return res.status(401).json({
         success: false,
-        error: "Invalid admin session. Please login again."
+        error: "Unauthorized"
       });
     }
 
-    // =========================
+    console.log("ADMIN AUTHENTICATION SUCCESS");
+
+    // ==============================
     // SUPABASE
-    // =========================
+    // ==============================
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      console.error("Missing Supabase environment variables");
+      console.error("Supabase environment variables missing");
 
       return res.status(500).json({
         success: false,
@@ -76,9 +86,9 @@ export default async function handler(req, res) {
       supabaseKey
     );
 
-    // =========================
-    // GET ALL ORDERS
-    // =========================
+    // ==============================
+    // GET ORDERS
+    // ==============================
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -87,7 +97,7 @@ export default async function handler(req, res) {
       });
 
     if (error) {
-      console.error("Supabase orders error:", error);
+      console.error("SUPABASE ERROR:", error);
 
       return res.status(500).json({
         success: false,
@@ -95,6 +105,9 @@ export default async function handler(req, res) {
       });
     }
 
+    // ==============================
+    // SUCCESS
+    // ==============================
     return res.status(200).json({
       success: true,
       orders: data || []
