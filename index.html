@@ -1641,6 +1641,15 @@ function validateDetails() {
     return false;
 
   }
+  if (!deliveryLocation) {
+
+  alert(
+    "Please tap 📍 Share Delivery Location before placing your order."
+  );
+
+  return false;
+
+}
 
 
   return true;
@@ -2292,10 +2301,19 @@ async function payOnline() {
                         paymentResponse
                           .razorpay_payment_id,
 
-                      status:
-                        "New"
-
-                    })
+                                  status:
+              "New",
+            
+            customer_latitude:
+              deliveryLocation
+                ? deliveryLocation.latitude
+                : null,
+            
+            customer_longitude:
+              deliveryLocation
+                ? deliveryLocation.longitude
+                : null
+                      })
 
                 }
               );
@@ -2594,7 +2612,17 @@ async function placeCOD() {
                 null,
 
               status:
-                "New"
+  "New",
+
+customer_latitude:
+  deliveryLocation
+    ? deliveryLocation.latitude
+    : null,
+
+customer_longitude:
+  deliveryLocation
+    ? deliveryLocation.longitude
+    : null
 
             })
 
