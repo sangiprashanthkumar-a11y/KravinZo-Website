@@ -13,13 +13,8 @@ export default function handler(req, res) {
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
     const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
 
-    // Check environment variables
-    if (
-      !ADMIN_USERNAME ||
-      !ADMIN_PASSWORD ||
-      !ADMIN_SESSION_SECRET
-    ) {
-      console.error("Missing admin environment variables");
+    if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !ADMIN_SESSION_SECRET) {
+      console.error("Admin environment variables are missing");
 
       return res.status(500).json({
         success: false,
@@ -27,7 +22,6 @@ export default function handler(req, res) {
       });
     }
 
-    // Check username and password
     if (
       username !== ADMIN_USERNAME ||
       password !== ADMIN_PASSWORD
@@ -38,18 +32,14 @@ export default function handler(req, res) {
       });
     }
 
-    // Create admin session token
     const token = Buffer.from(
       `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
     ).toString("base64");
 
-    // Set admin cookie
     res.setHeader(
       "Set-Cookie",
       `kravinzo_admin=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
     );
-
-    console.log("Admin login successful");
 
     return res.status(200).json({
       success: true,
@@ -57,7 +47,7 @@ export default function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("ADMIN LOGIN ERROR:", error);
+    console.error("Admin login error:", error);
 
     return res.status(500).json({
       success: false,
