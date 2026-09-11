@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -9,9 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // -----------------------------
-    // 1. Check admin cookie
-    // -----------------------------
+    // 1. Read admin cookie
     const cookieHeader = req.headers.cookie || "";
 
     const match = cookieHeader.match(
@@ -29,9 +28,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
     // 2. Admin environment variables
-    // -----------------------------
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
     const ADMIN_SESSION_SECRET =
       process.env.ADMIN_SESSION_SECRET;
@@ -43,9 +40,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
     // 3. Verify admin cookie
-    // -----------------------------
     const expectedToken = Buffer.from(
       `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
     ).toString("base64");
@@ -57,9 +52,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // 4. Supabase environment
-    // -----------------------------
+    // 4. Supabase environment variables
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -78,25 +71,19 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
     // 5. Create Supabase client
-    // REST only - Realtime disabled
-    // -----------------------------
+    // Explicit WebSocket transport for Node.js 20
     const supabase = createClient(
       supabaseUrl,
       supabaseKey,
       {
         realtime: {
-          params: {
-            eventsPerSecond: 0
-          }
+          transport: ws
         }
       }
     );
 
-    // -----------------------------
     // 6. Get all orders
-    // -----------------------------
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -104,9 +91,7 @@ export default async function handler(req, res) {
         ascending: false
       });
 
-    // -----------------------------
     // 7. Supabase error
-    // -----------------------------
     if (error) {
       console.error("SUPABASE ERROR:", error);
 
@@ -119,9 +104,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
     // 8. Success
-    // -----------------------------
     return res.status(200).json({
       success: true,
       orders: data || []
