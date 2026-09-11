@@ -1,94 +1,64 @@
-import { createClient } from "@supabase/supabase-js";
-import { createHmac } from "crypto";
-import WebSocket from "ws";
-
-function isAdminAuthenticated(req) {
-  const cookieHeader = req.headers.cookie || "";
-
-  const cookies = {};
-
-  cookieHeader.split(";").forEach((cookie) => {
-    const parts = cookie.trim().split("=");
-
-    const name = parts.shift();
-
-    if (name) {
-      cookies[name] = parts.join("=");
-    }
-  });
-
-  const adminToken = cookies.kravinzo_admin;
-
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  const username = process.env.ADMIN_USERNAME;
-
-  if (!adminToken || !secret || !username) {
-    return false;
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed"
+    });
   }
 
-  const expectedToken = createHmac("sha256", secret)
-    .update(username)
-    .digest("hex");
-
-  return adminToken === expectedToken;
-}
-
-export default async function handler(req, res) {
   try {
-    // METHOD
-    if (req.method !== "POST") {
-      return res.status(405).json({
-        success: false,
-        error: "Method not allowed"
-      });
-    }
+    // -----------------------------
+    // 1. Check admin cookie
+    // -----------------------------
+    const cookieHeader = req.headers.cookie || "";
 
-    // ADMIN AUTH
-    if (!isAdminAuthenticated(req)) {
-      return res.status(401).json({
-        success: false,
-        error: "Unauthorized"
-      });
-    }
-
-    // ENV
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl) {
-      return res.status(500).json({
-        success: false,
-        error: "SUPABASE_URL is missing"
-      });
-    }
-
-    if (!supabaseKey) {
-      return res.status(500).json({
-        success: false,
-        error: "SUPABASE_SERVICE_ROLE_KEY is missing"
-      });
-    }
-
-    // SUPABASE
-    const supabase = createClient(
-      supabaseUrl,
-      supabaseKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        },
-        realtime: {
-          transport: WebSocket
-        }
-      }
+    const match = cookieHeader.match(
+      /(?:^|;\s*)kravinzo_admin=([^;]+)/
     );
 
-    // REQUEST BODY
-    const body = req.body || {};
+    const adminCookie = match
+      ? decodeURIComponent(match[1])
+      : null;
 
-    const orderId = String(body.orderId || "").trim();
-    const status = String(body.status || "").trim();
+    if (!adminCookie) {
+      return res.status(401).json({
+        success: false,
+        error: "Unauthorized - admin cookie missing"
+      });
+    }
+
+    // -----------------------------
+    // 2. Admin environment
+    // -----------------------------
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+    const ADMIN_SESSION_SECRET =
+      process.env.ADMIN_SESSION_SECRET;
+
+    if (!ADMIN_USERNAME || !ADMIN_SESSION_SECRET) {
+      return res.status(500).json({
+        success: false,
+        error: "Admin environment variables missing"
+      });
+    }
+
+    // -----------------------------
+    // 3. Verify admin cookie
+    // -----------------------------
+    const expectedToken = Buffer.from(
+      `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
+    ).toString("base64");
+
+    if (adminCookie !== expectedToken) {
+      return res.status(401).json({
+        success: false,
+        error: "Unauthorized - invalid admin cookie"
+      });
+    }
+
+    // -----------------------------
+    // 4. Read request body
+    // -----------------------------
+    const { orderId, status } = req.body || {};
 
     if (!orderId || !status) {
       return res.status(400).json({
@@ -97,9 +67,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // ALLOWED STATUS
+    // -----------------------------
+    // 5. Allowed statuses
+    // -----------------------------
     const allowedStatuses = [
-      "pending",
+      "New",
+      "Order Confirmed",
       "Preparing Food",
       "Food Ready",
       "Handed to Delivery",
@@ -113,59 +86,91 @@ export default async function handler(req, res) {
       });
     }
 
-    // UPDATE STATUS
-    const { data, error } = await supabase
-      .from("orders")
-      .update({
-        status: status
-      })
-      .eq("order_id", orderId)
-      .select()
-      .single();
+    // -----------------------------
+    // 6. Supabase environment
+    // -----------------------------
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // SUPABASE ERROR
-    if (error) {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return res.status(500).json({
+        success: false,
+        error: "Supabase configuration is missing"
+      });
+    }
+
+    // -----------------------------
+    // 7. Update order using REST API
+    //    No WebSocket / ws required
+    // -----------------------------
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/orders?order_id=eq.${encodeURIComponent(orderId)}`,
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": serviceRoleKey,
+          "Authorization": `Bearer ${serviceRoleKey}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          status: status
+        })
+      }
+    );
+
+    const text = await response.text();
+
+    if (!response.ok) {
       console.error(
         "SUPABASE UPDATE ERROR:",
-        error
+        response.status,
+        text
       );
 
       return res.status(500).json({
         success: false,
-        error: error.message,
-        details: error.details || null,
-        hint: error.hint || null,
-        code: error.code || null
+        error: `Supabase update failed: ${text}`
       });
     }
 
-    // ORDER NOT FOUND
-    if (!data) {
+    let updatedOrder = [];
+
+    try {
+      updatedOrder = JSON.parse(text);
+    } catch {
+      updatedOrder = [];
+    }
+
+    // -----------------------------
+    // 8. Check order exists
+    // -----------------------------
+    if (!Array.isArray(updatedOrder) || updatedOrder.length === 0) {
       return res.status(404).json({
         success: false,
         error: "Order not found"
       });
     }
 
-    // SUCCESS
+    // -----------------------------
+    // 9. Success
+    // -----------------------------
     return res.status(200).json({
       success: true,
       message: "Order status updated successfully",
-      order: data
+      order: updatedOrder[0]
     });
 
   } catch (error) {
     console.error(
-      "UPDATE STATUS ERROR:",
+      "UPDATE ORDER STATUS ERROR:",
       error
     );
 
     return res.status(500).json({
       success: false,
-      error:
-        error.message ||
-        "Failed to update order status",
-      name: error.name || null
+      error: `Server error: ${error.message}`
     });
   }
 }
