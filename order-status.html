@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>KravinZo | Live Order Tracking</title>
 
@@ -13,6 +17,7 @@
   >
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -286,6 +291,94 @@
       padding: 25px;
     }
 
+    /* DELIVERY PARTNER MESSAGE */
+
+    .on-way-message {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #fff7e6;
+      border: 1px solid #ffd98a;
+      color: #7a4d00;
+      font-weight: bold;
+      text-align: center;
+      animation: pulseMessage 1.8s infinite;
+    }
+
+    @keyframes pulseMessage {
+
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+
+    }
+
+    /* SCOOTER MARKER */
+
+    .scooter-marker {
+      font-size: 40px;
+      width: 52px;
+      height: 52px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      filter:
+        drop-shadow(
+          0 3px 4px rgba(0,0,0,.35)
+        );
+
+      transition:
+        transform .2s ease;
+    }
+
+    .scooter-marker.moving {
+      animation: scooterMove .7s infinite;
+    }
+
+    @keyframes scooterMove {
+
+      0% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+
+    }
+
+    /* DESTINATION PIN */
+
+    .destination-marker {
+      font-size: 38px;
+      width: 45px;
+      height: 45px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      filter:
+        drop-shadow(
+          0 3px 4px rgba(0,0,0,.35)
+        );
+    }
+
     @media (max-width: 500px) {
 
       .container {
@@ -299,7 +392,9 @@
       .details {
         grid-template-columns: 1fr 1fr;
       }
+
     }
+
   </style>
 
 </head>
@@ -309,241 +404,337 @@
 <div class="container">
 
   <div class="header">
-    <div class="logo">🚴 KravinZo</div>
-    <div class="subtitle">Live Order Tracking</div>
+
+    <div class="logo">
+      🚴 KravinZo
+    </div>
+
+    <div class="subtitle">
+      Live Order Tracking
+    </div>
+
   </div>
 
-  <div id="loading" class="loading">
+
+  <div
+    id="loading"
+    class="loading"
+  >
     Loading order...
   </div>
 
-  <div id="errorBox" style="display:none;"></div>
 
-  <div id="orderContent" style="display:none;">
+  <div
+    id="errorBox"
+    style="display:none;"
+  ></div>
 
-```
-<!-- ORDER HEADER -->
-<div class="card">
 
-  <div class="order-top">
-
-    <div class="order-number">
-      Order #<span id="orderIdText"></span>
-    </div>
-
-    <div class="live-badge">
-      ● LIVE
-    </div>
-
-  </div>
-
-
-  <!-- DELIVERY MESSAGE -->
-
-  <div class="delivery-message">
-
-    <div class="big" id="deliveryMessage">
-      📦 Your order is being prepared
-    </div>
-
-    <div class="small">
-      We’ll keep you updated here.
-    </div>
-
-  </div>
-
-
-  <!-- STATUS TIMELINE -->
-
-  <div class="status-title">
-    Order Status
-  </div>
-
-  <div class="timeline">
-
-    <div class="timeline-item" id="step1">
-
-      <div class="timeline-line"></div>
-
-      <div class="timeline-dot">
-        📦
-      </div>
-
-      <div class="timeline-text">
-        <strong>Order Received</strong>
-        <span>Your order has been received</span>
-      </div>
-
-    </div>
-
-
-    <div class="timeline-item" id="step2">
-
-      <div class="timeline-line"></div>
-
-      <div class="timeline-dot">
-        🍳
-      </div>
-
-      <div class="timeline-text">
-        <strong>Preparing Food</strong>
-        <span>Kitchen is preparing your food</span>
-      </div>
-
-    </div>
-
-
-    <div class="timeline-item" id="step3">
-
-      <div class="timeline-line"></div>
-
-      <div class="timeline-dot">
-        ✅
-      </div>
-
-      <div class="timeline-text">
-        <strong>Food Ready</strong>
-        <span>Your food is ready</span>
-      </div>
-
-    </div>
-
-
-    <div class="timeline-item" id="step4">
-
-      <div class="timeline-line"></div>
-
-      <div class="timeline-dot">
-        🛵
-      </div>
-
-      <div class="timeline-text">
-        <strong>Handed to Delivery</strong>
-        <span>Delivery partner is on the way</span>
-      </div>
-
-    </div>
-
-
-    <div class="timeline-item" id="step5">
-
-      <div class="timeline-dot">
-        🎉
-      </div>
-
-      <div class="timeline-text">
-        <strong>Delivered</strong>
-        <span>Enjoy your meal!</span>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- MAP -->
-
-<div class="card">
-
-  <div class="status-title">
-    🛵 Delivery Tracking
-  </div>
-
-  <div class="map-wrapper">
-
-    <div class="map-live">
-      🟢 LIVE LOCATION
-    </div>
-
-    <div id="map"></div>
-
-  </div>
-
-
-  <div class="gps-card">
-
-    <div class="gps-title">
-      Delivery Partner Location
-    </div>
-
-    <div id="gpsStatus" class="gps-waiting">
-      🟡 Waiting for delivery partner GPS
-    </div>
-
-    <div class="location-row">
-      Latitude:
-      <strong id="latitude">--</strong>
-    </div>
-
-    <div class="location-row">
-      Longitude:
-      <strong id="longitude">--</strong>
-    </div>
-
-    <div class="location-row">
-      Last Update:
-      <strong id="lastUpdate">--</strong>
-    </div>
-
-  </div>
-
-
-  <button
-    id="googleMapsButton"
-    class="map-button"
-    onclick="openGoogleMaps()"
+  <div
+    id="orderContent"
     style="display:none;"
   >
-    📍 Open in Google Maps
-  </button>
 
+    <!-- ORDER HEADER -->
 
-  <button
-    class="refresh-button"
-    onclick="loadOrder()"
-  >
-    🔄 Refresh Now
-  </button>
+    <div class="card">
 
-</div>
+      <div class="order-top">
 
+        <div class="order-number">
+          Order #<span id="orderIdText"></span>
+        </div>
 
-<!-- ORDER DETAILS -->
+        <div class="live-badge">
+          ● LIVE
+        </div>
 
-<div class="card">
-
-  <div class="status-title">
-    Order Details
-  </div>
-
-  <div class="details">
-
-    <div class="detail-box">
-
-      <div class="detail-label">
-        Customer
       </div>
+
+
+      <!-- DELIVERY MESSAGE -->
+
+      <div class="delivery-message">
+
+        <div
+          class="big"
+          id="deliveryMessage"
+        >
+          📦 Your order is being prepared
+        </div>
+
+        <div class="small">
+          We’ll keep you updated here.
+        </div>
+
+      </div>
+
+
+      <!-- ON THE WAY MESSAGE -->
 
       <div
-        class="detail-value"
-        id="customerName"
+        id="onWayMessage"
+        class="on-way-message"
       >
-        -
+        🛵 Your delivery partner is on the way!
+      </div>
+
+
+      <!-- STATUS TIMELINE -->
+
+      <div class="status-title">
+        Order Status
+      </div>
+
+
+      <div class="timeline">
+
+        <div
+          class="timeline-item"
+          id="step1"
+        >
+
+          <div class="timeline-line"></div>
+
+          <div class="timeline-dot">
+            📦
+          </div>
+
+          <div class="timeline-text">
+
+            <strong>
+              Order Received
+            </strong>
+
+            <span>
+              Your order has been received
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="timeline-item"
+          id="step2"
+        >
+
+          <div class="timeline-line"></div>
+
+          <div class="timeline-dot">
+            🍳
+          </div>
+
+          <div class="timeline-text">
+
+            <strong>
+              Preparing Food
+            </strong>
+
+            <span>
+              Kitchen is preparing your food
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="timeline-item"
+          id="step3"
+        >
+
+          <div class="timeline-line"></div>
+
+          <div class="timeline-dot">
+            ✅
+          </div>
+
+          <div class="timeline-text">
+
+            <strong>
+              Food Ready
+            </strong>
+
+            <span>
+              Your food is ready
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="timeline-item"
+          id="step4"
+        >
+
+          <div class="timeline-line"></div>
+
+          <div class="timeline-dot">
+            🛵
+          </div>
+
+          <div class="timeline-text">
+
+            <strong>
+              Handed to Delivery
+            </strong>
+
+            <span>
+              Delivery partner is on the way
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="timeline-item"
+          id="step5"
+        >
+
+          <div class="timeline-dot">
+            🎉
+          </div>
+
+          <div class="timeline-text">
+
+            <strong>
+              Delivered
+            </strong>
+
+            <span>
+              Enjoy your meal!
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
 
 
-    <div class="detail-box">
+    <!-- MAP -->
 
-      <div class="detail-label">
-        Total
+    <div class="card">
+
+      <div class="status-title">
+        🛵 Delivery Tracking
       </div>
 
-      <div class="detail-value">
-        ₹<span id="totalAmount">0</span>
+
+      <div class="map-wrapper">
+
+        <div class="map-live">
+          🟢 LIVE LOCATION
+        </div>
+
+        <div id="map"></div>
+
+      </div>
+
+
+      <div class="gps-card">
+
+        <div class="gps-title">
+          Delivery Partner Location
+        </div>
+
+
+        <div
+          id="gpsStatus"
+          class="gps-waiting"
+        >
+          🟡 Waiting for delivery partner GPS
+        </div>
+
+
+        <div class="location-row">
+          Latitude:
+          <strong id="latitude">--</strong>
+        </div>
+
+
+        <div class="location-row">
+          Longitude:
+          <strong id="longitude">--</strong>
+        </div>
+
+
+        <div class="location-row">
+          Last Update:
+          <strong id="lastUpdate">--</strong>
+        </div>
+
+      </div>
+
+
+      <button
+        id="googleMapsButton"
+        class="map-button"
+        onclick="openGoogleMaps()"
+        style="display:none;"
+      >
+        📍 Open in Google Maps
+      </button>
+
+
+      <button
+        class="refresh-button"
+        onclick="loadOrder()"
+      >
+        🔄 Refresh Now
+      </button>
+
+    </div>
+
+
+    <!-- ORDER DETAILS -->
+
+    <div class="card">
+
+      <div class="status-title">
+        Order Details
+      </div>
+
+
+      <div class="details">
+
+        <div class="detail-box">
+
+          <div class="detail-label">
+            Customer
+          </div>
+
+          <div
+            class="detail-value"
+            id="customerName"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+          <div class="detail-label">
+            Total
+          </div>
+
+          <div class="detail-value">
+            ₹<span id="totalAmount">0</span>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
@@ -551,26 +742,34 @@
   </div>
 
 </div>
-```
 
-  </div>
-
-</div>
 
 <script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
 
 <script>
 
 let map = null;
+
 let deliveryMarker = null;
 
+let destinationMarker = null;
+
+let routeLine = null;
+
 let currentLatitude = null;
+
 let currentLongitude = null;
 
 let previousLatitude = null;
+
 let previousLongitude = null;
+
+let destinationLatitude = null;
+
+let destinationLongitude = null;
 
 
 const params =
@@ -578,9 +777,9 @@ const params =
     window.location.search
   );
 
+
 const orderId =
   params.get("orderId");
-
 
 
 function showError(message) {
@@ -600,8 +799,8 @@ function showError(message) {
 
   errorBox.innerHTML =
     "❌ " + message;
-}
 
+}
 
 
 if (!orderId) {
@@ -613,6 +812,9 @@ if (!orderId) {
 }
 
 
+/* ==========================================
+   LOAD ORDER
+========================================== */
 
 async function loadOrder() {
 
@@ -635,6 +837,7 @@ async function loadOrder() {
 
     let result;
 
+
     try {
 
       result =
@@ -647,6 +850,7 @@ async function loadOrder() {
       );
 
       return;
+
     }
 
 
@@ -661,6 +865,7 @@ async function loadOrder() {
       );
 
       return;
+
     }
 
 
@@ -671,8 +876,10 @@ async function loadOrder() {
     document.getElementById("loading")
       .style.display = "none";
 
+
     document.getElementById("errorBox")
       .style.display = "none";
+
 
     document.getElementById("orderContent")
       .style.display = "block";
@@ -699,6 +906,28 @@ async function loadOrder() {
 
     updateStatusTimeline(status);
 
+
+    /* ==========================================
+       CUSTOMER DESTINATION
+    ========================================== */
+
+    if (
+      order.customer_latitude != null &&
+      order.customer_longitude != null
+    ) {
+
+      destinationLatitude =
+        Number(order.customer_latitude);
+
+      destinationLongitude =
+        Number(order.customer_longitude);
+
+    }
+
+
+    /* ==========================================
+       DELIVERY GPS
+    ========================================== */
 
     if (
       order.delivery_latitude != null &&
@@ -761,6 +990,7 @@ async function loadOrder() {
         currentLongitude
       );
 
+
     } else {
 
       document.getElementById("gpsStatus")
@@ -789,12 +1019,14 @@ async function loadOrder() {
 
     }
 
+
   } catch (error) {
 
     console.error(
       "TRACKING ERROR:",
       error
     );
+
 
     showError(
       "Unable to connect to server"
@@ -805,6 +1037,9 @@ async function loadOrder() {
 }
 
 
+/* ==========================================
+   STATUS TIMELINE
+========================================== */
 
 function updateStatusTimeline(status) {
 
@@ -824,28 +1059,32 @@ function updateStatusTimeline(status) {
 
   if (currentIndex === -1) {
 
+    const lower =
+      status.toLowerCase();
+
+
     if (
-      status.toLowerCase()
-        .includes("preparing")
+      lower.includes("preparing")
     ) {
+
       currentIndex = 2;
 
     } else if (
-      status.toLowerCase()
-        .includes("ready")
+      lower.includes("ready")
     ) {
+
       currentIndex = 3;
 
     } else if (
-      status.toLowerCase()
-        .includes("delivery")
+      lower.includes("delivery")
     ) {
+
       currentIndex = 4;
 
     } else if (
-      status.toLowerCase()
-        .includes("delivered")
+      lower.includes("delivered")
     ) {
+
       currentIndex = 5;
 
     } else {
@@ -900,12 +1139,23 @@ function updateStatusTimeline(status) {
     );
 
 
+  const onWayMessage =
+    document.getElementById(
+      "onWayMessage"
+    );
+
+
+  onWayMessage.style.display =
+    "none";
+
+
   if (
     status === "Delivered"
   ) {
 
     message.textContent =
       "🎉 Your order has been delivered!";
+
 
   } else if (
     status === "Handed to Delivery"
@@ -914,6 +1164,11 @@ function updateStatusTimeline(status) {
     message.textContent =
       "🛵 Delivery partner is on the way!";
 
+
+    onWayMessage.style.display =
+      "block";
+
+
   } else if (
     status === "Food Ready"
   ) {
@@ -921,12 +1176,14 @@ function updateStatusTimeline(status) {
     message.textContent =
       "✅ Your food is ready!";
 
+
   } else if (
     status === "Preparing Food"
   ) {
 
     message.textContent =
       "🍳 Your food is being prepared";
+
 
   } else {
 
@@ -938,6 +1195,9 @@ function updateStatusTimeline(status) {
 }
 
 
+/* ==========================================
+   MAP
+========================================== */
 
 function updateMap(
   latitude,
@@ -964,27 +1224,24 @@ function updateMap(
     ).addTo(map);
 
 
+    /* ======================================
+       SCOOTER ICON
+    ====================================== */
+
     const scooterIcon =
       L.divIcon({
 
         className: "",
 
         html: `
-          <div style="
-            font-size:42px;
-            width:52px;
-            height:52px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));
-          ">
+          <div class="scooter-marker moving">
             🛵
           </div>
         `,
 
-        iconSize: [52,52],
-        iconAnchor: [26,26]
+        iconSize: [52, 52],
+
+        iconAnchor: [26, 26]
 
       });
 
@@ -1010,6 +1267,25 @@ function updateMap(
       longitude;
 
 
+    /* ======================================
+       DESTINATION PIN
+    ====================================== */
+
+    if (
+      destinationLatitude != null &&
+      destinationLongitude != null
+    ) {
+
+      createDestinationMarker();
+
+      drawRouteLine(
+        latitude,
+        longitude
+      );
+
+    }
+
+
   } else {
 
     animateMarker(
@@ -1027,6 +1303,19 @@ function updateMap(
       longitude;
 
 
+    if (
+      destinationLatitude != null &&
+      destinationLongitude != null
+    ) {
+
+      drawRouteLine(
+        latitude,
+        longitude
+      );
+
+    }
+
+
     map.panTo(
       [latitude, longitude],
       {
@@ -1040,6 +1329,124 @@ function updateMap(
 }
 
 
+/* ==========================================
+   DESTINATION MARKER
+========================================== */
+
+function createDestinationMarker() {
+
+  if (!map) return;
+
+
+  if (
+    destinationLatitude == null ||
+    destinationLongitude == null
+  ) {
+    return;
+  }
+
+
+  const destinationIcon =
+    L.divIcon({
+
+      className: "",
+
+      html: `
+        <div class="destination-marker">
+          📍
+        </div>
+      `,
+
+      iconSize: [45, 45],
+
+      iconAnchor: [22, 42]
+
+    });
+
+
+  if (!destinationMarker) {
+
+    destinationMarker =
+      L.marker(
+        [
+          destinationLatitude,
+          destinationLongitude
+        ],
+        {
+          icon: destinationIcon
+        }
+      ).addTo(map);
+
+
+    destinationMarker.bindPopup(
+      "📍 Customer Destination"
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   ROUTE LINE
+========================================== */
+
+function drawRouteLine(
+  latitude,
+  longitude
+) {
+
+  if (
+    destinationLatitude == null ||
+    destinationLongitude == null
+  ) {
+
+    return;
+
+  }
+
+
+  const points = [
+
+    [
+      latitude,
+      longitude
+    ],
+
+    [
+      destinationLatitude,
+      destinationLongitude
+    ]
+
+  ];
+
+
+  if (!routeLine) {
+
+    routeLine =
+      L.polyline(
+        points,
+        {
+          weight: 5,
+          opacity: 0.75,
+          dashArray: "10,10"
+        }
+      ).addTo(map);
+
+  } else {
+
+    routeLine.setLatLngs(
+      points
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   SMOOTH SCOOTER MOVEMENT
+========================================== */
 
 function animateMarker(
   startLat,
@@ -1048,10 +1455,44 @@ function animateMarker(
   endLng
 ) {
 
-  const duration = 1000;
+  if (!deliveryMarker) {
+    return;
+  }
+
+
+  if (
+    startLat == null ||
+    startLng == null
+  ) {
+
+    deliveryMarker.setLatLng(
+      [endLat, endLng]
+    );
+
+    return;
+
+  }
+
+
+  const duration = 1500;
 
   const startTime =
     performance.now();
+
+
+  const iconElement =
+    document.querySelector(
+      ".scooter-marker"
+    );
+
+
+  if (iconElement) {
+
+    iconElement.classList.add(
+      "moving"
+    );
+
+  }
 
 
   function animate(
@@ -1078,16 +1519,14 @@ function animateMarker(
       progress;
 
 
-    if (deliveryMarker) {
-
-      deliveryMarker.setLatLng(
-        [lat, lng]
-      );
-
-    }
+    deliveryMarker.setLatLng(
+      [lat, lng]
+    );
 
 
-    if (progress < 1) {
+    if (
+      progress < 1
+    ) {
 
       requestAnimationFrame(
         animate
@@ -1105,6 +1544,9 @@ function animateMarker(
 }
 
 
+/* ==========================================
+   GOOGLE MAPS
+========================================== */
 
 function openGoogleMaps() {
 
@@ -1114,6 +1556,7 @@ function openGoogleMaps() {
   ) {
 
     return;
+
   }
 
 
@@ -1132,6 +1575,9 @@ function openGoogleMaps() {
 }
 
 
+/* ==========================================
+   START
+========================================== */
 
 if (orderId) {
 
