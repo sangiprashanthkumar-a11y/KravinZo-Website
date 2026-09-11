@@ -1,13 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>KravinZo | Live Order Tracking</title>
 
@@ -17,7 +13,6 @@
   >
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -296,8 +291,6 @@
       padding: 25px;
     }
 
-    /* DELIVERY PARTNER MESSAGE */
-
     .on-way-message {
       display: none;
       margin-top: 12px;
@@ -312,7 +305,6 @@
     }
 
     @keyframes pulseMessage {
-
       0% {
         transform: scale(1);
       }
@@ -324,27 +316,16 @@
       100% {
         transform: scale(1);
       }
-
     }
-
-    /* SCOOTER MARKER */
 
     .scooter-marker {
       font-size: 40px;
       width: 52px;
       height: 52px;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
-      filter:
-        drop-shadow(
-          0 3px 4px rgba(0,0,0,.35)
-        );
-
-      transition:
-        transform .2s ease;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
     }
 
     .scooter-marker.moving {
@@ -352,7 +333,6 @@
     }
 
     @keyframes scooterMove {
-
       0% {
         transform: translateY(0);
       }
@@ -364,28 +344,29 @@
       100% {
         transform: translateY(0);
       }
-
     }
-
-    /* DESTINATION PIN */
 
     .destination-marker {
       font-size: 38px;
       width: 45px;
       height: 45px;
-
       display: flex;
       align-items: center;
       justify-content: center;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
+    }
 
-      filter:
-        drop-shadow(
-          0 3px 4px rgba(0,0,0,.35)
-        );
+    .restaurant-marker {
+      font-size: 38px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
     }
 
     @media (max-width: 500px) {
-
       .container {
         padding: 10px;
       }
@@ -397,11 +378,8 @@
       .details {
         grid-template-columns: 1fr 1fr;
       }
-
     }
-
   </style>
-
 </head>
 
 <body>
@@ -409,39 +387,19 @@
 <div class="container">
 
   <div class="header">
-
-    <div class="logo">
-      🚴 KravinZo
-    </div>
-
-    <div class="subtitle">
-      Live Order Tracking
-    </div>
-
+    <div class="logo">🚴 KravinZo</div>
+    <div class="subtitle">Live Order Tracking</div>
   </div>
 
-
-  <div
-    id="loading"
-    class="loading"
-  >
+  <div id="loading" class="loading">
     Loading order...
   </div>
 
+  <div id="errorBox" style="display:none;"></div>
 
-  <div
-    id="errorBox"
-    style="display:none;"
-  ></div>
+  <div id="orderContent" style="display:none;">
 
-
-  <div
-    id="orderContent"
-    style="display:none;"
-  >
-
-    <!-- ORDER HEADER -->
-
+    <!-- ORDER STATUS -->
     <div class="card">
 
       <div class="order-top">
@@ -456,15 +414,9 @@
 
       </div>
 
-
-      <!-- DELIVERY MESSAGE -->
-
       <div class="delivery-message">
 
-        <div
-          class="big"
-          id="deliveryMessage"
-        >
+        <div class="big" id="deliveryMessage">
           📦 Your order is being prepared
         </div>
 
@@ -474,30 +426,17 @@
 
       </div>
 
-
-      <!-- ON THE WAY MESSAGE -->
-
-      <div
-        id="onWayMessage"
-        class="on-way-message"
-      >
+      <div id="onWayMessage" class="on-way-message">
         🛵 Your delivery partner is on the way!
       </div>
-
-
-      <!-- STATUS TIMELINE -->
 
       <div class="status-title">
         Order Status
       </div>
 
-
       <div class="timeline">
 
-        <div
-          class="timeline-item"
-          id="step1"
-        >
+        <div class="timeline-item" id="step1">
 
           <div class="timeline-line"></div>
 
@@ -506,24 +445,14 @@
           </div>
 
           <div class="timeline-text">
-
-            <strong>
-              Order Received
-            </strong>
-
-            <span>
-              Your order has been received
-            </span>
-
+            <strong>Order Received</strong>
+            <span>Your order has been received</span>
           </div>
 
         </div>
 
 
-        <div
-          class="timeline-item"
-          id="step2"
-        >
+        <div class="timeline-item" id="step2">
 
           <div class="timeline-line"></div>
 
@@ -532,24 +461,14 @@
           </div>
 
           <div class="timeline-text">
-
-            <strong>
-              Preparing Food
-            </strong>
-
-            <span>
-              Kitchen is preparing your food
-            </span>
-
+            <strong>Preparing Food</strong>
+            <span>Kitchen is preparing your food</span>
           </div>
 
         </div>
 
 
-        <div
-          class="timeline-item"
-          id="step3"
-        >
+        <div class="timeline-item" id="step3">
 
           <div class="timeline-line"></div>
 
@@ -558,24 +477,14 @@
           </div>
 
           <div class="timeline-text">
-
-            <strong>
-              Food Ready
-            </strong>
-
-            <span>
-              Your food is ready
-            </span>
-
+            <strong>Food Ready</strong>
+            <span>Your food is ready</span>
           </div>
 
         </div>
 
 
-        <div
-          class="timeline-item"
-          id="step4"
-        >
+        <div class="timeline-item" id="step4">
 
           <div class="timeline-line"></div>
 
@@ -584,39 +493,22 @@
           </div>
 
           <div class="timeline-text">
-
-            <strong>
-              Handed to Delivery
-            </strong>
-
-            <span>
-              Delivery partner is on the way
-            </span>
-
+            <strong>Handed to Delivery</strong>
+            <span>Delivery partner is on the way</span>
           </div>
 
         </div>
 
 
-        <div
-          class="timeline-item"
-          id="step5"
-        >
+        <div class="timeline-item" id="step5">
 
           <div class="timeline-dot">
             🎉
           </div>
 
           <div class="timeline-text">
-
-            <strong>
-              Delivered
-            </strong>
-
-            <span>
-              Enjoy your meal!
-            </span>
-
+            <strong>Delivered</strong>
+            <span>Enjoy your meal!</span>
           </div>
 
         </div>
@@ -627,13 +519,11 @@
 
 
     <!-- MAP -->
-
     <div class="card">
 
       <div class="status-title">
         🛵 Delivery Tracking
       </div>
-
 
       <div class="map-wrapper">
 
@@ -646,32 +536,26 @@
       </div>
 
 
+      <!-- GPS DETAILS -->
       <div class="gps-card">
 
         <div class="gps-title">
           Delivery Partner Location
         </div>
 
-
-        <div
-          id="gpsStatus"
-          class="gps-waiting"
-        >
+        <div id="gpsStatus" class="gps-waiting">
           🟡 Waiting for delivery partner GPS
         </div>
-
 
         <div class="location-row">
           Latitude:
           <strong id="latitude">--</strong>
         </div>
 
-
         <div class="location-row">
           Longitude:
           <strong id="longitude">--</strong>
         </div>
-
 
         <div class="location-row">
           Last Update:
@@ -687,11 +571,9 @@
         onclick="openGoogleMaps()"
         style="display:none;"
       >
-        📍 Open in Google Maps
+        📍 Open Delivery Location in Google Maps
       </button>
 
-
-      <!-- FIXED REFRESH BUTTON -->
 
       <button
         id="refreshButton"
@@ -705,13 +587,11 @@
 
 
     <!-- ORDER DETAILS -->
-
     <div class="card">
 
       <div class="status-title">
         Order Details
       </div>
-
 
       <div class="details">
 
@@ -721,10 +601,7 @@
             Customer
           </div>
 
-          <div
-            class="detail-value"
-            id="customerName"
-          >
+          <div class="detail-value" id="customerName">
             -
           </div>
 
@@ -752,548 +629,569 @@
 </div>
 
 
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
 <script>
 
-let map = null;
+  /* =========================================
+     KRAVINZO RESTAURANT LOCATION
+     ========================================= */
 
-let deliveryMarker = null;
+  const RESTAURANT_LATITUDE = 17.385580453853716;
+  const RESTAURANT_LONGITUDE = 78.35939029874612;
 
-let destinationMarker = null;
 
-let routeLine = null;
+  /* =========================================
+     MAP VARIABLES
+     ========================================= */
 
-let currentLatitude = null;
+  let map = null;
 
-let currentLongitude = null;
+  let deliveryMarker = null;
 
-let previousLatitude = null;
+  let destinationMarker = null;
 
-let previousLongitude = null;
+  let restaurantMarker = null;
 
-let destinationLatitude = null;
+  let driverToCustomerLine = null;
 
-let destinationLongitude = null;
+  let restaurantToCustomerLine = null;
 
+  let currentLatitude = null;
 
-/* ==========================================
-   REFRESH PROTECTION
-========================================== */
+  let currentLongitude = null;
 
-let isLoadingOrder = false;
+  let previousLatitude = null;
 
+  let previousLongitude = null;
 
-/* ==========================================
-   ORDER ID
-========================================== */
+  let destinationLatitude = null;
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
+  let destinationLongitude = null;
 
+  let isLoadingOrder = false;
 
-const orderId =
-  params.get("orderId");
 
+  /* =========================================
+     ORDER ID
+     ========================================= */
 
-/* ==========================================
-   ERROR
-========================================== */
+  const params =
+    new URLSearchParams(window.location.search);
 
-function showError(message) {
+  const orderId =
+    params.get("orderId");
 
-  document.getElementById("loading")
-    .style.display = "none";
 
-  document.getElementById("orderContent")
-    .style.display = "none";
+  /* =========================================
+     ERROR
+     ========================================= */
 
-  const errorBox =
-    document.getElementById("errorBox");
-
-  errorBox.style.display = "block";
-
-  errorBox.className = "error";
-
-  errorBox.innerHTML =
-    "❌ " + message;
-
-}
-
-
-/* ==========================================
-   MANUAL REFRESH
-========================================== */
-
-async function manualRefresh() {
-
-  const button =
-    document.getElementById(
-      "refreshButton"
-    );
-
-
-  if (isLoadingOrder) {
-    return;
-  }
-
-
-  button.disabled = true;
-
-  button.textContent =
-    "⏳ Refreshing...";
-
-
-  try {
-
-    await loadOrder();
-
-  } finally {
-
-    button.disabled = false;
-
-    button.textContent =
-      "🔄 Refresh Now";
-
-  }
-
-}
-
-
-/* ==========================================
-   CHECK ORDER ID
-========================================== */
-
-if (!orderId) {
-
-  showError(
-    "Order ID missing. Please check your tracking link."
-  );
-
-}
-
-
-/* ==========================================
-   LOAD ORDER
-========================================== */
-
-async function loadOrder() {
-
-  if (!orderId) {
-    return;
-  }
-
-
-  if (isLoadingOrder) {
-    return;
-  }
-
-
-  isLoadingOrder = true;
-
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/get-order-status?orderId=" +
-        encodeURIComponent(orderId) +
-        "&t=" +
-        Date.now()
-      );
-
-
-    const text =
-      await response.text();
-
-
-    let result;
-
-
-    try {
-
-      result =
-        JSON.parse(text);
-
-    } catch (e) {
-
-      showError(
-        "Invalid server response"
-      );
-
-      return;
-
-    }
-
-
-    if (
-      !response.ok ||
-      !result.success
-    ) {
-
-      showError(
-        result.error ||
-        "Unable to load order status"
-      );
-
-      return;
-
-    }
-
-
-    const order =
-      result.order;
-
+  function showError(message) {
 
     document.getElementById("loading")
       .style.display = "none";
 
-
-    document.getElementById("errorBox")
+    document.getElementById("orderContent")
       .style.display = "none";
 
+    const errorBox =
+      document.getElementById("errorBox");
 
-    document.getElementById("orderContent")
-      .style.display = "block";
+    errorBox.style.display = "block";
 
+    errorBox.className = "error";
 
-    document.getElementById("orderIdText")
-      .textContent =
-      order.order_id || orderId;
+    errorBox.innerHTML =
+      "❌ " + message;
 
-
-    document.getElementById("customerName")
-      .textContent =
-      order.customer_name || "-";
+  }
 
 
-    document.getElementById("totalAmount")
-      .textContent =
-      order.total ?? "0";
+  if (!orderId) {
+
+    showError(
+      "Order ID missing. Please check your tracking link."
+    );
+
+  }
 
 
-    const status =
-      order.status || "New";
+  /* =========================================
+     MANUAL REFRESH
+     ========================================= */
 
+  async function manualRefresh() {
 
-    updateStatusTimeline(status);
+    const button =
+      document.getElementById("refreshButton");
 
+    if (isLoadingOrder) {
+      return;
+    }
 
-    /* ==========================================
-       CUSTOMER DESTINATION
-    ========================================== */
+    button.disabled = true;
 
-    if (
-      order.customer_latitude != null &&
-      order.customer_longitude != null
-    ) {
+    button.textContent =
+      "⏳ Refreshing...";
 
-      destinationLatitude =
-        Number(order.customer_latitude);
+    try {
 
-      destinationLongitude =
-        Number(order.customer_longitude);
+      await loadOrder();
+
+    } finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "🔄 Refresh Now";
 
     }
 
-
-    /* ==========================================
-       DELIVERY GPS
-    ========================================== */
-
-    if (
-      order.delivery_latitude != null &&
-      order.delivery_longitude != null
-    ) {
-
-      currentLatitude =
-        Number(order.delivery_latitude);
-
-      currentLongitude =
-        Number(order.delivery_longitude);
+  }
 
 
-      document.getElementById("latitude")
-        .textContent =
-        currentLatitude.toFixed(6);
+  /* =========================================
+     LOAD ORDER
+     ========================================= */
+
+  async function loadOrder() {
+
+    if (!orderId) {
+      return;
+    }
+
+    if (isLoadingOrder) {
+      return;
+    }
+
+    isLoadingOrder = true;
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/get-order-status?orderId=" +
+          encodeURIComponent(orderId) +
+          "&t=" +
+          Date.now()
+        );
 
 
-      document.getElementById("longitude")
-        .textContent =
-        currentLongitude.toFixed(6);
+      const text =
+        await response.text();
 
 
-      if (
-        order.delivery_location_updated_at
-      ) {
-
-        const date =
-          new Date(
-            order.delivery_location_updated_at
-          );
+      let result;
 
 
-        document.getElementById("lastUpdate")
-          .textContent =
-          date.toLocaleTimeString(
-            "en-IN"
-          );
+      try {
+
+        result =
+          JSON.parse(text);
+
+      } catch (e) {
+
+        showError(
+          "Invalid server response"
+        );
+
+        return;
 
       }
 
 
-      document.getElementById("gpsStatus")
-        .className =
-        "gps-active";
+      if (
+        !response.ok ||
+        !result.success
+      ) {
+
+        showError(
+          result.error ||
+          "Unable to load order status"
+        );
+
+        return;
+
+      }
 
 
-      document.getElementById("gpsStatus")
+      const order =
+        result.order;
+
+
+      document.getElementById("loading")
+        .style.display = "none";
+
+
+      document.getElementById("errorBox")
+        .style.display = "none";
+
+
+      document.getElementById("orderContent")
+        .style.display = "block";
+
+
+      document.getElementById("orderIdText")
         .textContent =
-        "🟢 GPS Tracking Active";
+        order.order_id || orderId;
 
 
-      document.getElementById("googleMapsButton")
-        .style.display =
-        "block";
+      document.getElementById("customerName")
+        .textContent =
+        order.customer_name || "-";
 
 
-      updateMap(
-        currentLatitude,
-        currentLongitude
+      document.getElementById("totalAmount")
+        .textContent =
+        order.total ?? "0";
+
+
+      const status =
+        order.status || "New";
+
+
+      updateStatusTimeline(status);
+
+
+      /* =========================================
+         CUSTOMER LOCATION
+         ========================================= */
+
+      if (
+        order.customer_latitude != null &&
+        order.customer_longitude != null
+      ) {
+
+        const lat =
+          Number(order.customer_latitude);
+
+        const lng =
+          Number(order.customer_longitude);
+
+
+        if (
+          Number.isFinite(lat) &&
+          Number.isFinite(lng)
+        ) {
+
+          destinationLatitude = lat;
+
+          destinationLongitude = lng;
+
+        }
+
+      }
+
+
+      /* =========================================
+         DELIVERY BOY GPS
+         ========================================= */
+
+      if (
+        order.delivery_latitude != null &&
+        order.delivery_longitude != null
+      ) {
+
+        const lat =
+          Number(order.delivery_latitude);
+
+        const lng =
+          Number(order.delivery_longitude);
+
+
+        if (
+          Number.isFinite(lat) &&
+          Number.isFinite(lng)
+        ) {
+
+          currentLatitude = lat;
+
+          currentLongitude = lng;
+
+
+          document.getElementById("latitude")
+            .textContent =
+            lat.toFixed(6);
+
+
+          document.getElementById("longitude")
+            .textContent =
+            lng.toFixed(6);
+
+
+          if (
+            order.delivery_location_updated_at
+          ) {
+
+            const date =
+              new Date(
+                order.delivery_location_updated_at
+              );
+
+
+            document.getElementById("lastUpdate")
+              .textContent =
+              date.toLocaleTimeString(
+                "en-IN"
+              );
+
+          }
+
+
+          document.getElementById("gpsStatus")
+            .className =
+            "gps-active";
+
+
+          document.getElementById("gpsStatus")
+            .textContent =
+            "🟢 GPS Tracking Active";
+
+
+          document.getElementById(
+            "googleMapsButton"
+          ).style.display = "block";
+
+
+          updateMap(
+            currentLatitude,
+            currentLongitude
+          );
+
+        }
+
+      } else {
+
+        document.getElementById("gpsStatus")
+          .className =
+          "gps-waiting";
+
+
+        document.getElementById("gpsStatus")
+          .textContent =
+          "🟡 Waiting for delivery partner GPS";
+
+
+        document.getElementById("latitude")
+          .textContent = "--";
+
+
+        document.getElementById("longitude")
+          .textContent = "--";
+
+
+        document.getElementById("lastUpdate")
+          .textContent = "--";
+
+
+        /*
+          Even before delivery-boy GPS starts,
+          show restaurant + customer if customer
+          coordinates are available.
+        */
+
+        updateMapWithoutDriver();
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "TRACKING ERROR:",
+        error
       );
 
 
-    } else {
+      showError(
+        "Unable to connect to server"
+      );
 
-      document.getElementById("gpsStatus")
-        .className =
-        "gps-waiting";
+    } finally {
 
+      isLoadingOrder = false;
 
-      document.getElementById("gpsStatus")
-        .textContent =
-        "🟡 Waiting for delivery partner GPS";
+    }
 
-
-      document.getElementById("latitude")
-        .textContent =
-        "--";
+  }
 
 
-      document.getElementById("longitude")
-        .textContent =
-        "--";
+  /* =========================================
+     STATUS TIMELINE
+     ========================================= */
+
+  function updateStatusTimeline(status) {
+
+    const steps = [
+      "New",
+      "Order Received",
+      "Preparing Food",
+      "Food Ready",
+      "Handed to Delivery",
+      "Delivered"
+    ];
 
 
-      document.getElementById("lastUpdate")
-        .textContent =
-        "--";
+    let currentIndex =
+      steps.indexOf(status);
+
+
+    if (currentIndex === -1) {
+
+      const lower =
+        status.toLowerCase();
+
+
+      if (
+        lower.includes("preparing")
+      ) {
+
+        currentIndex = 2;
+
+      } else if (
+        lower.includes("ready")
+      ) {
+
+        currentIndex = 3;
+
+      } else if (
+        lower.includes("delivery")
+      ) {
+
+        currentIndex = 4;
+
+      } else if (
+        lower.includes("delivered")
+      ) {
+
+        currentIndex = 5;
+
+      } else {
+
+        currentIndex = 1;
+
+      }
 
     }
 
 
-  } catch (error) {
-
-    console.error(
-      "TRACKING ERROR:",
-      error
-    );
-
-
-    showError(
-      "Unable to connect to server"
-    );
-
-
-  } finally {
-
-    isLoadingOrder = false;
-
-  }
-
-}
-
-
-/* ==========================================
-   STATUS TIMELINE
-========================================== */
-
-function updateStatusTimeline(status) {
-
-  const steps = [
-    "New",
-    "Order Received",
-    "Preparing Food",
-    "Food Ready",
-    "Handed to Delivery",
-    "Delivered"
-  ];
-
-
-  let currentIndex =
-    steps.indexOf(status);
-
-
-  if (currentIndex === -1) {
-
-    const lower =
-      status.toLowerCase();
-
-
-    if (
-      lower.includes("preparing")
+    for (
+      let i = 1;
+      i <= 5;
+      i++
     ) {
 
-      currentIndex = 2;
-
-    } else if (
-      lower.includes("ready")
-    ) {
-
-      currentIndex = 3;
-
-    } else if (
-      lower.includes("delivery")
-    ) {
-
-      currentIndex = 4;
-
-    } else if (
-      lower.includes("delivered")
-    ) {
-
-      currentIndex = 5;
-
-    } else {
-
-      currentIndex = 1;
-
-    }
-
-  }
+      const step =
+        document.getElementById(
+          "step" + i
+        );
 
 
-  for (
-    let i = 1;
-    i <= 5;
-    i++
-  ) {
-
-    const step =
-      document.getElementById(
-        "step" + i
-      );
-
-
-    step.classList.remove(
-      "active",
-      "completed"
-    );
-
-
-    if (i < currentIndex) {
-
-      step.classList.add(
+      step.classList.remove(
+        "active",
         "completed"
       );
 
-    } else if (
-      i === currentIndex
+
+      if (
+        i < currentIndex
+      ) {
+
+        step.classList.add(
+          "completed"
+        );
+
+      } else if (
+        i === currentIndex
+      ) {
+
+        step.classList.add(
+          "active"
+        );
+
+      }
+
+    }
+
+
+    const message =
+      document.getElementById(
+        "deliveryMessage"
+      );
+
+
+    const onWayMessage =
+      document.getElementById(
+        "onWayMessage"
+      );
+
+
+    onWayMessage.style.display =
+      "none";
+
+
+    if (
+      status === "Delivered"
     ) {
 
-      step.classList.add(
-        "active"
-      );
+      message.textContent =
+        "🎉 Your order has been delivered!";
+
+    } else if (
+      status === "Handed to Delivery"
+    ) {
+
+      message.textContent =
+        "🛵 Delivery partner is on the way!";
+
+
+      onWayMessage.style.display =
+        "block";
+
+    } else if (
+      status === "Food Ready"
+    ) {
+
+      message.textContent =
+        "✅ Your food is ready!";
+
+    } else if (
+      status === "Preparing Food"
+    ) {
+
+      message.textContent =
+        "🍳 Your food is being prepared";
+
+    } else {
+
+      message.textContent =
+        "📦 Your order has been received";
 
     }
 
   }
 
 
-  const message =
-    document.getElementById(
-      "deliveryMessage"
-    );
+  /* =========================================
+     CREATE MAP
+     ========================================= */
 
+  function createMap(initialLat, initialLng) {
 
-  const onWayMessage =
-    document.getElementById(
-      "onWayMessage"
-    );
+    if (map) {
+      return;
+    }
 
-
-  onWayMessage.style.display =
-    "none";
-
-
-  if (
-    status === "Delivered"
-  ) {
-
-    message.textContent =
-      "🎉 Your order has been delivered!";
-
-
-  } else if (
-    status === "Handed to Delivery"
-  ) {
-
-    message.textContent =
-      "🛵 Delivery partner is on the way!";
-
-
-    onWayMessage.style.display =
-      "block";
-
-
-  } else if (
-    status === "Food Ready"
-  ) {
-
-    message.textContent =
-      "✅ Your food is ready!";
-
-
-  } else if (
-    status === "Preparing Food"
-  ) {
-
-    message.textContent =
-      "🍳 Your food is being prepared";
-
-
-  } else {
-
-    message.textContent =
-      "📦 Your order has been received";
-
-  }
-
-}
-
-
-/* ==========================================
-   MAP
-========================================== */
-
-function updateMap(
-  latitude,
-  longitude
-) {
-
-  if (!map) {
 
     map =
-      L.map("map")
-        .setView(
-          [latitude, longitude],
-          17
-        );
+      L.map("map").setView(
+        [
+          initialLat,
+          initialLng
+        ],
+        16
+      );
 
 
     L.tileLayer(
@@ -1306,96 +1204,377 @@ function updateMap(
     ).addTo(map);
 
 
-    /* SCOOTER ICON */
+    createRestaurantMarker();
+
+  }
+
+
+  /* =========================================
+     RESTAURANT MARKER
+     ========================================= */
+
+  function createRestaurantMarker() {
+
+    if (!map) {
+      return;
+    }
+
+
+    if (restaurantMarker) {
+      return;
+    }
+
+
+    const restaurantIcon =
+      L.divIcon({
+
+        className: "",
+
+        html:
+          `<div class="restaurant-marker">🏪</div>`,
+
+        iconSize: [
+          50,
+          50
+        ],
+
+        iconAnchor: [
+          25,
+          45
+        ]
+
+      });
+
+
+    restaurantMarker =
+      L.marker(
+        [
+          RESTAURANT_LATITUDE,
+          RESTAURANT_LONGITUDE
+        ],
+        {
+          icon: restaurantIcon
+        }
+      )
+      .addTo(map);
+
+
+    restaurantMarker.bindPopup(
+      "🏪 KravinZo Cloud Kitchen"
+    );
+
+  }
+
+
+  /* =========================================
+     CUSTOMER DESTINATION MARKER
+     ========================================= */
+
+  function createDestinationMarker() {
+
+    if (!map) {
+      return;
+    }
+
+
+    if (
+      destinationLatitude == null ||
+      destinationLongitude == null
+    ) {
+
+      return;
+
+    }
+
+
+    const destinationIcon =
+      L.divIcon({
+
+        className: "",
+
+        html:
+          `<div class="destination-marker">📍</div>`,
+
+        iconSize: [
+          45,
+          45
+        ],
+
+        iconAnchor: [
+          22,
+          42
+        ]
+
+      });
+
+
+    if (!destinationMarker) {
+
+      destinationMarker =
+        L.marker(
+          [
+            destinationLatitude,
+            destinationLongitude
+          ],
+          {
+            icon:
+              destinationIcon
+          }
+        )
+        .addTo(map);
+
+
+      destinationMarker.bindPopup(
+        "📍 Customer Destination"
+      );
+
+    } else {
+
+      destinationMarker.setLatLng(
+        [
+          destinationLatitude,
+          destinationLongitude
+        ]
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     RESTAURANT → CUSTOMER LINE
+     ========================================= */
+
+  function drawRestaurantToCustomerLine() {
+
+    if (!map) {
+      return;
+    }
+
+
+    if (
+      destinationLatitude == null ||
+      destinationLongitude == null
+    ) {
+
+      return;
+
+    }
+
+
+    const points = [
+
+      [
+        RESTAURANT_LATITUDE,
+        RESTAURANT_LONGITUDE
+      ],
+
+      [
+        destinationLatitude,
+        destinationLongitude
+      ]
+
+    ];
+
+
+    if (!restaurantToCustomerLine) {
+
+      restaurantToCustomerLine =
+        L.polyline(
+          points,
+          {
+            weight: 4,
+            opacity: 0.65,
+            dashArray: "8,10"
+          }
+        ).addTo(map);
+
+    } else {
+
+      restaurantToCustomerLine
+        .setLatLngs(points);
+
+    }
+
+  }
+
+
+  /* =========================================
+     DELIVERY BOY → CUSTOMER LINE
+     ========================================= */
+
+  function drawDriverToCustomerLine(
+    latitude,
+    longitude
+  ) {
+
+    if (!map) {
+      return;
+    }
+
+
+    if (
+      destinationLatitude == null ||
+      destinationLongitude == null
+    ) {
+
+      return;
+
+    }
+
+
+    const points = [
+
+      [
+        latitude,
+        longitude
+      ],
+
+      [
+        destinationLatitude,
+        destinationLongitude
+      ]
+
+    ];
+
+
+    if (!driverToCustomerLine) {
+
+      driverToCustomerLine =
+        L.polyline(
+          points,
+          {
+            weight: 5,
+            opacity: 0.8,
+            dashArray: "10,10"
+          }
+        ).addTo(map);
+
+    } else {
+
+      driverToCustomerLine
+        .setLatLngs(points);
+
+    }
+
+  }
+
+
+  /* =========================================
+     MAP WITH DRIVER
+     ========================================= */
+
+  function updateMap(
+    latitude,
+    longitude
+  ) {
+
+    if (!map) {
+
+      createMap(
+        latitude,
+        longitude
+      );
+
+    }
+
+
+    createRestaurantMarker();
+
+    createDestinationMarker();
+
+    drawRestaurantToCustomerLine();
+
+
+    /* =========================================
+       DRIVER ICON
+       ========================================= */
 
     const scooterIcon =
       L.divIcon({
 
         className: "",
 
-        html: `
-          <div class="scooter-marker moving">
-            🛵
-          </div>
-        `,
+        html:
+          `<div class="scooter-marker moving">🛵</div>`,
 
-        iconSize: [52, 52],
+        iconSize: [
+          52,
+          52
+        ],
 
-        iconAnchor: [26, 26]
+        iconAnchor: [
+          26,
+          26
+        ]
 
       });
 
 
-    deliveryMarker =
-      L.marker(
-        [latitude, longitude],
-        {
-          icon: scooterIcon
-        }
-      ).addTo(map);
+    if (!deliveryMarker) {
+
+      deliveryMarker =
+        L.marker(
+          [
+            latitude,
+            longitude
+          ],
+          {
+            icon:
+              scooterIcon
+          }
+        )
+        .addTo(map);
 
 
-    deliveryMarker.bindPopup(
-      "🛵 KravinZo Delivery Partner"
-    );
+      deliveryMarker.bindPopup(
+        "🛵 KravinZo Delivery Partner"
+      );
 
 
-    previousLatitude =
-      latitude;
-
-    previousLongitude =
-      longitude;
+      previousLatitude =
+        latitude;
 
 
-    /* DESTINATION PIN */
+      previousLongitude =
+        longitude;
 
-    if (
-      destinationLatitude != null &&
-      destinationLongitude != null
-    ) {
+    } else {
 
-      createDestinationMarker();
-
-      drawRouteLine(
+      animateMarker(
+        previousLatitude,
+        previousLongitude,
         latitude,
         longitude
       );
 
+
+      previousLatitude =
+        latitude;
+
+
+      previousLongitude =
+        longitude;
+
     }
 
 
-  } else {
-
-    animateMarker(
-      previousLatitude,
-      previousLongitude,
+    drawDriverToCustomerLine(
       latitude,
       longitude
     );
 
 
-    previousLatitude =
-      latitude;
-
-    previousLongitude =
-      longitude;
-
-
-    if (
-      destinationLatitude != null &&
-      destinationLongitude != null
-    ) {
-
-      drawRouteLine(
-        latitude,
-        longitude
-      );
-
-    }
-
+    /*
+      Keep driver in view.
+    */
 
     map.panTo(
-      [latitude, longitude],
+      [
+        latitude,
+        longitude
+      ],
       {
         animate: true,
         duration: 0.8
@@ -1404,276 +1583,258 @@ function updateMap(
 
   }
 
-}
 
+  /* =========================================
+     MAP WITHOUT DRIVER
+     ========================================= */
 
-/* ==========================================
-   DESTINATION MARKER
-========================================== */
-
-function createDestinationMarker() {
-
-  if (!map) {
-    return;
-  }
-
-
-  if (
-    destinationLatitude == null ||
-    destinationLongitude == null
-  ) {
-
-    return;
-
-  }
-
-
-  const destinationIcon =
-    L.divIcon({
-
-      className: "",
-
-      html: `
-        <div class="destination-marker">
-          📍
-        </div>
-      `,
-
-      iconSize: [45, 45],
-
-      iconAnchor: [22, 42]
-
-    });
-
-
-  if (!destinationMarker) {
-
-    destinationMarker =
-      L.marker(
-        [
-          destinationLatitude,
-          destinationLongitude
-        ],
-        {
-          icon: destinationIcon
-        }
-      ).addTo(map);
-
-
-    destinationMarker.bindPopup(
-      "📍 Customer Destination"
-    );
-
-  }
-
-}
-
-
-/* ==========================================
-   ROUTE LINE
-========================================== */
-
-function drawRouteLine(
-  latitude,
-  longitude
-) {
-
-  if (
-    destinationLatitude == null ||
-    destinationLongitude == null
-  ) {
-
-    return;
-
-  }
-
-
-  const points = [
-
-    [
-      latitude,
-      longitude
-    ],
-
-    [
-      destinationLatitude,
-      destinationLongitude
-    ]
-
-  ];
-
-
-  if (!routeLine) {
-
-    routeLine =
-      L.polyline(
-        points,
-        {
-          weight: 5,
-          opacity: 0.75,
-          dashArray: "10,10"
-        }
-      ).addTo(map);
-
-  } else {
-
-    routeLine.setLatLngs(
-      points
-    );
-
-  }
-
-}
-
-
-/* ==========================================
-   SMOOTH SCOOTER MOVEMENT
-========================================== */
-
-function animateMarker(
-  startLat,
-  startLng,
-  endLat,
-  endLng
-) {
-
-  if (!deliveryMarker) {
-    return;
-  }
-
-
-  if (
-    startLat == null ||
-    startLng == null
-  ) {
-
-    deliveryMarker.setLatLng(
-      [endLat, endLng]
-    );
-
-    return;
-
-  }
-
-
-  const duration = 1500;
-
-  const startTime =
-    performance.now();
-
-
-  const iconElement =
-    document.querySelector(
-      ".scooter-marker"
-    );
-
-
-  if (iconElement) {
-
-    iconElement.classList.add(
-      "moving"
-    );
-
-  }
-
-
-  function animate(
-    currentTime
-  ) {
-
-    const progress =
-      Math.min(
-        (currentTime - startTime) /
-        duration,
-        1
-      );
-
-
-    const lat =
-      startLat +
-      (endLat - startLat) *
-      progress;
-
-
-    const lng =
-      startLng +
-      (endLng - startLng) *
-      progress;
-
-
-    deliveryMarker.setLatLng(
-      [lat, lng]
-    );
-
+  function updateMapWithoutDriver() {
 
     if (
-      progress < 1
+      destinationLatitude == null ||
+      destinationLongitude == null
     ) {
 
-      requestAnimationFrame(
-        animate
+      /*
+        If customer coordinates are not available,
+        show restaurant location.
+      */
+
+      if (!map) {
+
+        createMap(
+          RESTAURANT_LATITUDE,
+          RESTAURANT_LONGITUDE
+        );
+
+      }
+
+      createRestaurantMarker();
+
+      return;
+
+    }
+
+
+    if (!map) {
+
+      createMap(
+        destinationLatitude,
+        destinationLongitude
       );
 
     }
 
+
+    createRestaurantMarker();
+
+    createDestinationMarker();
+
+    drawRestaurantToCustomerLine();
+
+
+    /*
+      Fit restaurant + customer into screen.
+    */
+
+    const bounds =
+      L.latLngBounds([
+
+        [
+          RESTAURANT_LATITUDE,
+          RESTAURANT_LONGITUDE
+        ],
+
+        [
+          destinationLatitude,
+          destinationLongitude
+        ]
+
+      ]);
+
+
+    map.fitBounds(
+      bounds,
+      {
+        padding: [
+          40,
+          40
+        ]
+      }
+    );
+
   }
 
 
-  requestAnimationFrame(
-    animate
-  );
+  /* =========================================
+     DRIVER MARKER ANIMATION
+     ========================================= */
 
-}
-
-
-/* ==========================================
-   GOOGLE MAPS
-========================================== */
-
-function openGoogleMaps() {
-
-  if (
-    currentLatitude == null ||
-    currentLongitude == null
+  function animateMarker(
+    startLat,
+    startLng,
+    endLat,
+    endLng
   ) {
 
-    return;
+    if (!deliveryMarker) {
+
+      return;
+
+    }
+
+
+    if (
+      startLat == null ||
+      startLng == null
+    ) {
+
+      deliveryMarker.setLatLng(
+        [
+          endLat,
+          endLng
+        ]
+      );
+
+      return;
+
+    }
+
+
+    const duration =
+      1500;
+
+
+    const startTime =
+      performance.now();
+
+
+    const iconElement =
+      document.querySelector(
+        ".scooter-marker"
+      );
+
+
+    if (iconElement) {
+
+      iconElement.classList.add(
+        "moving"
+      );
+
+    }
+
+
+    function animate(currentTime) {
+
+      const progress =
+        Math.min(
+          (
+            currentTime -
+            startTime
+          ) / duration,
+          1
+        );
+
+
+      const lat =
+        startLat +
+        (
+          endLat -
+          startLat
+        ) *
+        progress;
+
+
+      const lng =
+        startLng +
+        (
+          endLng -
+          startLng
+        ) *
+        progress;
+
+
+      deliveryMarker.setLatLng(
+        [
+          lat,
+          lng
+        ]
+      );
+
+
+      if (
+        progress < 1
+      ) {
+
+        requestAnimationFrame(
+          animate
+        );
+
+      }
+
+    }
+
+
+    requestAnimationFrame(
+      animate
+    );
 
   }
 
 
-  const url =
-    "https://www.google.com/maps?q=" +
-    currentLatitude +
-    "," +
-    currentLongitude;
+  /* =========================================
+     GOOGLE MAPS
+     ========================================= */
+
+  function openGoogleMaps() {
+
+    if (
+      currentLatitude == null ||
+      currentLongitude == null
+    ) {
+
+      return;
+
+    }
 
 
-  window.open(
-    url,
-    "_blank"
-  );
-
-}
-
-
-/* ==========================================
-   START
-========================================== */
-
-if (orderId) {
-
-  loadOrder();
+    const url =
+      "https://www.google.com/maps?q=" +
+      currentLatitude +
+      "," +
+      currentLongitude;
 
 
-  setInterval(
-    loadOrder,
-    5000
-  );
+    window.open(
+      url,
+      "_blank"
+    );
 
-}
+  }
+
+
+  /* =========================================
+     INITIAL LOAD
+     ========================================= */
+
+  if (orderId) {
+
+    loadOrder();
+
+
+    /*
+      Auto refresh every 5 seconds.
+    */
+
+    setInterval(
+      loadOrder,
+      5000
+    );
+
+  }
 
 </script>
 
 </body>
 </html>
+```
