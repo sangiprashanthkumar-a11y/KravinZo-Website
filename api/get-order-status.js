@@ -1,5 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
-
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -22,7 +20,7 @@ export default async function handler(req, res) {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      console.error("SUPABASE ENV VARIABLES MISSING");
+      console.error("SUPABASE ENVIRONMENT VARIABLES MISSING");
 
       return res.status(500).json({
         success: false,
@@ -30,39 +28,36 @@ export default async function handler(req, res) {
       });
     }
 
-    // REST ONLY
-    const supabase = createClient(
-      supabaseUrl,
-      supabaseKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        },
-        realtime: {
-          params: {
-            eventsPerSecond: 0
-          }
-        }
+    const url =
+      supabaseUrl +
+      "/rest/v1/orders?order_id=eq." +
+      encodeURIComponent(orderId) +
+      "&select=*";
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        apikey: supabaseKey,
+        Authorization: "Bearer " + supabaseKey,
+        "Content-Type": "application/json"
       }
-    );
+    });
 
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("order_id", orderId)
-      .maybeSingle();
+    const data = await response.json();
 
-    if (error) {
-      console.error("SUPABASE ORDER ERROR:", error);
+    if (!response.ok) {
+      console.error("SUPABASE REST ERROR:", data);
 
       return res.status(500).json({
         success: false,
-        error: error.message
+        error:
+          data?.message ||
+          data?.error ||
+          "Failed to get order"
       });
     }
 
-    if (!data) {
+    if (!Array.isArray(data) || data.length === 0) {
       return res.status(404).json({
         success: false,
         error: "Order not found"
@@ -71,7 +66,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      order: data
+      order: data[0]
     });
 
   } catch (error) {
