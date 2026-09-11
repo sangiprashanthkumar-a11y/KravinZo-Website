@@ -1,5 +1,4 @@
 export default function handler(req, res) {
-  // Only POST allowed
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
@@ -10,7 +9,6 @@ export default function handler(req, res) {
   try {
     const { username, password } = req.body || {};
 
-    // Environment variables
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
     const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
@@ -29,7 +27,7 @@ export default function handler(req, res) {
       });
     }
 
-    // Check username/password
+    // Check username and password
     if (
       username !== ADMIN_USERNAME ||
       password !== ADMIN_PASSWORD
@@ -40,16 +38,18 @@ export default function handler(req, res) {
       });
     }
 
-    // Create session token
+    // Create admin session token
     const token = Buffer.from(
       `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
     ).toString("base64");
 
-    // Set secure HttpOnly cookie
+    // Set admin cookie
     res.setHeader(
       "Set-Cookie",
-      `kravinzo_admin=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
+      `kravinzo_admin=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
     );
+
+    console.log("Admin login successful");
 
     return res.status(200).json({
       success: true,
@@ -57,7 +57,7 @@ export default function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("Admin login error:", error);
+    console.error("ADMIN LOGIN ERROR:", error);
 
     return res.status(500).json({
       success: false,
