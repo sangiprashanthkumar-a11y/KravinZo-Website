@@ -9,9 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // -----------------------------
-    // 1. Read admin cookie
-    // -----------------------------
+    // 1. Cookie
     const cookieHeader = req.headers.cookie || "";
 
     const match = cookieHeader.match(
@@ -25,66 +23,60 @@ export default async function handler(req, res) {
     if (!adminCookie) {
       return res.status(401).json({
         success: false,
-        error: "Unauthorized"
+        error: "Unauthorized - admin cookie missing"
       });
     }
 
-    // -----------------------------
-    // 2. Environment variables
-    // -----------------------------
+    // 2. Admin environment
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
     const ADMIN_SESSION_SECRET =
       process.env.ADMIN_SESSION_SECRET;
 
     if (!ADMIN_USERNAME || !ADMIN_SESSION_SECRET) {
-      console.error("Admin environment variables missing");
-
       return res.status(500).json({
         success: false,
-        error: "Admin configuration is missing on server."
+        error: "Admin environment variables missing"
       });
     }
 
-    // -----------------------------
     // 3. Verify cookie
-    // -----------------------------
     const expectedToken = Buffer.from(
       `${ADMIN_USERNAME}:${ADMIN_SESSION_SECRET}`
     ).toString("base64");
 
     if (adminCookie !== expectedToken) {
-      console.error("Invalid admin session cookie");
-
       return res.status(401).json({
         success: false,
-        error: "Unauthorized"
+        error: "Unauthorized - invalid admin cookie"
       });
     }
 
-    // -----------------------------
-    // 4. Supabase
-    // -----------------------------
+    // 4. Supabase environment
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (!supabaseUrl || !supabaseKey) {
-      console.error("Supabase environment variables missing");
-
+    if (!supabaseUrl) {
       return res.status(500).json({
         success: false,
-        error: "Supabase configuration is missing."
+        error: "SUPABASE_URL is missing"
       });
     }
 
+    if (!supabaseKey) {
+      return res.status(500).json({
+        success: false,
+        error: "SUPABASE_SERVICE_ROLE_KEY is missing"
+      });
+    }
+
+    // 5. Supabase client
     const supabase = createClient(
       supabaseUrl,
       supabaseKey
     );
 
-    // -----------------------------
-    // 5. Get all orders
-    // -----------------------------
+    // 6. Get orders
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -93,28 +85,28 @@ export default async function handler(req, res) {
       });
 
     if (error) {
-      console.error("Supabase get-orders error:", error);
+      console.error("SUPABASE ERROR:", error);
 
       return res.status(500).json({
         success: false,
-        error: error.message
+        error: `Supabase error: ${error.message}`,
+        details: error.details || null,
+        hint: error.hint || null,
+        code: error.code || null
       });
     }
 
-    // -----------------------------
-    // 6. Return orders
-    // -----------------------------
     return res.status(200).json({
       success: true,
       orders: data || []
     });
 
   } catch (error) {
-    console.error("Get orders error:", error);
+    console.error("GET ORDERS ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error: "Internal server error"
+      error: `Server error: ${error.message}`
     });
   }
 }
