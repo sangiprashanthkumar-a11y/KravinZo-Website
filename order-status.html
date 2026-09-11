@@ -266,6 +266,11 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
     .map-button {
       background: #111;
       color: white;
@@ -686,9 +691,12 @@
       </button>
 
 
+      <!-- FIXED REFRESH BUTTON -->
+
       <button
+        id="refreshButton"
         class="refresh-button"
-        onclick="loadOrder()"
+        onclick="manualRefresh()"
       >
         🔄 Refresh Now
       </button>
@@ -772,6 +780,17 @@ let destinationLatitude = null;
 let destinationLongitude = null;
 
 
+/* ==========================================
+   REFRESH PROTECTION
+========================================== */
+
+let isLoadingOrder = false;
+
+
+/* ==========================================
+   ORDER ID
+========================================== */
+
 const params =
   new URLSearchParams(
     window.location.search
@@ -781,6 +800,10 @@ const params =
 const orderId =
   params.get("orderId");
 
+
+/* ==========================================
+   ERROR
+========================================== */
 
 function showError(message) {
 
@@ -803,6 +826,49 @@ function showError(message) {
 }
 
 
+/* ==========================================
+   MANUAL REFRESH
+========================================== */
+
+async function manualRefresh() {
+
+  const button =
+    document.getElementById(
+      "refreshButton"
+    );
+
+
+  if (isLoadingOrder) {
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "⏳ Refreshing...";
+
+
+  try {
+
+    await loadOrder();
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      "🔄 Refresh Now";
+
+  }
+
+}
+
+
+/* ==========================================
+   CHECK ORDER ID
+========================================== */
+
 if (!orderId) {
 
   showError(
@@ -818,7 +884,18 @@ if (!orderId) {
 
 async function loadOrder() {
 
-  if (!orderId) return;
+  if (!orderId) {
+    return;
+  }
+
+
+  if (isLoadingOrder) {
+    return;
+  }
+
+
+  isLoadingOrder = true;
+
 
   try {
 
@@ -1032,6 +1109,11 @@ async function loadOrder() {
       "Unable to connect to server"
     );
 
+
+  } finally {
+
+    isLoadingOrder = false;
+
   }
 
 }
@@ -1224,9 +1306,7 @@ function updateMap(
     ).addTo(map);
 
 
-    /* ======================================
-       SCOOTER ICON
-    ====================================== */
+    /* SCOOTER ICON */
 
     const scooterIcon =
       L.divIcon({
@@ -1267,9 +1347,7 @@ function updateMap(
       longitude;
 
 
-    /* ======================================
-       DESTINATION PIN
-    ====================================== */
+    /* DESTINATION PIN */
 
     if (
       destinationLatitude != null &&
@@ -1335,14 +1413,18 @@ function updateMap(
 
 function createDestinationMarker() {
 
-  if (!map) return;
+  if (!map) {
+    return;
+  }
 
 
   if (
     destinationLatitude == null ||
     destinationLongitude == null
   ) {
+
     return;
+
   }
 
 
