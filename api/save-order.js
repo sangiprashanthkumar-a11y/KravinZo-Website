@@ -36,7 +36,12 @@ export default async function handler(req, res) {
       total,
       payment_method,
       payment_id,
-      status
+      status,
+
+      // Customer destination location
+      customer_latitude,
+      customer_longitude
+
     } = req.body || {};
 
     const finalPhone = customer_phone || phone_number || "";
@@ -52,7 +57,18 @@ export default async function handler(req, res) {
       total: Number(total) || 0,
       payment_method: payment_method || "COD",
       payment_id: payment_id || null,
-      status: status || "pending"
+      status: status || "pending",
+
+      // Customer destination coordinates
+      customer_latitude:
+        customer_latitude != null
+          ? Number(customer_latitude)
+          : null,
+
+      customer_longitude:
+        customer_longitude != null
+          ? Number(customer_longitude)
+          : null
     };
 
     const { data, error } = await supabase
